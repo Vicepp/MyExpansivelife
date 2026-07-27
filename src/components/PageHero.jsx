@@ -20,7 +20,7 @@ export default function PageHero({ lead, accent, body, cluster = false }) {
           <div className="max-w-[620px]">
             <TextReveal
               as="h1"
-              className="font-display text-[38px] leading-[1.1] text-forest sm:text-[46px] lg:text-[54px]"
+              className="font-display text-[38px] leading-display text-forest sm:text-[46px] lg:text-[54px]"
               segments={[
                 { text: lead },
                 { text: accent, className: 'text-gold-text' },

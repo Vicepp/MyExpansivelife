@@ -41,7 +41,7 @@ export function Newsletter({ tone = 'brown' }) {
     >
       <Container>
         <Reveal>
-          <h2 className="mx-auto max-w-[520px] text-[30px] font-bold leading-tight text-white lg:text-[40px]">
+          <h2 className="mx-auto max-w-[520px] text-[30px] font-bold leading-headline text-white lg:text-[40px]">
             Want Articles Like This In Your Inbox?
           </h2>
         </Reveal>

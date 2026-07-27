@@ -8,7 +8,7 @@ export default function BlogHero() {
         <div className="mx-auto max-w-[760px] text-center">
           <TextReveal
             as="h1"
-            className="font-display text-[38px] leading-[1.12] text-forest sm:text-[50px] lg:text-[58px]"
+            className="font-display text-[38px] leading-display text-forest sm:text-[50px] lg:text-[58px]"
             segments={[
               { text: 'Ideas for the life you’re' },
               { br: true, className: 'hidden lg:inline' },

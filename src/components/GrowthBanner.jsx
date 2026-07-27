@@ -43,7 +43,7 @@ export default function GrowthBanner({
       <Container className="relative">
         <div className={`py-16 lg:py-24 ${wide ? 'max-w-[620px]' : 'max-w-[460px]'}`}>
           <Reveal>
-            <h2 className="text-[32px] font-bold leading-[1.15] text-white lg:text-[42px]">
+            <h2 className="text-[32px] font-bold leading-headline text-white lg:text-[42px]">
               {title}
             </h2>
           </Reveal>

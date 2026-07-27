@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+/*
+ * Display face: "The Seasons".
+ *
+ * Referenced from /public so a missing file degrades to the Playfair Display
+ * fallback at runtime instead of failing the build. Drop the files into
+ * public/fonts/ using exactly these names and the site picks them up — see
+ * public/fonts/README.md.
+ */
+@font-face {
+  font-family: "The Seasons";
+  src:
+    url("/fonts/the-seasons-bold.woff2") format("woff2"),
+    url("/fonts/the-seasons-bold.otf") format("opentype"),
+    url("/fonts/the-seasons-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "The Seasons";
+  src:
+    url("/fonts/the-seasons-regular.woff2") format("woff2"),
+    url("/fonts/the-seasons-regular.otf") format("opentype"),
+    url("/fonts/the-seasons-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Palette sampled directly from the MXL Figma board. */
 @theme {
   --color-cream: #fff6f1;
@@ -14,8 +44,12 @@
   --color-mint: #40b487;
   --color-ink: #2b2219;
 
-  --font-display: "Playfair Display", Georgia, serif;
+  --font-display: "The Seasons", "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  /* Leading ratios taken from the Figma type specs. */
+  --leading-display: 1.01; /* 78.61 / 77.97 */
+  --leading-headline: 1.21; /* 81 / 66.97 */
 
   /* Entrance curve used across the site — long tail, quick start. */
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);

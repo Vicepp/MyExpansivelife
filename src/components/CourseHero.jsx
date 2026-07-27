@@ -42,7 +42,7 @@ export default function CourseHero() {
             <TextReveal
               as="h1"
               delay={90}
-              className="mt-5 font-display text-[38px] leading-[1.08] text-forest sm:text-[48px] lg:text-[56px]"
+              className="mt-5 font-display text-[38px] leading-display text-forest sm:text-[48px] lg:text-[56px]"
               segments={[{ text: 'Stop being your industry’s best-kept secret.' }]}
             />
             <Reveal delay={180}>

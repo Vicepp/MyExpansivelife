@@ -27,7 +27,7 @@ export default function Hero() {
           {/* Line breaks are set by hand to match the three-line ragging in the design. */}
           <TextReveal
             as="h1"
-            className="font-display text-[42px] leading-[1.08] text-forest sm:text-[56px] lg:text-[64px]"
+            className="font-display text-[42px] leading-display text-forest sm:text-[56px] lg:text-[64px]"
             segments={[
               { text: 'Your career was' },
               { br: true, className: 'hidden lg:inline' },
