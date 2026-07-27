@@ -16,21 +16,25 @@ const STATUS_STYLES = {
   past: 'bg-ink/10 text-ink/70',
 }
 
-function NavButton({ dir, onClick, disabled }) {
-  const isPrev = dir === 'prev'
+/** How far each neighbouring card sits from the centre of the stack. */
+const STEP_PX = 46
+const VISIBLE = 2
+
+function StepButton({ dir, onClick, disabled, label }) {
+  const isUp = dir === 'up'
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={isPrev ? 'Previous event' : 'Next event'}
-      className={`absolute top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white shadow-md transition hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:shadow-md ${
-        isPrev ? 'left-0 lg:-left-5' : 'right-0 lg:-right-5'
+      aria-label={label}
+      className={`absolute right-0 z-40 grid size-10 place-items-center rounded-full bg-white shadow-md transition hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:shadow-md ${
+        isUp ? 'top-0' : 'bottom-0'
       }`}
     >
       <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
         <path
-          d={isPrev ? 'm14 6-6 6 6 6' : 'm10 6 6 6-6 6'}
+          d={isUp ? 'm6 14 6-6 6 6' : 'm6 10 6 6 6-6'}
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
@@ -41,10 +45,39 @@ function NavButton({ dir, onClick, disabled }) {
   )
 }
 
+/** Banner artwork, uncropped inside a fixed frame. */
+function Banner({ event }) {
+  const [failed, setFailed] = useState(false)
+  const src = event.image ?? event.publicImage
+
+  if (!src || failed) {
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-8 text-center">
+        <img src={logo} alt="" aria-hidden="true" className="h-9 w-auto" />
+        <p className="font-display text-[20px] leading-tight text-forest lg:text-[26px]">
+          {event.title}
+        </p>
+        <p className="text-[12px] text-ink/55">
+          {formatEventDate(event.startsAt)}
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={`${event.title} — ${formatEventDate(event.startsAt)}`}
+      onError={() => setFailed(true)}
+      className="h-full w-full object-contain"
+    />
+  )
+}
+
 function CountdownCell({ value, label }) {
   return (
     <div className="rounded-xl bg-white px-2 py-3 text-center">
-      <p className="font-sans text-[22px] font-bold leading-none tabular-nums text-gold">
+      <p className="text-[22px] font-bold leading-none tabular-nums text-gold">
         {value}
       </p>
       <p className="mt-1.5 text-[10px] uppercase tracking-wider text-ink/55">
@@ -105,40 +138,10 @@ function Countdown({ event, now }) {
   )
 }
 
-function Banner({ event }) {
-  if (event.image) {
-    return (
-      <img
-        src={event.image}
-        alt={`${event.title} — ${formatEventDate(event.startsAt)}`}
-        // Wide banners keep their own ratio; square ones fill the side column.
-        className={
-          event.wide
-            ? 'w-full rounded-2xl'
-            : 'h-full w-full rounded-2xl object-cover'
-        }
-      />
-    )
-  }
-
-  // Branded stand-in until this event's banner artwork is supplied.
-  return (
-    <div className="flex h-full min-h-[220px] flex-col justify-center gap-4 rounded-2xl bg-gold/10 p-8 ring-1 ring-gold/20">
-      <img src={logo} alt="" aria-hidden="true" className="h-10 w-auto" />
-      <p className="font-display text-[24px] leading-tight text-forest">
-        {event.title}
-      </p>
-      <p className="text-[13px] text-ink/60">
-        {formatEventDate(event.startsAt)}
-      </p>
-    </div>
-  )
-}
-
 export default function UpcomingEvents() {
   const [now, setNow] = useState(() => Date.now())
   const [index, setIndex] = useState(() => nextEventIndex(Date.now()))
-  // Once the visitor uses the arrows we stop re-selecting the next event.
+  // Once the visitor navigates we stop re-selecting the next event for them.
   const browsing = useRef(false)
 
   useEffect(() => {
@@ -152,7 +155,6 @@ export default function UpcomingEvents() {
 
   const event = EVENTS[index]
   const status = statusOf(event, now)
-  const behind = EVENTS.length - 1 - index
 
   const go = (delta) => {
     browsing.current = true
@@ -164,69 +166,85 @@ export default function UpcomingEvents() {
       <Container>
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_270px]">
-            <div className="relative px-6 lg:px-0">
-              <NavButton dir="prev" onClick={() => go(-1)} disabled={index === 0} />
-              <NavButton
-                dir="next"
-                onClick={() => go(1)}
-                disabled={index === EVENTS.length - 1}
-              />
+            <div className="rounded-3xl bg-white p-6 lg:p-8">
+              <h2 className="text-[26px] font-bold uppercase tracking-tight text-gold lg:text-[34px]">
+                Upcoming Events
+              </h2>
 
-              {/* Cards still to come peek out from under the active one. */}
-              {behind > 0 && (
-                <div className="pointer-events-none absolute inset-x-4 -bottom-2 h-10 rounded-3xl bg-white/55" />
-              )}
-              {behind > 1 && (
-                <div className="pointer-events-none absolute inset-x-8 -bottom-4 h-10 rounded-3xl bg-white/35" />
-              )}
+              {/*
+                Vertical stage: later events sit above the centre card, earlier
+                ones below, so the whole banner stays visible on every layer.
+              */}
+              <div className="relative mt-6 h-[210px] px-12 sm:h-[290px] lg:h-[390px]">
+                <StepButton
+                  dir="up"
+                  label="Show the next event"
+                  onClick={() => go(1)}
+                  disabled={index === EVENTS.length - 1}
+                />
+                <StepButton
+                  dir="down"
+                  label="Show the previous event"
+                  onClick={() => go(-1)}
+                  disabled={index === 0}
+                />
 
-              <article
-                key={event.id}
-                className={`page-enter relative rounded-3xl bg-white p-8 lg:p-12 ${
-                  event.wide
-                    ? ''
-                    : 'grid items-center gap-8 lg:grid-cols-2 lg:gap-12'
-                }`}
-              >
-                <div>
-                  <h2 className="text-[26px] font-bold uppercase tracking-tight text-gold lg:text-[34px]">
-                    Upcoming Events
-                  </h2>
+                {EVENTS.map((item, i) => {
+                  const offset = i - index
+                  const distance = Math.abs(offset)
+                  if (distance > VISIBLE) return null
 
-                  <div className="mt-5 flex flex-wrap items-center gap-2">
-                    <span
-                      className={`rounded-full px-4 py-1.5 text-[13px] font-semibold ${STATUS_STYLES[status]}`}
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        browsing.current = true
+                        setIndex(i)
+                      }}
+                      aria-label={item.title}
+                      aria-current={offset === 0}
+                      tabIndex={offset === 0 ? -1 : 0}
+                      className="absolute left-1/2 top-1/2 w-full max-w-[760px] px-2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      style={{
+                        transform: `translate(-50%, calc(-50% - ${offset * STEP_PX}px)) scale(${1 - distance * 0.07})`,
+                        opacity: distance === 0 ? 1 : distance === 1 ? 0.5 : 0.22,
+                        zIndex: 30 - distance * 10,
+                        filter: distance ? `blur(${distance}px)` : 'none',
+                        cursor: offset === 0 ? 'default' : 'pointer',
+                      }}
                     >
-                      {status === 'past' ? 'Past event' : event.badge}
-                    </span>
-                    <span className="text-[13px] text-ink/55">
-                      {index + 1} / {EVENTS.length}
-                    </span>
-                  </div>
+                      <span className="block aspect-[2.6] overflow-hidden rounded-2xl bg-cream-card shadow-[0_18px_44px_-22px_rgb(43_34_25/0.45)]">
+                        <Banner event={item} />
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
 
-                  <h3 className="mt-4 text-[21px] font-bold leading-snug text-forest-deep lg:text-[26px]">
-                    {event.title}
-                  </h3>
+              <div className="mt-7 flex flex-wrap items-center gap-2">
+                <span
+                  className={`rounded-full px-4 py-1.5 text-[13px] font-semibold ${STATUS_STYLES[status]}`}
+                >
+                  {status === 'past' ? 'Past event' : event.badge}
+                </span>
+                <span className="text-[13px] text-ink/55">
+                  {index + 1} / {EVENTS.length}
+                </span>
+              </div>
 
-                  <p className="mt-3 text-[13.5px] text-ink/70">
-                    {formatEventDate(event.startsAt)} &middot;{' '}
-                    {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
-                  </p>
+              <h3 className="mt-4 text-[20px] font-bold leading-snug text-forest-deep lg:text-[26px]">
+                {event.title}
+              </h3>
 
-                  <Button
-                    variant="solid"
-                    to="/community"
-                    icon
-                    className="mt-7"
-                  >
-                    {status === 'past' ? 'Watch replay' : 'Register now'}
-                  </Button>
-                </div>
+              <p className="mt-2 text-[13.5px] text-ink/70">
+                {formatEventDate(event.startsAt)} &middot;{' '}
+                {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
+              </p>
 
-                <div className={event.wide ? 'mt-8' : ''}>
-                  <Banner event={event} />
-                </div>
-              </article>
+              <Button variant="solid" to="/community" icon className="mt-6">
+                {status === 'past' ? 'Watch replay' : 'Register now'}
+              </Button>
             </div>
 
             <Countdown event={event} now={now} />

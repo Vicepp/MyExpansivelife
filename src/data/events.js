@@ -6,8 +6,12 @@ import financialHabits from '../assets/design/event-financial-habits.jpg'
  * `start` is Central wall-clock time, as printed on the banners.
  * `durationMinutes` only decides how long a session counts as "live now".
  *
- * To add an event: drop its banner in src/assets/design/, import it, and add a
- * row here. Ordering and past/upcoming state are derived, not hand-maintained.
+ * Banners can be supplied two ways:
+ *   `image`       — imported and hashed by Vite (preferred, cache-busted)
+ *   `publicImage` — a path under /public, so a file can be dropped in without
+ *                   touching code. Missing files fall back to a branded panel.
+ *
+ * Ordering and past/upcoming state are derived from the clock, never hand-set.
  */
 const SOURCE = [
   {
@@ -18,9 +22,7 @@ const SOURCE = [
     role: 'Founder & CEO',
     start: '2026-07-20T17:00:00',
     durationMinutes: 60,
-    wide: true,
-    // Banner not supplied yet — the card falls back to a branded panel.
-    image: null,
+    publicImage: '/events/decision-fatigue.jpg',
   },
   {
     id: 'financial-habits',
@@ -30,8 +32,6 @@ const SOURCE = [
     role: 'Founder & CEO',
     start: '2026-07-27T17:00:00',
     durationMinutes: 60,
-    // 1437x518 Monday Momentum banner — too wide for the side column.
-    wide: true,
     image: financialHabits,
   },
   {
