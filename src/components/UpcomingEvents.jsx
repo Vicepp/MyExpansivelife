@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Container, Button } from './primitives'
 import Reveal from './Reveal'
 import { EVENTS, statusOf, nextEventIndex } from '../data/events'
-import {
-  EVENT_TZ_LABEL,
-  breakdown,
-  formatEventDate,
-  formatEventTime,
-} from '../lib/eventTime'
+import { breakdown, formatEventDate } from '../lib/eventTime'
 import logo from '../assets/design/logo.svg'
 
 const STATUS_STYLES = {
@@ -92,7 +87,7 @@ function Countdown({ event, now }) {
   const parts = breakdown(event.startsAt - now)
 
   return (
-    <aside className="rounded-3xl bg-cream-card p-6 ring-1 ring-gold/15">
+    <aside className="self-start rounded-3xl bg-cream-card p-6 ring-1 ring-gold/15">
       <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-ink/55">
         {status === 'upcoming' && 'Starts in'}
         {status === 'live' && 'Happening now'}
@@ -116,24 +111,6 @@ function Countdown({ event, now }) {
         </p>
       )}
 
-      <dl className="mt-6 space-y-3 border-t border-ink/10 pt-5 text-[13px]">
-        <div>
-          <dt className="text-ink/55">Date</dt>
-          <dd className="mt-0.5 font-semibold text-forest-deep">
-            {formatEventDate(event.startsAt)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-ink/55">Time</dt>
-          <dd className="mt-0.5 font-semibold text-forest-deep">
-            {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-ink/55">Speaker</dt>
-          <dd className="mt-0.5 font-semibold text-forest-deep">{event.speaker}</dd>
-        </div>
-      </dl>
     </aside>
   )
 }
@@ -175,7 +152,8 @@ export default function UpcomingEvents() {
                 Vertical stage: later events sit above the centre card, earlier
                 ones below, so the whole banner stays visible on every layer.
               */}
-              <div className="relative mt-6 h-[210px] px-12 sm:h-[290px] lg:h-[390px]">
+              {/* Right 3.5rem is the arrow gutter; cards take the rest. */}
+              <div className="relative mt-6 h-[200px] sm:h-[280px] lg:h-[380px]">
                 <StepButton
                   dir="up"
                   label="Show the next event"
@@ -205,9 +183,9 @@ export default function UpcomingEvents() {
                       aria-label={item.title}
                       aria-current={offset === 0}
                       tabIndex={offset === 0 ? -1 : 0}
-                      className="absolute left-1/2 top-1/2 w-full max-w-[760px] px-2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      className="absolute left-0 top-1/2 w-[calc(100%-3.5rem)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
                       style={{
-                        transform: `translate(-50%, calc(-50% - ${offset * STEP_PX}px)) scale(${1 - distance * 0.07})`,
+                        transform: `translateY(calc(-50% - ${offset * STEP_PX}px)) scale(${1 - distance * 0.07})`,
                         opacity: distance === 0 ? 1 : distance === 1 ? 0.5 : 0.22,
                         zIndex: 30 - distance * 10,
                         filter: distance ? `blur(${distance}px)` : 'none',
@@ -222,7 +200,8 @@ export default function UpcomingEvents() {
                 })}
               </div>
 
-              <div className="mt-7 flex flex-wrap items-center gap-2">
+              {/* Title, date and speaker are already set into the artwork. */}
+              <div className="mt-7 flex flex-wrap items-center gap-4">
                 <span
                   className={`rounded-full px-4 py-1.5 text-[13px] font-semibold ${STATUS_STYLES[status]}`}
                 >
@@ -231,20 +210,10 @@ export default function UpcomingEvents() {
                 <span className="text-[13px] text-ink/55">
                   {index + 1} / {EVENTS.length}
                 </span>
+                <Button variant="solid" to="/community" icon className="ml-auto">
+                  {status === 'past' ? 'Watch replay' : 'Register now'}
+                </Button>
               </div>
-
-              <h3 className="mt-4 text-[20px] font-bold leading-snug text-forest-deep lg:text-[26px]">
-                {event.title}
-              </h3>
-
-              <p className="mt-2 text-[13.5px] text-ink/70">
-                {formatEventDate(event.startsAt)} &middot;{' '}
-                {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
-              </p>
-
-              <Button variant="solid" to="/community" icon className="mt-6">
-                {status === 'past' ? 'Watch replay' : 'Register now'}
-              </Button>
             </div>
 
             <Countdown event={event} now={now} />
