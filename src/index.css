@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* Palette sampled directly from the MXL Figma board. */
+@theme {
+  --color-cream: #fff6f1;
+  --color-cream-card: #fffcf1;
+  --color-brown: #87492c;
+  --color-brown-deep: #712806;
+  --color-gold: #b3803f;
+  --color-gold-text: #a76d23;
+  --color-forest: #183734;
+  --color-forest-deep: #15342f;
+  --color-sage: #7d886e;
+  --color-mint: #40b487;
+  --color-ink: #2b2219;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
+}
+
+/* --- scroll reveal ------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 26px));
+  transition:
+    opacity 750ms var(--ease-out-soft) var(--reveal-delay, 0ms),
+    transform 750ms var(--ease-out-soft) var(--reveal-delay, 0ms);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Fade-only: keeps the element out of the containing-block chain. */
+.reveal-fade {
+  transform: none;
+}
+
+/* --- shared interaction polish ------------------------------------------- */
+
+.card-lift {
+  transition:
+    transform 400ms var(--ease-out-soft),
+    box-shadow 400ms var(--ease-out-soft);
+}
+
+.card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px -18px rgb(43 34 25 / 0.28);
+}
+
+.img-zoom img {
+  transition: transform 700ms var(--ease-out-soft);
+}
+
+.img-zoom:hover img {
+  transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .card-lift,
+  .img-zoom img {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
