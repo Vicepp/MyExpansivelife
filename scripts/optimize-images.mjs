@@ -23,6 +23,7 @@ const PLAN = {
   'growth-art.png': { height: 1132 },
   'course-gold-art.png': {},
   'course-hero-cluster.png': {},
+  'community-hero-cluster.png': { width: 940 },
   'hero-cluster-left.png': {},
   'hero-cluster-right.png': {},
   'award-badge.png': {},

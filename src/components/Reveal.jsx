@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
-/**
- * Fades and lifts its children into place the first time they scroll into view.
- * Honours prefers-reduced-motion by showing content immediately.
- */
-export default function Reveal({
-  children,
-  delay = 0,
-  y = 26,
-  className = '',
-  as: Tag = 'div',
-}) {
+const reducedMotion = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+/** Fires once, the first time the element scrolls into view. */
+function useInView({ threshold = 0.12, rootMargin = '0px 0px -60px 0px' } = {}) {
   const ref = useRef(null)
   const [shown, setShown] = useState(false)
 
@@ -18,7 +13,7 @@ export default function Reveal({
     const el = ref.current
     if (!el) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reducedMotion()) {
       setShown(true)
       return
     }
@@ -30,15 +25,29 @@ export default function Reveal({
           observer.unobserve(el)
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' },
+      { threshold, rootMargin },
     )
 
     observer.observe(el)
     return () => observer.disconnect()
-  }, [])
+  }, [threshold, rootMargin])
 
-  // A transform on the wrapper would become the containing block for any
-  // absolutely-positioned child, so y={0} opts into a transform-free fade.
+  return [ref, shown]
+}
+
+/**
+ * Fades, lifts and un-blurs its children the first time they scroll into view.
+ * `y={0}` opts into a transform- and filter-free fade, which is required
+ * whenever the wrapper contains absolutely-positioned children.
+ */
+export default function Reveal({
+  children,
+  delay = 0,
+  y = 26,
+  className = '',
+  as: Tag = 'div',
+}) {
+  const [ref, shown] = useInView()
   const fade = y === 0
 
   return (
@@ -48,6 +57,48 @@ export default function Reveal({
       style={{ '--reveal-delay': `${delay}ms`, '--reveal-y': `${y}px` }}
     >
       {children}
+    </Tag>
+  )
+}
+
+/**
+ * Headline reveal: each word rises out of its own mask on a stagger.
+ *
+ * `segments` is an ordered list of `{ text, className }`, so a heading can mix
+ * colours, plus `{ br: true }` to force the line breaks the design specifies.
+ */
+export function TextReveal({
+  segments,
+  className = '',
+  as: Tag = 'h2',
+  step = 42,
+  delay = 0,
+}) {
+  const [ref, shown] = useInView({ threshold: 0.2 })
+  let index = 0
+
+  return (
+    <Tag ref={ref} className={className}>
+      {segments.flatMap((segment, si) => {
+        if (segment.br) {
+          return [<br key={`br-${si}`} className={segment.className} />]
+        }
+
+        return segment.text.split(' ').map((word, wi) => {
+          const wordDelay = delay + index++ * step
+          return (
+            <span key={`${si}-${wi}`} className="word-mask">
+              <span
+                className={`word ${shown ? 'word-in' : ''} ${segment.className ?? ''}`}
+                style={{ '--word-delay': `${wordDelay}ms` }}
+              >
+                {word}
+                {' '}
+              </span>
+            </span>
+          )
+        })
+      })}
     </Tag>
   )
 }
@@ -65,9 +116,7 @@ export function CountUp({ value, className = '' }) {
     if (!el) return
 
     const match = String(value).match(/^(\D*)([\d.]+)(.*)$/)
-    if (!match || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return
-    }
+    if (!match || reducedMotion()) return
 
     const [, prefix, digits, suffix] = match
     const target = parseFloat(digits)

@@ -9,10 +9,18 @@ const STATS = [
   { value: '10+', label: 'Growth Pillars' },
 ]
 
-export default function Problem() {
+/**
+ * The "missing a room to work it out in" band plus the stats strip beneath it.
+ * Brown on the home page, gold on the community and affiliate pages — the
+ * stat numbers follow the band.
+ */
+export default function Problem({ tone = 'brown' }) {
+  const bandBg = tone === 'gold' ? 'bg-gold' : 'bg-brown'
+  const statColor = tone === 'gold' ? 'text-gold' : 'text-forest-deep'
+
   return (
     <>
-      <section className="bg-brown pt-20 lg:pt-24">
+      <section className={`${bandBg} pt-20 lg:pt-24`}>
         <Container>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
             <Reveal>
@@ -31,7 +39,10 @@ export default function Problem() {
           </div>
 
           {/* Bottom edge is square in the design — the frame meets the stats strip flush. */}
-          <Reveal delay={100} className="relative mt-14 overflow-hidden rounded-t-3xl">
+          <Reveal
+            delay={100}
+            className="media-reveal relative mt-14 overflow-hidden rounded-t-3xl"
+          >
             <img
               src={videoThumb}
               alt="Members working through ideas together"
@@ -46,7 +57,9 @@ export default function Problem() {
           <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
             {STATS.map((s, i) => (
               <Reveal key={s.label} delay={i * 90} className="text-center">
-                <dt className="text-[34px] font-bold leading-none text-forest-deep lg:text-[40px]">
+                <dt
+                  className={`text-[34px] font-bold leading-none lg:text-[40px] ${statColor}`}
+                >
                   <CountUp value={s.value} />
                 </dt>
                 <dd className="mt-2 text-[15px] text-ink/80">{s.label}</dd>

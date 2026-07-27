@@ -1,5 +1,5 @@
 import { Container, Button } from './primitives'
-import Reveal from './Reveal'
+import Reveal, { TextReveal } from './Reveal'
 import clusterLeft from '../assets/design/hero-cluster-left.png'
 import clusterRight from '../assets/design/hero-cluster-right.png'
 
@@ -25,13 +25,17 @@ export default function Hero() {
       <Container className="relative">
         <div className="mx-auto max-w-[720px] text-center">
           {/* Line breaks are set by hand to match the three-line ragging in the design. */}
-          <Reveal>
-            <h1 className="font-display text-[42px] leading-[1.08] text-forest sm:text-[56px] lg:text-[64px]">
-              Your career was <br className="hidden lg:inline" />
-              never meant to be the <br className="hidden lg:inline" />
-              <span className="text-gold-text">whole story.</span>
-            </h1>
-          </Reveal>
+          <TextReveal
+            as="h1"
+            className="font-display text-[42px] leading-[1.08] text-forest sm:text-[56px] lg:text-[64px]"
+            segments={[
+              { text: 'Your career was' },
+              { br: true, className: 'hidden lg:inline' },
+              { text: 'never meant to be the' },
+              { br: true, className: 'hidden lg:inline' },
+              { text: 'whole story.', className: 'text-gold-text' },
+            ]}
+          />
           <Reveal delay={120}>
             <p className="mx-auto mt-7 max-w-[540px] text-[16px] leading-relaxed text-ink/75">
               You built a career worth being proud of. Now it&rsquo;s time to build

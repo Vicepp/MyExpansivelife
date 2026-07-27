@@ -1,5 +1,5 @@
 import { Container, Button } from './primitives'
-import Reveal, { CountUp } from './Reveal'
+import Reveal, { CountUp, TextReveal } from './Reveal'
 import cluster from '../assets/design/course-hero-cluster.png'
 
 const STATS = [
@@ -39,11 +39,12 @@ export default function CourseHero() {
                 MXL Course: LinkedIn Unlocked
               </p>
             </Reveal>
-            <Reveal delay={90}>
-              <h1 className="mt-5 font-display text-[38px] leading-[1.08] text-forest sm:text-[48px] lg:text-[56px]">
-                Stop being your industry&rsquo;s best-kept secret.
-              </h1>
-            </Reveal>
+            <TextReveal
+              as="h1"
+              delay={90}
+              className="mt-5 font-display text-[38px] leading-[1.08] text-forest sm:text-[48px] lg:text-[56px]"
+              segments={[{ text: 'Stop being your industry’s best-kept secret.' }]}
+            />
             <Reveal delay={180}>
               <p className="mt-5 max-w-[480px] text-[15px] leading-relaxed text-ink/80">
                 A practical system for turning your LinkedIn profile into a working

@@ -17,7 +17,8 @@
   --font-display: "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
 
-  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Entrance curve used across the site — long tail, quick start. */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
@@ -36,28 +37,119 @@ body {
 
 .reveal {
   opacity: 0;
+  filter: blur(8px);
   transform: translateY(var(--reveal-y, 26px));
   transition:
-    opacity 750ms var(--ease-out-soft) var(--reveal-delay, 0ms),
-    transform 750ms var(--ease-out-soft) var(--reveal-delay, 0ms);
+    opacity 900ms var(--ease-out-soft) var(--reveal-delay, 0ms),
+    filter 900ms var(--ease-out-soft) var(--reveal-delay, 0ms),
+    transform 900ms var(--ease-out-soft) var(--reveal-delay, 0ms);
 }
 
 .reveal-in {
   opacity: 1;
+  filter: none;
   transform: none;
 }
 
-/* Fade-only: keeps the element out of the containing-block chain. */
+/*
+ * Fade-only. Both `transform` and `filter` make an element the containing
+ * block for absolutely-positioned descendants, so neither may be set here.
+ */
 .reveal-fade {
   transform: none;
+  filter: none;
 }
 
-/* --- shared interaction polish ------------------------------------------- */
+/* --- word-by-word heading reveal ----------------------------------------- */
+
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.95em);
+  transition:
+    opacity 800ms var(--ease-out-soft) var(--word-delay, 0ms),
+    transform 800ms var(--ease-out-soft) var(--word-delay, 0ms);
+}
+
+.word-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- image reveal -------------------------------------------------------- */
+
+.media-reveal img {
+  transform: scale(1.08);
+  transition: transform 1200ms var(--ease-out-soft);
+}
+
+.media-reveal.reveal-in img {
+  transform: scale(1);
+}
+
+/* --- route transition ---------------------------------------------------- */
+
+.page-enter {
+  animation: page-in 620ms var(--ease-out-soft) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- infinite logo marquee ----------------------------------------------- */
+
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* --- interaction polish -------------------------------------------------- */
 
 .card-lift {
   transition:
-    transform 400ms var(--ease-out-soft),
-    box-shadow 400ms var(--ease-out-soft);
+    transform 500ms var(--ease-out-soft),
+    box-shadow 500ms var(--ease-out-soft);
 }
 
 .card-lift:hover {
@@ -66,7 +158,7 @@ body {
 }
 
 .img-zoom img {
-  transition: transform 700ms var(--ease-out-soft);
+  transition: transform 800ms var(--ease-out-soft);
 }
 
 .img-zoom:hover img {
@@ -79,10 +171,21 @@ body {
   }
 
   .reveal,
+  .word,
   .card-lift,
-  .img-zoom img {
+  .img-zoom img,
+  .media-reveal img {
     opacity: 1;
+    filter: none;
     transform: none;
     transition: none;
+  }
+
+  .page-enter {
+    animation: none;
+  }
+
+  .marquee-track {
+    animation: none;
   }
 }

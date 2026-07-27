@@ -14,7 +14,8 @@ export default function Layout() {
   return (
     <>
       <Header />
-      <main>
+      {/* Keyed on pathname so each route replays the entrance animation. */}
+      <main key={pathname} className="page-enter">
         <Outlet />
       </main>
       <Footer />

@@ -17,7 +17,7 @@ export default function Ceiling() {
           <img
             src={awardBadge}
             alt="Number one best award, 2023"
-            className="absolute right-0 top-[68%] w-24 -translate-y-1/2 translate-x-1/2 lg:w-32"
+            className="absolute right-0 top-[68%] aspect-square w-24 -translate-y-1/2 translate-x-1/2 rounded-full object-cover lg:w-32"
           />
         </div>
 

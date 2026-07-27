@@ -22,7 +22,7 @@ export default function SageFeature() {
           </Reveal>
         </div>
 
-        <Reveal delay={100} className="mt-12 overflow-hidden rounded-3xl">
+        <Reveal delay={100} className="media-reveal mt-12 overflow-hidden rounded-3xl">
           <img
             src={videoThumb}
             alt="Members working through the course together"

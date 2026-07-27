@@ -42,11 +42,11 @@ export function Button({
   }
 
   return (
-    <Link to={to} className={`${base} ${variants[variant]} ${className}`}>
+    <Link to={to} className={`group ${base} ${variants[variant]} ${className}`}>
       {children}
       {icon && (
-        <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white/25">
-          <ArrowIcon className="size-3.5" />
+        <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-white/25">
+          <ArrowIcon className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-4" />
         </span>
       )}
     </Link>
@@ -57,10 +57,10 @@ export function TextLink({ to = '/', children, className = '' }) {
   return (
     <Link
       to={to}
-      className={`inline-flex items-center gap-2 text-sm font-semibold text-brown-deep transition-all hover:gap-3 ${className}`}
+      className={`group inline-flex items-center gap-2 text-sm font-semibold text-brown-deep ${className}`}
     >
       {children}
-      <ArrowIcon className="size-4" />
+      <ArrowIcon className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5" />
     </Link>
   )
 }
