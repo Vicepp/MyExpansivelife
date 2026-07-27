@@ -1,6 +1,4 @@
 import { zonedToUtc } from '../lib/eventTime'
-import realEstate from '../assets/design/webinar-promo.jpg'
-import financialHabits from '../assets/design/event-financial-habits.jpg'
 
 /**
  * `start` is Central wall-clock time, as printed on the banners.
@@ -32,7 +30,7 @@ const SOURCE = [
     role: 'Founder & CEO',
     start: '2026-07-27T17:00:00',
     durationMinutes: 60,
-    image: financialHabits,
+    publicImage: '/events/financial-habits.jpg',
   },
   {
     id: 'real-estate',
@@ -42,7 +40,7 @@ const SOURCE = [
     role: 'Founder & CEO',
     start: '2026-08-13T18:00:00',
     durationMinutes: 90,
-    image: realEstate,
+    publicImage: '/events/real-estate.jpg',
   },
 ]
 
