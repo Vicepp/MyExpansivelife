@@ -108,6 +108,9 @@ export const BLANK_EVENT = {
   start: '',
   durationMinutes: 60,
   image: '',
+  // 'embed' opens the provider widget in a popup; 'link' follows registerUrl.
+  registerMode: 'link',
+  embedCode: '',
   registerUrl: '/community',
   hidden: false,
 }
@@ -156,6 +159,8 @@ export async function duplicateEvent(event) {
     start,
     durationMinutes: event.durationMinutes ?? 60,
     image: event.image ?? event.publicImage ?? '',
+    registerMode: event.registerMode ?? 'link',
+    embedCode: event.embedCode ?? '',
     registerUrl: event.registerUrl ?? '/community',
     hidden: true,
   })

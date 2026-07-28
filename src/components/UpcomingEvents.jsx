@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Container, Button } from './primitives'
+import { Container } from './primitives'
 import Reveal from './Reveal'
+import useEventRegistration from '../hooks/useEventRegistration'
+import RegisterModal from './RegisterModal'
 import { listEvents, statusOf, nextEventIndex } from '../lib/events'
 import { breakdown, formatEventDate } from '../lib/eventTime'
 import logo from '../assets/design/logo.svg'
@@ -119,6 +121,7 @@ export default function UpcomingEvents() {
   const [index, setIndex] = useState(0)
   // Once the visitor navigates we stop re-selecting the next event for them.
   const browsing = useRef(false)
+  const { modalEvent, register, close } = useEventRegistration()
 
   useEffect(() => {
     let cancelled = false
@@ -183,14 +186,29 @@ export default function UpcomingEvents() {
                   {event.title}
                 </h3>
 
-                <Button
-                  variant="solid"
-                  to={event.registerUrl || '/community'}
-                  icon
-                  className="mt-6"
+                <button
+                  type="button"
+                  onClick={() => register(event)}
+                  className="group mt-6 inline-flex items-center gap-3 rounded-full bg-brown-deep px-7 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brown"
                 >
                   {status === 'past' ? 'Watch replay' : 'Register now'}
-                </Button>
+                  <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-white/25">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-4"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5 12h14m0 0-5.5-5.5M19 12l-5.5 5.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </div>
 
               {/*
@@ -267,6 +285,8 @@ export default function UpcomingEvents() {
           ))}
         </div>
       </Container>
+
+      {modalEvent && <RegisterModal event={modalEvent} onClose={close} />}
     </section>
   )
 }

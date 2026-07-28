@@ -85,17 +85,19 @@ export function Field({ label, hint, children, className = '' }) {
 export const inputClass =
   'w-full rounded-xl border border-forest-deep/15 bg-white px-3.5 py-2.5 text-[14px] text-forest-deep outline-none transition-colors placeholder:text-forest-deep/35 focus:border-forest-deep/45'
 
-export function Input(props) {
-  return <input className={inputClass} {...props} />
+// className is merged rather than spread over, so callers can add to the base
+// style without silently losing it.
+export function Input({ className = '', ...props }) {
+  return <input className={`${inputClass} ${className}`} {...props} />
 }
 
-export function Textarea(props) {
-  return <textarea className={`${inputClass} resize-y`} {...props} />
+export function Textarea({ className = '', ...props }) {
+  return <textarea className={`${inputClass} resize-y ${className}`} {...props} />
 }
 
-export function Select({ children, ...props }) {
+export function Select({ className = '', children, ...props }) {
   return (
-    <select className={inputClass} {...props}>
+    <select className={`${inputClass} ${className}`} {...props}>
       {children}
     </select>
   )

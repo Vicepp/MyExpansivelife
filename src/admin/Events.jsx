@@ -9,6 +9,7 @@ import {
   Select,
   SetupNotice,
   Spinner,
+  Textarea,
 } from './ui'
 import { IconPlus, IconTrash, IconCalendar } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
@@ -73,6 +74,8 @@ export default function Events() {
       start: event.start ?? '',
       durationMinutes: event.durationMinutes ?? 60,
       image: event.image ?? event.publicImage ?? '',
+      registerMode: event.registerMode ?? 'link',
+      embedCode: event.embedCode ?? '',
       registerUrl: event.registerUrl ?? '/community',
       hidden: event.hidden ?? false,
     })
@@ -257,9 +260,38 @@ export default function Events() {
               />
             </Field>
 
-            <Field label="Register link" hint="A site path like /community, or a full URL.">
-              <Input value={form.registerUrl} onChange={set('registerUrl')} />
+            <Field
+              label="Registration method"
+              hint="Popup keeps people on the site; link sends them away in a new tab."
+            >
+              <Select value={form.registerMode} onChange={set('registerMode')}>
+                <option value="link">Link — opens in a new tab</option>
+                <option value="embed">Popup — embedded booking form</option>
+              </Select>
             </Field>
+
+            {form.registerMode === 'embed' ? (
+              <Field
+                label="Embed code"
+                className="lg:col-span-2"
+                hint="Paste the provider's snippet, e.g. the ClickMeeting <script> tag. It runs inside the popup."
+              >
+                <Textarea
+                  rows={4}
+                  value={form.embedCode}
+                  onChange={set('embedCode')}
+                  placeholder='<script type="text/javascript" src="https://embed.clickmeeting.com/embed_conference.html?r=…"></script>'
+                  className="font-mono text-[12px]"
+                />
+              </Field>
+            ) : (
+              <Field
+                label="Register link"
+                hint="A site path like /community, or a full URL to open in a new tab."
+              >
+                <Input value={form.registerUrl} onChange={set('registerUrl')} />
+              </Field>
+            )}
 
             <Field label="Banner image" className="lg:col-span-2">
               <Input

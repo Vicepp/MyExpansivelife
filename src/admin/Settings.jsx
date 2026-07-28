@@ -2,29 +2,7 @@ import { useState } from 'react'
 import { Btn, Card, Field, Input, PageHead, Select, Textarea } from './ui'
 import { useAuth } from '../context/AuthContext'
 import { isFirebaseConfigured } from '../lib/firebase'
-import { isCloudinaryConfigured } from '../lib/cloudinary'
-import { CATEGORIES, canUploadImages } from '../lib/posts'
-
-function ServiceRow({ ok, name, detail, doc }) {
-  return (
-    <div className="flex items-start gap-3 rounded-xl border border-forest-deep/10 p-4">
-      <span
-        className={`mt-1.5 size-2.5 shrink-0 rounded-full ${
-          ok ? 'bg-emerald-500' : 'bg-amber-500'
-        }`}
-      />
-      <div className="min-w-0">
-        <p className="text-[14px] font-semibold text-forest-deep">{name}</p>
-        <p className="mt-0.5 text-[12.5px] text-forest-deep/55">{detail}</p>
-        {!ok && (
-          <p className="mt-1 text-[12px] text-forest-deep/45">
-            Setup: <code className="rounded bg-cream px-1.5 py-0.5">{doc}</code>
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
+import { CATEGORIES } from '../lib/posts'
 
 const SITE_KEY = 'mxl.site-settings'
 
@@ -162,44 +140,11 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Connected services</h2>
-
-          <div className="space-y-3">
-            <ServiceRow
-              ok={isFirebaseConfigured}
-              name={isFirebaseConfigured ? 'Firebase connected' : 'Firebase not connected'}
-              detail={
-                isFirebaseConfigured
-                  ? `Posts, sign-in — project ${import.meta.env.VITE_FIREBASE_PROJECT_ID}`
-                  : 'Running on sample data. Nothing you change is saved.'
-              }
-              doc="docs/FIREBASE.md"
-            />
-            <ServiceRow
-              ok={isCloudinaryConfigured}
-              name={
-                isCloudinaryConfigured
-                  ? 'Cloudinary connected'
-                  : 'Cloudinary not connected'
-              }
-              detail={
-                isCloudinaryConfigured
-                  ? `Images — cloud ${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}`
-                  : canUploadImages
-                    ? 'Falling back to Firebase Storage for uploads.'
-                    : 'Image uploads are unavailable. Paste image URLs instead.'
-              }
-              doc="docs/CLOUDINARY.md"
-            />
-          </div>
-
-          <p className="mt-4 text-[13px] leading-relaxed text-forest-deep/60">
-            Credentials go in <code className="rounded bg-cream px-1.5 py-0.5">.env</code> locally, and in
-            your hosting provider’s environment variables for the live site.
-            Redeploy after changing them.
+          <h2 className="mb-2 text-[16px] font-bold text-forest-deep">Account</h2>
+          <p className="text-[13px] text-forest-deep/60">
+            Signed in as {user?.email ?? 'unknown'}.
           </p>
-
-          <Btn variant="danger" className="mt-6" onClick={signOut}>
+          <Btn variant="danger" className="mt-5" onClick={signOut}>
             Sign out
           </Btn>
         </Card>

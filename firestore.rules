@@ -54,6 +54,15 @@ service cloud.firestore {
       allow write: if signedIn();
     }
 
+    // Daily counter documents. Visitors must be able to increment them, so
+    // writes are open — but only to documents keyed by date, and reading the
+    // figures stays admin-only.
+    match /analytics/{day} {
+      allow read: if signedIn();
+      allow create, update: if day.matches('^\\d{4}-\\d{2}-\\d{2}$');
+      allow delete: if signedIn();
+    }
+
     match /settings/{docId} {
       allow read: if true;
       allow write: if signedIn();
