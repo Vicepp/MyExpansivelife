@@ -2,8 +2,8 @@
 
 Marketing site and blog CMS for My Expansive Life, built from the MXL Figma board.
 
-**Stack:** React 19 + Vite 8, React Router 7, Tailwind CSS v4, Firebase (Auth,
-Firestore, Storage), TipTap rich text editor.
+**Stack:** React 19 + Vite 8, React Router 7, Tailwind CSS v4, Firebase (Auth +
+Firestore), Cloudinary (images), TipTap rich text editor.
 
 ## Running locally
 
@@ -42,11 +42,22 @@ at `/admin/login` with a Firebase Auth account.
 | `/admin/earning` | Revenue |
 | `/admin/settings` | Profile and site settings |
 
-See [docs/FIREBASE.md](docs/FIREBASE.md) for database setup — it walks through
-creating the project, enabling Auth and Firestore, and filling in `.env`.
+### Services
 
-Without Firebase configured the public site still runs: the blog falls back to
-sample posts and the admin panel shows a setup notice instead of failing.
+| Service | Handles | Setup |
+| --- | --- | --- |
+| Firebase Auth | Admin sign-in (email/password, Google, Outlook) | [docs/FIREBASE.md](docs/FIREBASE.md) |
+| Firebase Firestore | Posts, views, likes, inbox messages | [docs/FIREBASE.md](docs/FIREBASE.md) |
+| Cloudinary | Article and cover images | [docs/CLOUDINARY.md](docs/CLOUDINARY.md) |
+
+Both have free tiers that comfortably cover a new blog, and no card is needed
+for either.
+
+Set `VITE_ADMIN_EMAILS` to a comma-separated allowlist — without it, anyone who
+finds `/admin/login` can create an account.
+
+Neither service is required to run the project: the blog falls back to sample
+posts and the admin panel opens in preview mode instead of failing.
 
 ## Deploying
 

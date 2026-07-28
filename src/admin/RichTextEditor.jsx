@@ -14,8 +14,7 @@ import { Table } from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
-import { uploadImage } from '../lib/posts'
-import { isFirebaseConfigured } from '../lib/firebase'
+import { uploadImage, canUploadImages } from '../lib/posts'
 
 const COLORS = ['#232b4a', '#87492c', '#b3803f', '#183734', '#40b487', '#c0392b']
 
@@ -44,6 +43,7 @@ function Tool({ onClick, active, disabled, title, children }) {
 export default function RichTextEditor({ value, onChange }) {
   const fileInput = useRef(null)
   const [uploading, setUploading] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [error, setError] = useState('')
 
   const editor = useEditor({
@@ -75,22 +75,24 @@ export default function RichTextEditor({ value, onChange }) {
       event.target.value = ''
       if (!file || !editor) return
 
-      if (!isFirebaseConfigured) {
+      if (!canUploadImages) {
         setError(
-          'Image upload needs Firebase Storage. Connect Firebase, or use “Image URL” to link an image that is already online.',
+          'No image host is configured yet. Add Cloudinary to .env (see docs/CLOUDINARY.md), or use “Image URL” to link an image that is already online.',
         )
         return
       }
 
       setError('')
+      setProgress(0)
       setUploading(true)
       try {
-        const url = await uploadImage(file)
+        const url = await uploadImage(file, setProgress)
         editor.chain().focus().setImage({ src: url, alt: file.name }).run()
       } catch (err) {
         setError(err.message ?? 'Upload failed.')
       } finally {
         setUploading(false)
+        setProgress(0)
       }
     },
     [editor],
@@ -260,11 +262,11 @@ export default function RichTextEditor({ value, onChange }) {
         <Divider />
 
         <Tool
-          title={uploading ? 'Uploading…' : 'Upload image'}
+          title={uploading ? `Uploading ${progress}%` : 'Upload image'}
           disabled={uploading}
           onClick={() => fileInput.current?.click()}
         >
-          {uploading ? '…' : '🖼'}
+          {uploading ? `${progress}%` : '🖼'}
         </Tool>
         <Tool
           title="Image from URL"

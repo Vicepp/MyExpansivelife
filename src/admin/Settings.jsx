@@ -2,7 +2,29 @@ import { useState } from 'react'
 import { Btn, Card, Field, Input, PageHead, Select, Textarea } from './ui'
 import { useAuth } from '../context/AuthContext'
 import { isFirebaseConfigured } from '../lib/firebase'
-import { CATEGORIES } from '../lib/posts'
+import { isCloudinaryConfigured } from '../lib/cloudinary'
+import { CATEGORIES, canUploadImages } from '../lib/posts'
+
+function ServiceRow({ ok, name, detail, doc }) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-navy/10 p-4">
+      <span
+        className={`mt-1.5 size-2.5 shrink-0 rounded-full ${
+          ok ? 'bg-emerald-500' : 'bg-amber-500'
+        }`}
+      />
+      <div className="min-w-0">
+        <p className="text-[14px] font-semibold text-navy">{name}</p>
+        <p className="mt-0.5 text-[12.5px] text-navy/55">{detail}</p>
+        {!ok && (
+          <p className="mt-1 text-[12px] text-navy/45">
+            Setup: <code className="rounded bg-admin-bg px-1.5 py-0.5">{doc}</code>
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 const SITE_KEY = 'mxl.site-settings'
 
@@ -140,29 +162,41 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Database</h2>
-          <div className="flex items-center gap-3 rounded-xl border border-navy/10 p-4">
-            <span
-              className={`size-2.5 shrink-0 rounded-full ${
-                isFirebaseConfigured ? 'bg-emerald-500' : 'bg-amber-500'
-              }`}
+          <h2 className="mb-5 text-[16px] font-bold text-navy">Connected services</h2>
+
+          <div className="space-y-3">
+            <ServiceRow
+              ok={isFirebaseConfigured}
+              name={isFirebaseConfigured ? 'Firebase connected' : 'Firebase not connected'}
+              detail={
+                isFirebaseConfigured
+                  ? `Posts, sign-in — project ${import.meta.env.VITE_FIREBASE_PROJECT_ID}`
+                  : 'Running on sample data. Nothing you change is saved.'
+              }
+              doc="docs/FIREBASE.md"
             />
-            <div>
-              <p className="text-[14px] font-semibold text-navy">
-                {isFirebaseConfigured ? 'Firebase connected' : 'Firebase not connected'}
-              </p>
-              <p className="mt-0.5 text-[12.5px] text-navy/55">
-                {isFirebaseConfigured
-                  ? `Project ${import.meta.env.VITE_FIREBASE_PROJECT_ID}`
-                  : 'Running on sample data. Nothing you change is saved.'}
-              </p>
-            </div>
+            <ServiceRow
+              ok={isCloudinaryConfigured}
+              name={
+                isCloudinaryConfigured
+                  ? 'Cloudinary connected'
+                  : 'Cloudinary not connected'
+              }
+              detail={
+                isCloudinaryConfigured
+                  ? `Images — cloud ${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}`
+                  : canUploadImages
+                    ? 'Falling back to Firebase Storage for uploads.'
+                    : 'Image uploads are unavailable. Paste image URLs instead.'
+              }
+              doc="docs/CLOUDINARY.md"
+            />
           </div>
 
           <p className="mt-4 text-[13px] leading-relaxed text-navy/60">
-            Setup instructions live in <code className="rounded bg-admin-bg px-1.5 py-0.5">docs/FIREBASE.md</code>.
             Credentials go in <code className="rounded bg-admin-bg px-1.5 py-0.5">.env</code> locally, and in
             your hosting provider’s environment variables for the live site.
+            Redeploy after changing them.
           </p>
 
           <Btn variant="danger" className="mt-6" onClick={signOut}>

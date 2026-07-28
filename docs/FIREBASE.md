@@ -32,12 +32,16 @@ far more traffic than a new blog will see.
 There is no public sign-up anywhere in the app — accounts only ever get created
 here in the console. That is what keeps the panel private.
 
-## 4. Create the database and storage
+## 4. Create the database
 
 1. **Build → Firestore Database → Create database**.
    - Start in **production mode** (the rules in this repo replace the defaults).
    - Pick the region closest to your readers. **This cannot be changed later.**
-2. **Build → Storage → Get started**, same region.
+
+> **Storage is optional.** Images go to Cloudinary — see
+> [CLOUDINARY.md](./CLOUDINARY.md). Enable Firebase Storage only if you would
+> rather host images here; the app falls back to it automatically when
+> Cloudinary is not configured.
 
 ## 5. Fill in your credentials
 

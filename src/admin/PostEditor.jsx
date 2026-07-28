@@ -13,10 +13,10 @@ import {
 } from './ui'
 import { IconTrash, IconExternal } from './icons'
 import { useAuth } from '../context/AuthContext'
-import { isFirebaseConfigured } from '../lib/firebase'
 import {
   CATEGORIES,
   STATUSES,
+  canUploadImages,
   createPost,
   deletePost,
   getPost,
@@ -50,6 +50,7 @@ export default function PostEditor() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [slugTouched, setSlugTouched] = useState(false)
+  const [coverProgress, setCoverProgress] = useState(0)
   const coverInput = useRef(null)
 
   useEffect(() => {
@@ -90,16 +91,21 @@ export default function PostEditor() {
     const file = event.target.files?.[0]
     event.target.value = ''
     if (!file) return
-    if (!isFirebaseConfigured) {
-      setError('Cover upload needs Firebase Storage. Paste an image URL instead.')
+    if (!canUploadImages) {
+      setError(
+        'No image host configured yet. Add Cloudinary to .env (see docs/CLOUDINARY.md), or paste an image URL instead.',
+      )
       return
     }
     try {
       setError('')
-      const url = await uploadImage(file)
+      setCoverProgress(1)
+      const url = await uploadImage(file, setCoverProgress)
       setForm((f) => ({ ...f, coverImage: url }))
     } catch (e) {
       setError(e.message)
+    } finally {
+      setCoverProgress(0)
     }
   }
 
@@ -283,9 +289,10 @@ export default function PostEditor() {
               <Btn
                 variant="ghost"
                 className="flex-1"
+                disabled={coverProgress > 0}
                 onClick={() => coverInput.current?.click()}
               >
-                Upload
+                {coverProgress > 0 ? `Uploading ${coverProgress}%` : 'Upload'}
               </Btn>
               {form.coverImage && (
                 <Btn

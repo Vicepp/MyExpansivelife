@@ -16,6 +16,7 @@ import {
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage, isFirebaseConfigured } from './firebase'
+import { isCloudinaryConfigured, uploadToCloudinary } from './cloudinary'
 
 export const POSTS = 'posts'
 
@@ -230,14 +231,29 @@ export async function toggleLike(id, delta = 1) {
   }
 }
 
-export async function uploadImage(file) {
-  assertConfigured()
-  const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-')
-  const path = `posts/${Date.now()}-${safe}`
-  const fileRef = ref(storage, path)
-  await uploadBytes(fileRef, file)
-  return getDownloadURL(fileRef)
+/**
+ * Cloudinary is the image host. Firebase Storage stays as a fallback for
+ * projects already using it, so neither service is mandatory.
+ */
+export async function uploadImage(file, onProgress) {
+  if (isCloudinaryConfigured) {
+    return uploadToCloudinary(file, onProgress)
+  }
+
+  if (isFirebaseConfigured) {
+    const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-')
+    const fileRef = ref(storage, `posts/${Date.now()}-${safe}`)
+    await uploadBytes(fileRef, file)
+    return getDownloadURL(fileRef)
+  }
+
+  throw new Error(
+    'No image host configured. Add your Cloudinary details to .env — see docs/CLOUDINARY.md.',
+  )
 }
+
+/** True when an image can actually be uploaded from the browser right now. */
+export const canUploadImages = isCloudinaryConfigured || isFirebaseConfigured
 
 /* ------------------------------------------------------------------ */
 /* Aggregates for the dashboard                                        */
