@@ -23,6 +23,7 @@ const Posts = lazy(() => import('./admin/Posts'))
 const PostEditor = lazy(() => import('./admin/PostEditor'))
 const Events = lazy(() => import('./admin/Events'))
 const Analytics = lazy(() => import('./admin/Analytics'))
+const PageAnalytics = lazy(() => import('./admin/PageAnalytics'))
 const Inbox = lazy(() => import('./admin/Inbox'))
 const PostPlan = lazy(() => import('./admin/PostPlan'))
 const Earning = lazy(() => import('./admin/Earning'))
@@ -84,6 +85,7 @@ function App() {
           <Route path="posts/:id/edit" element={<PostEditor />} />
           <Route path="events" element={<Events />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="page-analytics" element={<PageAnalytics />} />
           <Route path="inbox" element={<Inbox />} />
           <Route path="post-plan" element={<PostPlan />} />
           <Route path="earning" element={<Earning />} />

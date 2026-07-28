@@ -16,6 +16,7 @@ import {
   IconChat,
   IconLogout,
   IconExternal,
+  IconEye,
 } from './icons'
 import logo from '../assets/design/logo.svg'
 
@@ -24,6 +25,7 @@ const NAV = [
   { to: '/admin/posts', label: 'My Articles', Icon: IconDoc },
   { to: '/admin/events', label: 'Events', Icon: IconCalendar },
   { to: '/admin/analytics', label: 'Analytics', Icon: IconChart },
+  { to: '/admin/page-analytics', label: 'Page analytics', Icon: IconEye },
   { to: '/admin/inbox', label: 'Inbox', Icon: IconInbox },
   { to: '/admin/post-plan', label: 'Post Plan', Icon: IconCalendar },
   { to: '/admin/earning', label: 'Earning', Icon: IconMoney },
