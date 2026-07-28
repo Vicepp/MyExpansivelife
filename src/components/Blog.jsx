@@ -2,18 +2,26 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, TextLink } from './primitives'
 import Reveal from './Reveal'
-import { listPosts, formatDate } from '../lib/posts'
+import { listLive, formatDate } from '../lib/posts'
 import articleFallback from '../assets/design/article-img.jpg'
 
 export default function Blog({ count = 3, showIntro = true }) {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     let cancelled = false
-    listPosts({ status: 'published', max: count })
+    listLive({ max: count })
       .then((rows) => !cancelled && setPosts(rows))
-      .catch(() => !cancelled && setPosts([]))
+      .catch((e) => {
+        if (cancelled) return
+        // Surfaced rather than swallowed: an empty blog caused by a permissions
+        // or index problem should say so, not look like there is no content.
+        console.error('Could not load posts:', e)
+        setError(e.message ?? 'Could not load posts.')
+        setPosts([])
+      })
       .finally(() => !cancelled && setLoading(false))
     return () => {
       cancelled = true
@@ -48,6 +56,19 @@ export default function Blog({ count = 3, showIntro = true }) {
                 className="h-[380px] animate-pulse rounded-2xl border border-ink/10 bg-cream-card"
               />
             ))}
+          </div>
+        ) : error ? (
+          <div className="mt-14 rounded-2xl border border-amber-300 bg-amber-50 px-6 py-8 text-center">
+            <p className="text-[15px] font-semibold text-amber-900">
+              Articles couldn’t be loaded
+            </p>
+            <p className="mx-auto mt-2 max-w-[520px] text-[13.5px] leading-relaxed text-amber-900/80">
+              {error}
+            </p>
+            <p className="mx-auto mt-3 max-w-[520px] text-[12.5px] text-amber-900/70">
+              Check the browser console for the full error. If it mentions
+              permissions, publish the rules from <code>firestore.rules</code>.
+            </p>
           </div>
         ) : posts.length === 0 ? (
           <p className="mt-14 rounded-2xl border border-dashed border-ink/15 px-6 py-14 text-center text-[15px] text-ink/60">

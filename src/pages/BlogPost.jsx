@@ -6,7 +6,7 @@ import Testimonials from '../components/Testimonials'
 import { Newsletter } from '../components/Footer'
 import {
   getPostBySlug,
-  listPosts,
+  listLive,
   formatDate,
   recordView,
   toggleLike,
@@ -40,9 +40,9 @@ export default function BlogPost() {
       .catch(() => !cancelled && setPost(null))
       .finally(() => !cancelled && setLoading(false))
 
-    listPosts({ status: 'published', max: 4 })
+    listLive({ max: 4 })
       .then((rows) => !cancelled && setMore(rows.filter((p) => p.slug !== slug).slice(0, 3)))
-      .catch(() => {})
+      .catch((e) => console.error('Could not load related posts:', e))
 
     return () => {
       cancelled = true

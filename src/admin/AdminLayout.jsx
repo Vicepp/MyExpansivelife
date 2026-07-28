@@ -1,7 +1,8 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Spinner } from './ui'
+import { publishDueScheduled } from '../lib/posts'
 import {
   IconGrid,
   IconDoc,
@@ -80,6 +81,14 @@ export default function AdminLayout() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [justPublished, setJustPublished] = useState(0)
+
+  // Anything scheduled for a moment that has now passed goes live here.
+  useEffect(() => {
+    publishDueScheduled()
+      .then((n) => n > 0 && setJustPublished(n))
+      .catch((e) => console.error('Could not publish due posts:', e))
+  }, [])
 
   const name = user?.displayName || user?.email?.split('@')[0] || 'Admin'
 
@@ -171,6 +180,13 @@ export default function AdminLayout() {
           </header>
 
           <main className="min-w-0 flex-1 overflow-x-hidden bg-cream p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
+            {justPublished > 0 && (
+              <p className="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-[13.5px] text-emerald-800">
+                {justPublished} scheduled{' '}
+                {justPublished === 1 ? 'post was' : 'posts were'} due and{' '}
+                {justPublished === 1 ? 'has' : 'have'} just gone live.
+              </p>
+            )}
             <Suspense fallback={<Spinner label="Loading…" />}>
               <Outlet />
             </Suspense>

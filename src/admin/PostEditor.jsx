@@ -25,7 +25,9 @@ import {
   uploadImage,
   excerptFrom,
   readingMinutes,
+  toLocalInput,
 } from '../lib/posts'
+import { useSearchParams } from 'react-router-dom'
 
 const BLANK = {
   title: '',
@@ -36,6 +38,15 @@ const BLANK = {
   coverImage: '',
   tags: '',
   content: '',
+  publishAt: '',
+}
+
+/** Default a new schedule to 9am tomorrow rather than an empty field. */
+function tomorrowMorning() {
+  const d = new Date()
+  d.setDate(d.getDate() + 1)
+  d.setHours(9, 0, 0, 0)
+  return toLocalInput(d)
 }
 
 export default function PostEditor() {
@@ -52,9 +63,19 @@ export default function PostEditor() {
   const [slugTouched, setSlugTouched] = useState(false)
   const [coverProgress, setCoverProgress] = useState(0)
   const coverInput = useRef(null)
+  const [params] = useSearchParams()
 
   useEffect(() => {
-    if (isNew) return
+    if (isNew) {
+      // The Post Plan calendar links here with ?date=YYYY-MM-DD to schedule a
+      // post on the day that was clicked.
+      const day = params.get('date')
+      if (day) {
+        setForm((f) => ({ ...f, status: 'scheduled', publishAt: `${day}T09:00` }))
+      }
+      return
+    }
+
     let cancelled = false
     getPost(id)
       .then((post) => {
@@ -66,6 +87,7 @@ export default function PostEditor() {
             ...BLANK,
             ...post,
             tags: Array.isArray(post.tags) ? post.tags.join(', ') : '',
+            publishAt: toLocalInput(post.publishAt),
           })
           setSlugTouched(true)
         }
@@ -75,7 +97,7 @@ export default function PostEditor() {
     return () => {
       cancelled = true
     }
-  }, [id, isNew])
+  }, [id, isNew, params])
 
   const set = (key) => (e) => {
     const value = e?.target ? e.target.value : e
@@ -84,6 +106,10 @@ export default function PostEditor() {
       [key]: value,
       // Keep the slug tracking the title until it is edited by hand.
       ...(key === 'title' && !slugTouched ? { slug: slugify(value) } : {}),
+      // Choosing "scheduled" with no date yet gets a sensible default.
+      ...(key === 'status' && value === 'scheduled' && !f.publishAt
+        ? { publishAt: tomorrowMorning() }
+        : {}),
     }))
   }
 
@@ -118,6 +144,11 @@ export default function PostEditor() {
       return
     }
 
+    if (status === 'scheduled' && !form.publishAt) {
+      setError('Pick a date and time for this post to go live.')
+      return
+    }
+
     const payload = {
       title: form.title.trim(),
       slug: (form.slug || slugify(form.title)).trim(),
@@ -135,18 +166,26 @@ export default function PostEditor() {
         uid: user?.uid ?? 'unknown',
       },
       publishedAt: form.publishedAt ?? null,
+      publishAt: form.publishAt || null,
     }
+
+    const done =
+      status === 'published'
+        ? 'Published — it is live on the blog now.'
+        : status === 'scheduled'
+          ? `Scheduled for ${new Date(form.publishAt).toLocaleString()}.`
+          : 'Draft saved.'
 
     setSaving(true)
     try {
       if (isNew) {
         const newId = await createPost(payload)
         navigate(`/admin/posts/${newId}/edit`, { replace: true })
-        setMessage(status === 'published' ? 'Published.' : 'Draft saved.')
+        setMessage(done)
       } else {
         await updatePost(id, payload)
         setForm((f) => ({ ...f, status }))
-        setMessage(status === 'published' ? 'Published.' : 'Saved.')
+        setMessage(done)
       }
     } catch (e) {
       setError(e.message)
@@ -189,8 +228,13 @@ export default function PostEditor() {
         <Btn variant="ghost" disabled={saving} onClick={() => save('draft')}>
           Save draft
         </Btn>
+        {form.status === 'scheduled' && (
+          <Btn variant="ghost" disabled={saving} onClick={() => save('scheduled')}>
+            Save schedule
+          </Btn>
+        )}
         <Btn variant="gold" disabled={saving} onClick={() => save('published')}>
-          {saving ? 'Saving…' : 'Publish'}
+          {saving ? 'Saving…' : 'Publish now'}
         </Btn>
       </div>
 
@@ -233,6 +277,20 @@ export default function PostEditor() {
                   ))}
                 </Select>
               </Field>
+
+              {form.status === 'scheduled' && (
+                <Field
+                  label="Publish on"
+                  hint="Goes live by itself at this time, in your timezone. It shows on the Post Plan calendar until then."
+                >
+                  <Input
+                    type="datetime-local"
+                    value={form.publishAt}
+                    min={toLocalInput(new Date())}
+                    onChange={set('publishAt')}
+                  />
+                </Field>
+              )}
 
               <Field label="Category">
                 <Select value={form.category} onChange={set('category')}>

@@ -17,13 +17,18 @@ service cloud.firestore {
     }
 
     match /posts/{postId} {
-      // Drafts stay private; published posts are public.
+      // Only published posts are public. Drafts and scheduled posts stay
+      // private until the admin panel flips them to published.
+      //
+      // Kept as a plain equality on purpose: Firestore rejects an entire query
+      // unless it can prove every document it returns is readable, so a
+      // time-based condition here would break the public listing.
       allow get, list: if signedIn() || resource.data.status == 'published';
 
       allow create, delete: if signedIn();
 
       // Signed-in admins can edit freely. Visitors may only bump view/like
-      // counters on a post that is already published.
+      // counters, and only on a post that is already published.
       allow update: if signedIn()
         || (resource.data.status == 'published' && onlyCounters());
     }

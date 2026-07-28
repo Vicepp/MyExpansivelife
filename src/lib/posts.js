@@ -123,10 +123,39 @@ function fromDoc(snapshot) {
     createdAt: toDate(data.createdAt),
     updatedAt: toDate(data.updatedAt),
     publishedAt: toDate(data.publishedAt),
+    publishAt: toDate(data.publishAt),
   }
 }
 
-/** All posts, newest first. `status` narrows to one workflow state. */
+/** The moment a post is meant to go live. */
+export function goLiveAt(post) {
+  return post.publishAt ?? post.publishedAt ?? post.createdAt ?? null
+}
+
+/**
+ * Is this post visible to the public right now?
+ *
+ * `scheduled` becomes live on its own once publishAt passes, so nothing has to
+ * run on a server to flip it.
+ */
+export function isLive(post, now = Date.now()) {
+  if (post.status === 'published') return true
+  if (post.status !== 'scheduled') return false
+  const at = post.publishAt
+  return at ? at.getTime() <= now : false
+}
+
+function sortNewestFirst(rows) {
+  return rows.sort((a, b) => (goLiveAt(b)?.getTime() ?? 0) - (goLiveAt(a)?.getTime() ?? 0))
+}
+
+/**
+ * All posts, newest first.
+ *
+ * Deliberately never combines `where` with `orderBy` — that needs a composite
+ * index, and a missing one throws at runtime. Single-field indexes are created
+ * by Firestore automatically, so filtering is done here and sorting in JS.
+ */
 export async function listPosts({ status, max } = {}) {
   if (!isFirebaseConfigured) {
     let rows = [...SAMPLE_POSTS]
@@ -134,13 +163,67 @@ export async function listPosts({ status, max } = {}) {
     return max ? rows.slice(0, max) : rows
   }
 
-  const clauses = []
-  if (status) clauses.push(where('status', '==', status))
-  clauses.push(orderBy('createdAt', 'desc'))
-  if (max) clauses.push(fbLimit(max))
+  const snap = status
+    ? await getDocs(query(collection(db, POSTS), where('status', '==', status)))
+    : await getDocs(query(collection(db, POSTS), orderBy('createdAt', 'desc')))
 
-  const snap = await getDocs(query(collection(db, POSTS), ...clauses))
-  return snap.docs.map(fromDoc)
+  const rows = sortNewestFirst(snap.docs.map(fromDoc))
+  return max ? rows.slice(0, max) : rows
+}
+
+/**
+ * What the public blog shows.
+ *
+ * Only `published` — the security rules cannot express "scheduled and due"
+ * without breaking the query, so due posts are flipped to published by
+ * publishDueScheduled() instead. Errors are thrown, not swallowed, so the page
+ * can explain why it is empty rather than looking like there is no content.
+ */
+export async function listLive({ max } = {}) {
+  if (!isFirebaseConfigured) {
+    const rows = SAMPLE_POSTS.filter((p) => p.status === 'published')
+    return max ? rows.slice(0, max) : rows
+  }
+
+  const snap = await getDocs(
+    query(collection(db, POSTS), where('status', '==', 'published')),
+  )
+
+  const rows = sortNewestFirst(snap.docs.map(fromDoc))
+  return max ? rows.slice(0, max) : rows
+}
+
+/**
+ * Publishes any scheduled post whose time has passed.
+ *
+ * Runs when an admin opens the panel. A true cron would need Cloud Functions
+ * (paid tier), so this is the free equivalent: posts go live on their date as
+ * long as the panel is opened at some point after it.
+ * Returns the number published.
+ */
+export async function publishDueScheduled() {
+  if (!isFirebaseConfigured) return 0
+
+  const snap = await getDocs(
+    query(collection(db, POSTS), where('status', '==', 'scheduled')),
+  )
+
+  const now = Date.now()
+  const due = snap.docs
+    .map(fromDoc)
+    .filter((p) => p.publishAt && p.publishAt.getTime() <= now)
+
+  await Promise.all(
+    due.map((p) =>
+      updateDoc(doc(db, POSTS, p.id), {
+        status: 'published',
+        publishedAt: p.publishAt,
+        updatedAt: serverTimestamp(),
+      }),
+    ),
+  )
+
+  return due.length
 }
 
 export async function getPost(id) {
@@ -173,31 +256,37 @@ function assertConfigured() {
   }
 }
 
-export async function createPost(data) {
-  assertConfigured()
-  const now = serverTimestamp()
-  const payload = {
+/** Shared field shaping for create and update. */
+function shape(data) {
+  return {
     ...data,
     slug: data.slug || slugify(data.title),
     excerpt: data.excerpt || excerptFrom(data.content),
     readMinutes: readingMinutes(data.content),
+    // Scheduling only means anything for scheduled posts.
+    publishAt:
+      data.status === 'scheduled' && data.publishAt ? new Date(data.publishAt) : null,
+  }
+}
+
+export async function createPost(data) {
+  assertConfigured()
+  const now = serverTimestamp()
+  const created = await addDoc(collection(db, POSTS), {
+    ...shape(data),
     views: 0,
     likes: 0,
     createdAt: now,
     updatedAt: now,
     publishedAt: data.status === 'published' ? now : null,
-  }
-  const created = await addDoc(collection(db, POSTS), payload)
+  })
   return created.id
 }
 
 export async function updatePost(id, data) {
   assertConfigured()
   const payload = {
-    ...data,
-    slug: data.slug || slugify(data.title),
-    excerpt: data.excerpt || excerptFrom(data.content),
-    readMinutes: readingMinutes(data.content),
+    ...shape(data),
     updatedAt: serverTimestamp(),
   }
   // Stamp the publish date the first time a post actually goes live.
@@ -205,6 +294,14 @@ export async function updatePost(id, data) {
     payload.publishedAt = serverTimestamp()
   }
   await updateDoc(doc(db, POSTS, id), payload)
+}
+
+/** Formats a Date for a datetime-local input, in the browser's timezone. */
+export function toLocalInput(date) {
+  const d = toDate(date)
+  if (!d) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 export async function deletePost(id) {

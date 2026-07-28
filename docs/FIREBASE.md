@@ -130,18 +130,36 @@ Affiliate form submissions: `name`, `email`, `phone`, `subject`, `body`,
 
 ---
 
-## Recommended index
+## Indexes
 
-Firestore serves single-field queries automatically. The blog index filters by
-`status` **and** orders by `createdAt`, which needs a composite index.
+**None needed.** Queries deliberately never combine `where` with `orderBy`,
+because that requires a composite index and throws until one is built. Filtering
+happens in the query (single-field indexes are automatic) and sorting happens in
+JavaScript.
 
-The first time that query runs, Firebase logs an error in the browser console
-containing a **direct link** — click it and press **Create index**. Takes about a
-minute. Or add it up front under **Firestore → Indexes → Composite**:
+If you add a query later that does combine them, Firestore logs an error with a
+**direct link** to create the index — click it and press **Create index**.
 
-- Collection: `posts`
-- Fields: `status` (Ascending), `createdAt` (Descending)
-- Query scope: Collection
+## How scheduling works
+
+Set a post's status to **Scheduled** and pick a date and time. It appears on the
+Post Plan calendar in amber, and stays invisible to the public.
+
+When an admin next opens the panel, any scheduled post whose time has passed is
+flipped to **published** automatically.
+
+> **The catch:** publishing is triggered by the admin panel being opened, not by
+> a timer. A post scheduled for 9am Monday goes live the first time someone
+> opens `/admin` after 9am Monday — not at 9am exactly.
+>
+> Firestore security rules cannot express "published, or scheduled and due"
+> without breaking the public listing query, and a true timer needs Cloud
+> Functions, which require the paid Blaze plan.
+>
+> For to-the-minute publishing on a free plan, add a **Netlify scheduled
+> function** that runs the same flip server-side with the Firebase Admin SDK.
+> Until then, opening the panel once a day is enough for most publishing
+> schedules.
 
 ## Costs
 

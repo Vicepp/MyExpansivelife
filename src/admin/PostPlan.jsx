@@ -3,9 +3,15 @@ import { Link } from 'react-router-dom'
 import { Btn, Card, PageHead, SetupNotice, Spinner, StatusPill } from './ui'
 import { IconPlus } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
-import { formatDate, listPosts } from '../lib/posts'
+import { formatDate, goLiveAt, listPosts } from '../lib/posts'
 
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'gold']
+/** YYYY-MM-DD in local time, for the ?date= link into the editor. */
+function isoDay(date) {
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 /** Monday-first grid covering the whole month. */
 function monthGrid(cursor) {
@@ -34,10 +40,12 @@ export default function PostPlan() {
 
   const days = useMemo(() => monthGrid(cursor), [cursor])
 
+  // Scheduled posts sit on the day they are due to go live, not the day they
+  // were written.
   const byDay = useMemo(() => {
     const map = new Map()
     for (const post of posts) {
-      const date = post.publishedAt ?? post.createdAt
+      const date = goLiveAt(post)
       if (!date) continue
       const key = date.toDateString()
       map.set(key, [...(map.get(key) ?? []), post])
@@ -127,26 +135,37 @@ export default function PostPlan() {
               return (
                 <div
                   key={date.toISOString()}
-                  className={`min-h-[92px] rounded-xl border p-2 ${
+                  className={`group min-h-[92px] rounded-xl border p-2 ${
                     isToday
                       ? 'border-forest-deep bg-forest-deep/5'
                       : 'border-forest-deep/10 ' + (inMonth ? 'bg-white' : 'bg-cream')
                   }`}
                 >
-                  <span
-                    className={`text-[12px] font-semibold ${
-                      inMonth ? 'text-forest-deep/70' : 'text-forest-deep/25'
-                    }`}
-                  >
-                    {date.getDate()}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-[12px] font-semibold ${
+                        inMonth ? 'text-forest-deep/70' : 'text-forest-deep/25'
+                      }`}
+                    >
+                      {date.getDate()}
+                    </span>
+                    {/* Click an empty day to start a post scheduled for it. */}
+                    <Link
+                      to={`/admin/posts/new?date=${isoDay(date)}`}
+                      title={`Schedule a post for ${formatDate(date)}`}
+                      aria-label={`Schedule a post for ${formatDate(date)}`}
+                      className="grid size-5 place-items-center rounded-md text-[13px] font-bold text-forest-deep/30 opacity-0 transition hover:bg-forest-deep hover:text-white focus:opacity-100 group-hover:opacity-100"
+                    >
+                      +
+                    </Link>
+                  </div>
 
                   <div className="mt-1 space-y-1">
                     {items.slice(0, 2).map((post) => (
                       <Link
                         key={post.id}
                         to={`/admin/posts/${post.id}/edit`}
-                        title={post.title}
+                        title={`${post.title} — ${post.status}`}
                         className={`block truncate rounded-md px-1.5 py-1 text-[10.5px] font-medium ${
                           post.status === 'published'
                             ? 'bg-emerald-100 text-emerald-800'
@@ -155,6 +174,9 @@ export default function PostPlan() {
                               : 'bg-gold-tint text-forest-deep'
                         }`}
                       >
+                        {post.status === 'scheduled' && goLiveAt(post)
+                          ? `${goLiveAt(post).getHours()}:${String(goLiveAt(post).getMinutes()).padStart(2, '0')} `
+                          : ''}
                         {post.title}
                       </Link>
                     ))}
