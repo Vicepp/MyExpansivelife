@@ -94,32 +94,42 @@ export default function EventBar() {
   return (
     <>
       {/* Keeps the end of the footer clear of the fixed bar. */}
-      <div aria-hidden="true" className="h-[100px] sm:h-[76px]" />
+      <div aria-hidden="true" className="h-[74px] sm:h-[76px]" />
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gold/30 bg-cream-card/95 shadow-[0_-8px_24px_-16px_rgb(43_34_25/0.4)] backdrop-blur-sm">
         <div className="mx-auto w-full max-w-[1200px] px-4 py-2.5 lg:px-10">
-          {/* Mobile: centred stack — badge, title, time, countdown, button. */}
-          <div className="flex flex-col items-center gap-2 text-center sm:hidden">
-            {badge}
-
-            <p className="text-[13px] font-bold leading-snug text-forest-deep">
+          {/* Mobile: centred stack, kept deliberately shallow so it never
+              swallows the screen. */}
+          <div className="flex flex-col items-center gap-1 text-center sm:hidden">
+            <p className="line-clamp-1 text-[12px] font-bold leading-tight text-forest-deep">
+              <span className="mr-1.5 align-middle text-[9px] font-bold uppercase tracking-wide text-mint">
+                {status === 'live' ? 'Live now' : event.badge}
+              </span>
               {event.title}
             </p>
 
-            <p className="text-[11px] text-ink/65">
-              {date} | {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
+            <p className="text-[10px] leading-none text-ink/60">
+              {date} · {formatEventTime(event.startsAt)} {EVENT_TZ_LABEL}
+              {status === 'upcoming' &&
+                ` · ${left.days}d ${left.hours}h ${left.minutes}m ${left.seconds}s`}
             </p>
 
-            {status === 'upcoming' && (
-              <div className="flex items-start justify-center gap-5">
-                <Unit value={left.days} label="days" />
-                <Unit value={left.hours} label="hours" />
-                <Unit value={left.minutes} label="minutes" />
-                <Unit value={left.seconds} label="seconds" />
-              </div>
-            )}
-
-            <div className="mt-0.5">{registerButton}</div>
+            <button
+              type="button"
+              onClick={() => register(event)}
+              className="mt-0.5 inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-[11.5px] font-semibold text-white transition-colors hover:bg-gold-text"
+            >
+              Register Now
+              <svg viewBox="0 0 24 24" className="size-3" fill="none" aria-hidden="true">
+                <path
+                  d="M5 12h14m0 0-5.5-5.5M19 12l-5.5 5.5"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
 
           {/* Tablet and up: single row with the full countdown. */}
