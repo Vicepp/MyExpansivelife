@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-admin-bg">
+      <div className="grid min-h-dvh place-items-center bg-cream">
         <Spinner label="Checking your session…" />
       </div>
     )

@@ -44,15 +44,12 @@
   --color-mint: #40b487;
   --color-ink: #2b2219;
 
-  /* Admin panel palette — deliberately separate from the marketing site. */
-  --color-navy: #232b4a;
-  --color-navy-soft: #2d3760;
-  --color-navy-line: #39426b;
-  --color-admin-bg: #f6f7fb;
-  --color-sun: #f2c53d;
-  --color-blush: #f4c7ce;
-  --color-mintcard: #c7ece2;
-  --color-lilac: #d6d9f3;
+  /* Admin panel — same MXL palette as the marketing site, no new brand colours. */
+  --color-forest-soft: #23473f; /* hover + inputs on the dark sidebar */
+  --color-sand: #f6e7db; /* active nav chip, warm neutral */
+  --color-sage-tint: #e4eade; /* stat card, from --color-sage */
+  --color-gold-tint: #f4e7d4; /* stat card, from --color-gold */
+  --color-brown-tint: #f6e2d7; /* stat card, from --color-brown */
 
   --font-display: "The Seasons", "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;

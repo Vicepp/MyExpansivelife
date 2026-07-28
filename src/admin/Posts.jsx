@@ -65,7 +65,7 @@ export default function Posts() {
         title="My Articles"
         subtitle={`${posts.length} article${posts.length === 1 ? '' : 's'} in total`}
         action={
-          <Btn as="link" to="/admin/posts/new" variant="sun">
+          <Btn as="link" to="/admin/posts/new" variant="gold">
             <IconPlus className="size-4" />
             Write new post
           </Btn>
@@ -118,7 +118,7 @@ export default function Posts() {
               : 'Write your first article and it will appear here and on the public blog.'
           }
           action={
-            <Btn as="link" to="/admin/posts/new" variant="sun">
+            <Btn as="link" to="/admin/posts/new" variant="gold">
               Write new post
             </Btn>
           }
@@ -127,7 +127,7 @@ export default function Posts() {
         <Card className="overflow-x-auto p-0">
           <table className="w-full min-w-[760px] text-left">
             <thead>
-              <tr className="border-b border-navy/10 text-[12px] uppercase tracking-wide text-navy/50">
+              <tr className="border-b border-forest-deep/10 text-[12px] uppercase tracking-wide text-forest-deep/50">
                 <th className="px-5 py-4 font-semibold">Article</th>
                 <th className="px-4 py-4 font-semibold">Status</th>
                 <th className="px-4 py-4 font-semibold">Category</th>
@@ -141,32 +141,32 @@ export default function Posts() {
               {rows.map((post) => (
                 <tr
                   key={post.id}
-                  className="border-b border-navy/5 transition-colors last:border-0 hover:bg-admin-bg"
+                  className="border-b border-forest-deep/5 transition-colors last:border-0 hover:bg-cream"
                 >
                   <td className="max-w-[340px] px-5 py-4">
                     <Link
                       to={`/admin/posts/${post.id}/edit`}
-                      className="line-clamp-2 text-[14px] font-semibold text-navy hover:text-navy/70"
+                      className="line-clamp-2 text-[14px] font-semibold text-forest-deep hover:text-forest-deep/70"
                     >
                       {post.title}
                     </Link>
-                    <p className="mt-0.5 text-[12px] text-navy/45">/{post.slug}</p>
+                    <p className="mt-0.5 text-[12px] text-forest-deep/45">/{post.slug}</p>
                   </td>
                   <td className="px-4 py-4">
                     <StatusPill status={post.status} />
                   </td>
-                  <td className="px-4 py-4 text-[13px] text-navy/70">{post.category}</td>
-                  <td className="whitespace-nowrap px-4 py-4 text-[13px] text-navy/70">
+                  <td className="px-4 py-4 text-[13px] text-forest-deep/70">{post.category}</td>
+                  <td className="whitespace-nowrap px-4 py-4 text-[13px] text-forest-deep/70">
                     {formatDate(post.publishedAt ?? post.createdAt)}
                   </td>
                   <td className="px-4 py-4">
-                    <span className="inline-flex items-center gap-1.5 text-[13px] text-navy/70">
+                    <span className="inline-flex items-center gap-1.5 text-[13px] text-forest-deep/70">
                       <IconEye className="size-4" />
                       {compact(post.views)}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="inline-flex items-center gap-1.5 text-[13px] text-navy/70">
+                    <span className="inline-flex items-center gap-1.5 text-[13px] text-forest-deep/70">
                       <IconHeart className="size-4" />
                       {compact(post.likes)}
                     </span>
@@ -175,7 +175,7 @@ export default function Posts() {
                     <div className="flex justify-end gap-2">
                       <Link
                         to={`/admin/posts/${post.id}/edit`}
-                        className="rounded-lg border border-navy/15 px-3 py-1.5 text-[12.5px] font-semibold text-navy hover:bg-navy/5"
+                        className="rounded-lg border border-forest-deep/15 px-3 py-1.5 text-[12.5px] font-semibold text-forest-deep hover:bg-forest-deep/5"
                       >
                         Edit
                       </Link>

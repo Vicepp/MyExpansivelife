@@ -77,7 +77,7 @@ export default function Inbox() {
       ) : (
         <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
           <Card className="!p-0">
-            <div className="space-y-3 border-b border-navy/10 p-4">
+            <div className="space-y-3 border-b border-forest-deep/10 p-4">
               <Input
                 type="search"
                 value={search}
@@ -92,8 +92,8 @@ export default function Inbox() {
                     onClick={() => setFilter(key)}
                     className={`rounded-lg px-3 py-1.5 text-[12.5px] font-semibold capitalize transition-colors ${
                       filter === key
-                        ? 'bg-navy text-white'
-                        : 'text-navy/60 hover:bg-navy/5'
+                        ? 'bg-forest-deep text-white'
+                        : 'text-forest-deep/60 hover:bg-forest-deep/5'
                     }`}
                   >
                     {key}
@@ -104,7 +104,7 @@ export default function Inbox() {
 
             <ul className="max-h-[560px] overflow-y-auto">
               {rows.length === 0 ? (
-                <li className="px-4 py-10 text-center text-[13.5px] text-navy/50">
+                <li className="px-4 py-10 text-center text-[13.5px] text-forest-deep/50">
                   Nothing matches that filter.
                 </li>
               ) : (
@@ -113,25 +113,25 @@ export default function Inbox() {
                     <button
                       type="button"
                       onClick={() => open(m)}
-                      className={`flex w-full gap-3 border-b border-navy/5 px-4 py-3.5 text-left transition-colors last:border-0 ${
-                        activeId === m.id ? 'bg-admin-bg' : 'hover:bg-admin-bg'
+                      className={`flex w-full gap-3 border-b border-forest-deep/5 px-4 py-3.5 text-left transition-colors last:border-0 ${
+                        activeId === m.id ? 'bg-cream' : 'hover:bg-cream'
                       }`}
                     >
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-lilac text-[13px] font-bold text-navy">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-tint text-[13px] font-bold text-forest-deep">
                         {m.name.slice(0, 1)}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
                           <span
-                            className={`truncate text-[13.5px] ${m.read ? 'font-medium text-navy/75' : 'font-bold text-navy'}`}
+                            className={`truncate text-[13.5px] ${m.read ? 'font-medium text-forest-deep/75' : 'font-bold text-forest-deep'}`}
                           >
                             {m.name}
                           </span>
                           {!m.read && (
-                            <span className="size-2 shrink-0 rounded-full bg-sun" />
+                            <span className="size-2 shrink-0 rounded-full bg-gold" />
                           )}
                         </span>
-                        <span className="mt-0.5 line-clamp-2 block text-[12.5px] text-navy/50">
+                        <span className="mt-0.5 line-clamp-2 block text-[12.5px] text-forest-deep/50">
                           {m.body}
                         </span>
                       </span>
@@ -144,35 +144,35 @@ export default function Inbox() {
 
           {active ? (
             <Card>
-              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-navy/10 pb-5">
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b border-forest-deep/10 pb-5">
                 <div>
-                  <h2 className="text-[19px] font-bold text-navy">{active.subject}</h2>
-                  <p className="mt-1 text-[13.5px] text-navy/60">
+                  <h2 className="text-[19px] font-bold text-forest-deep">{active.subject}</h2>
+                  <p className="mt-1 text-[13.5px] text-forest-deep/60">
                     {active.name} ·{' '}
                     <a
                       href={`mailto:${active.email}`}
-                      className="underline hover:text-navy"
+                      className="underline hover:text-forest-deep"
                     >
                       {active.email}
                     </a>
                   </p>
                   {active.phone && (
-                    <p className="text-[13.5px] text-navy/60">{active.phone}</p>
+                    <p className="text-[13.5px] text-forest-deep/60">{active.phone}</p>
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-[12.5px] text-navy/50">
+                  <p className="text-[12.5px] text-forest-deep/50">
                     {formatDate(active.createdAt)}
                   </p>
-                  <p className="mt-1 text-[12px] text-navy/40">{active.source}</p>
+                  <p className="mt-1 text-[12px] text-forest-deep/40">{active.source}</p>
                 </div>
               </div>
 
-              <p className="whitespace-pre-line py-6 text-[14.5px] leading-relaxed text-navy/85">
+              <p className="whitespace-pre-line py-6 text-[14.5px] leading-relaxed text-forest-deep/85">
                 {active.body}
               </p>
 
-              <div className="flex flex-wrap gap-2 border-t border-navy/10 pt-5">
+              <div className="flex flex-wrap gap-2 border-t border-forest-deep/10 pt-5">
                 <Btn
                   as="a"
                   href={`mailto:${active.email}?subject=Re: ${encodeURIComponent(active.subject)}`}

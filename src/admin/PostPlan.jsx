@@ -5,7 +5,7 @@ import { IconPlus } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
 import { formatDate, listPosts } from '../lib/posts'
 
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'gold']
 
 /** Monday-first grid covering the whole month. */
 function monthGrid(cursor) {
@@ -69,7 +69,7 @@ export default function PostPlan() {
         title="Post Plan"
         subtitle="Your editorial calendar at a glance"
         action={
-          <Btn as="link" to="/admin/posts/new" variant="sun">
+          <Btn as="link" to="/admin/posts/new" variant="gold">
             <IconPlus className="size-4" />
             Plan a post
           </Btn>
@@ -81,20 +81,20 @@ export default function PostPlan() {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
         <Card>
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-[17px] font-bold text-navy">{monthLabel}</h2>
+            <h2 className="text-[17px] font-bold text-forest-deep">{monthLabel}</h2>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => shift(-1)}
                 aria-label="Previous month"
-                className="grid size-9 place-items-center rounded-lg border border-navy/15 text-navy hover:bg-navy/5"
+                className="grid size-9 place-items-center rounded-lg border border-forest-deep/15 text-forest-deep hover:bg-forest-deep/5"
               >
                 ‹
               </button>
               <button
                 type="button"
                 onClick={() => setCursor(new Date())}
-                className="rounded-lg border border-navy/15 px-3 py-1.5 text-[12.5px] font-semibold text-navy hover:bg-navy/5"
+                className="rounded-lg border border-forest-deep/15 px-3 py-1.5 text-[12.5px] font-semibold text-forest-deep hover:bg-forest-deep/5"
               >
                 Today
               </button>
@@ -102,7 +102,7 @@ export default function PostPlan() {
                 type="button"
                 onClick={() => shift(1)}
                 aria-label="Next month"
-                className="grid size-9 place-items-center rounded-lg border border-navy/15 text-navy hover:bg-navy/5"
+                className="grid size-9 place-items-center rounded-lg border border-forest-deep/15 text-forest-deep hover:bg-forest-deep/5"
               >
                 ›
               </button>
@@ -113,7 +113,7 @@ export default function PostPlan() {
             {WEEKDAYS.map((d) => (
               <div
                 key={d}
-                className="pb-2 text-center text-[11.5px] font-semibold uppercase tracking-wide text-navy/45"
+                className="pb-2 text-center text-[11.5px] font-semibold uppercase tracking-wide text-forest-deep/45"
               >
                 {d}
               </div>
@@ -129,13 +129,13 @@ export default function PostPlan() {
                   key={date.toISOString()}
                   className={`min-h-[92px] rounded-xl border p-2 ${
                     isToday
-                      ? 'border-navy bg-navy/5'
-                      : 'border-navy/10 ' + (inMonth ? 'bg-white' : 'bg-admin-bg')
+                      ? 'border-forest-deep bg-forest-deep/5'
+                      : 'border-forest-deep/10 ' + (inMonth ? 'bg-white' : 'bg-cream')
                   }`}
                 >
                   <span
                     className={`text-[12px] font-semibold ${
-                      inMonth ? 'text-navy/70' : 'text-navy/25'
+                      inMonth ? 'text-forest-deep/70' : 'text-forest-deep/25'
                     }`}
                   >
                     {date.getDate()}
@@ -152,14 +152,14 @@ export default function PostPlan() {
                             ? 'bg-emerald-100 text-emerald-800'
                             : post.status === 'scheduled'
                               ? 'bg-amber-100 text-amber-800'
-                              : 'bg-lilac text-navy'
+                              : 'bg-gold-tint text-forest-deep'
                         }`}
                       >
                         {post.title}
                       </Link>
                     ))}
                     {items.length > 2 && (
-                      <span className="block px-1.5 text-[10.5px] text-navy/45">
+                      <span className="block px-1.5 text-[10.5px] text-forest-deep/45">
                         +{items.length - 2} more
                       </span>
                     )}
@@ -171,24 +171,24 @@ export default function PostPlan() {
         </Card>
 
         <Card>
-          <h2 className="mb-4 text-[16px] font-bold text-navy">In the queue</h2>
+          <h2 className="mb-4 text-[16px] font-bold text-forest-deep">In the queue</h2>
           {queue.length === 0 ? (
-            <p className="py-8 text-center text-[13.5px] text-navy/50">
+            <p className="py-8 text-center text-[13.5px] text-forest-deep/50">
               Nothing pending. Every article is published.
             </p>
           ) : (
             <ul className="space-y-3">
               {queue.map((post) => (
-                <li key={post.id} className="rounded-xl border border-navy/10 p-3.5">
+                <li key={post.id} className="rounded-xl border border-forest-deep/10 p-3.5">
                   <Link
                     to={`/admin/posts/${post.id}/edit`}
-                    className="line-clamp-2 text-[13.5px] font-semibold text-navy hover:text-navy/70"
+                    className="line-clamp-2 text-[13.5px] font-semibold text-forest-deep hover:text-forest-deep/70"
                   >
                     {post.title}
                   </Link>
                   <div className="mt-2 flex items-center justify-between">
                     <StatusPill status={post.status} />
-                    <span className="text-[12px] text-navy/45">
+                    <span className="text-[12px] text-forest-deep/45">
                       {formatDate(post.createdAt)}
                     </span>
                   </div>

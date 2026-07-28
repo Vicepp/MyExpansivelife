@@ -7,18 +7,18 @@ import { CATEGORIES, canUploadImages } from '../lib/posts'
 
 function ServiceRow({ ok, name, detail, doc }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-navy/10 p-4">
+    <div className="flex items-start gap-3 rounded-xl border border-forest-deep/10 p-4">
       <span
         className={`mt-1.5 size-2.5 shrink-0 rounded-full ${
           ok ? 'bg-emerald-500' : 'bg-amber-500'
         }`}
       />
       <div className="min-w-0">
-        <p className="text-[14px] font-semibold text-navy">{name}</p>
-        <p className="mt-0.5 text-[12.5px] text-navy/55">{detail}</p>
+        <p className="text-[14px] font-semibold text-forest-deep">{name}</p>
+        <p className="mt-0.5 text-[12.5px] text-forest-deep/55">{detail}</p>
         {!ok && (
-          <p className="mt-1 text-[12px] text-navy/45">
-            Setup: <code className="rounded bg-admin-bg px-1.5 py-0.5">{doc}</code>
+          <p className="mt-1 text-[12px] text-forest-deep/45">
+            Setup: <code className="rounded bg-cream px-1.5 py-0.5">{doc}</code>
           </p>
         )}
       </div>
@@ -92,7 +92,7 @@ export default function Settings() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Your profile</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Your profile</h2>
           <form onSubmit={saveProfile} className="space-y-4">
             <Field label="Display name" hint="Shown as the author on published posts.">
               <Input
@@ -110,7 +110,7 @@ export default function Settings() {
               Save profile
             </Btn>
             {!isFirebaseConfigured && (
-              <p className="text-[12.5px] text-navy/50">
+              <p className="text-[12.5px] text-forest-deep/50">
                 Connect Firebase to edit your profile.
               </p>
             )}
@@ -118,7 +118,7 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Site details</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Site details</h2>
           <form onSubmit={saveSite} className="space-y-4">
             <Field label="Site name">
               <Input value={site.siteName} onChange={set('siteName')} />
@@ -137,7 +137,7 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Publishing defaults</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Publishing defaults</h2>
           <div className="space-y-4">
             <Field label="Default category for new posts">
               <Select value={site.defaultCategory} onChange={set('defaultCategory')}>
@@ -162,7 +162,7 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Connected services</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Connected services</h2>
 
           <div className="space-y-3">
             <ServiceRow
@@ -193,8 +193,8 @@ export default function Settings() {
             />
           </div>
 
-          <p className="mt-4 text-[13px] leading-relaxed text-navy/60">
-            Credentials go in <code className="rounded bg-admin-bg px-1.5 py-0.5">.env</code> locally, and in
+          <p className="mt-4 text-[13px] leading-relaxed text-forest-deep/60">
+            Credentials go in <code className="rounded bg-cream px-1.5 py-0.5">.env</code> locally, and in
             your hosting provider’s environment variables for the live site.
             Redeploy after changing them.
           </p>

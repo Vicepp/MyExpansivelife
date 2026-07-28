@@ -30,9 +30,9 @@ const NAV = [
 
 function Sidebar({ onNavigate }) {
   return (
-    <div className="flex h-full flex-col bg-navy px-5 py-7 text-white">
+    <div className="flex h-full flex-col bg-forest-deep px-5 py-7 text-white">
       <Link to="/admin" onClick={onNavigate} className="mb-10 flex items-center gap-3 px-2">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-sun">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-gold">
           <img src={logo} alt="" className="size-7" />
         </span>
         <span className="font-display text-[19px] leading-tight">
@@ -52,8 +52,8 @@ function Sidebar({ onNavigate }) {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-4 py-3 text-[14.5px] transition-colors ${
                 isActive
-                  ? 'bg-blush font-semibold text-navy'
-                  : 'text-white/75 hover:bg-navy-soft hover:text-white'
+                  ? 'bg-sand font-semibold text-forest-deep'
+                  : 'text-white/75 hover:bg-forest-soft hover:text-white'
               }`
             }
           >
@@ -66,7 +66,7 @@ function Sidebar({ onNavigate }) {
       <Link
         to="/"
         onClick={onNavigate}
-        className="mt-6 flex items-center gap-2 rounded-xl px-4 py-3 text-[13.5px] text-white/60 transition-colors hover:bg-navy-soft hover:text-white"
+        className="mt-6 flex items-center gap-2 rounded-xl px-4 py-3 text-[13.5px] text-white/60 transition-colors hover:bg-forest-soft hover:text-white"
       >
         <IconExternal className="size-4" />
         View live site
@@ -89,8 +89,8 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-dvh bg-sun/25 p-0 lg:p-5">
-      <div className="mx-auto flex min-h-dvh w-full max-w-[1500px] overflow-hidden bg-navy lg:min-h-[calc(100dvh-2.5rem)] lg:rounded-[28px]">
+    <div className="min-h-dvh bg-gold/25 p-0 lg:p-5">
+      <div className="mx-auto flex min-h-dvh w-full max-w-[1500px] overflow-hidden bg-forest-deep lg:min-h-[calc(100dvh-2.5rem)] lg:rounded-[28px]">
         <aside className="hidden w-[248px] shrink-0 lg:block">
           <Sidebar />
         </aside>
@@ -104,7 +104,7 @@ export default function AdminLayout() {
               type="button"
               aria-label="Close menu"
               onClick={() => setMenuOpen(false)}
-              className="flex-1 bg-navy/60"
+              className="flex-1 bg-forest-deep/60"
             />
           </div>
         )}
@@ -115,7 +115,7 @@ export default function AdminLayout() {
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
-              className="grid size-10 shrink-0 place-items-center rounded-xl bg-navy-soft text-white lg:hidden"
+              className="grid size-10 shrink-0 place-items-center rounded-xl bg-forest-soft text-white lg:hidden"
             >
               <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
                 <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -128,7 +128,7 @@ export default function AdminLayout() {
               <input
                 type="search"
                 placeholder="Search"
-                className="w-full rounded-xl bg-navy-soft py-2.5 pl-10 pr-4 text-[14px] text-white outline-none placeholder:text-white/45 focus:ring-1 focus:ring-white/25"
+                className="w-full rounded-xl bg-forest-soft py-2.5 pl-10 pr-4 text-[14px] text-white outline-none placeholder:text-white/45 focus:ring-1 focus:ring-white/25"
               />
             </label>
 
@@ -137,24 +137,24 @@ export default function AdminLayout() {
                 type="button"
                 aria-label="Messages"
                 onClick={() => navigate('/admin/inbox')}
-                className="grid size-10 place-items-center rounded-xl bg-navy-soft text-white/80 hover:text-white"
+                className="grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
               >
                 <IconChat />
               </button>
               <button
                 type="button"
                 aria-label="Notifications"
-                className="relative grid size-10 place-items-center rounded-xl bg-navy-soft text-white/80 hover:text-white"
+                className="relative grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
               >
                 <IconBell />
-                <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-sun" />
+                <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-gold" />
               </button>
 
               <div className="flex items-center gap-2.5 pl-1">
                 <span className="hidden text-[14px] font-medium text-white sm:block">
                   {name}
                 </span>
-                <span className="grid size-10 place-items-center rounded-xl bg-blush text-[14px] font-bold text-navy">
+                <span className="grid size-10 place-items-center rounded-xl bg-sand text-[14px] font-bold text-forest-deep">
                   {name.slice(0, 1).toUpperCase()}
                 </span>
                 <button
@@ -162,7 +162,7 @@ export default function AdminLayout() {
                   onClick={handleSignOut}
                   aria-label="Sign out"
                   title="Sign out"
-                  className="grid size-10 place-items-center rounded-xl bg-navy-soft text-white/80 hover:text-white"
+                  className="grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
                 >
                   <IconLogout />
                 </button>
@@ -170,7 +170,7 @@ export default function AdminLayout() {
             </div>
           </header>
 
-          <main className="min-w-0 flex-1 overflow-x-hidden bg-admin-bg p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
+          <main className="min-w-0 flex-1 overflow-x-hidden bg-cream p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
             <Suspense fallback={<Spinner label="Loading…" />}>
               <Outlet />
             </Suspense>

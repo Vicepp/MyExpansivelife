@@ -18,10 +18,10 @@ const RATE_PER_VIEW = 0.012
 const COMMISSION = 0.2
 const COURSE_PRICE = 297
 
-const axis = { stroke: '#232b4a', fontSize: 12, tickLine: false, axisLine: false }
+const axis = { stroke: '#183734', fontSize: 12, tickLine: false, axisLine: false }
 const tooltipStyle = {
   borderRadius: 12,
-  border: '1px solid rgb(35 43 74 / 0.12)',
+  border: '1px solid rgb(24 55 52 / 0.12)',
   fontSize: 13,
 }
 
@@ -79,36 +79,36 @@ export default function Earning() {
 
       {!isFirebaseConfigured && <SetupNotice what="These figures" />}
 
-      <div className="mb-5 rounded-2xl border border-navy/10 bg-white px-5 py-4 text-[13px] text-navy/65">
+      <div className="mb-5 rounded-2xl border border-forest-deep/10 bg-white px-5 py-4 text-[13px] text-forest-deep/65">
         Article revenue is modelled at{' '}
-        <strong className="text-navy">${RATE_PER_VIEW.toFixed(3)} per view</strong> and
-        affiliate income at <strong className="text-navy">{COMMISSION * 100}%</strong> of a
+        <strong className="text-forest-deep">${RATE_PER_VIEW.toFixed(3)} per view</strong> and
+        affiliate income at <strong className="text-forest-deep">{COMMISSION * 100}%</strong> of a
         ${COURSE_PRICE} course. Swap these for real numbers once a payment provider is
         connected — they live at the top of{' '}
-        <code className="rounded bg-admin-bg px-1.5 py-0.5">src/admin/Earning.jsx</code>.
+        <code className="rounded bg-cream px-1.5 py-0.5">src/admin/Earning.jsx</code>.
       </div>
 
       <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          tone="mint"
+          tone="sage"
           icon={<IconMoney />}
           value={`$${total.toFixed(2)}`}
           label="Article revenue"
         />
         <StatCard
-          tone="lilac"
+          tone="sand"
           icon={<IconChart />}
           value={`$${affiliate.toFixed(2)}`}
           label="Affiliate commission"
         />
         <StatCard
-          tone="blush"
+          tone="brown"
           icon={<IconEye />}
           value={compact(stats.views)}
           label="Billable views"
         />
         <StatCard
-          tone="sun"
+          tone="gold"
           icon={<IconDoc />}
           value={stats.published}
           label="Earning articles"
@@ -116,24 +116,24 @@ export default function Earning() {
       </div>
 
       <Card className="mb-5">
-        <h2 className="mb-5 text-[16px] font-bold text-navy">Revenue by month</h2>
+        <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Revenue by month</h2>
         {monthly.length === 0 ? (
-          <p className="py-10 text-center text-[14px] text-navy/50">
+          <p className="py-10 text-center text-[14px] text-forest-deep/50">
             No published articles yet.
           </p>
         ) : (
           <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthly} margin={{ left: -16, right: 8, top: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgb(35 43 74 / 0.08)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgb(24 55 52 / 0.08)" vertical={false} />
                 <XAxis dataKey="label" {...axis} />
                 <YAxis {...axis} width={56} tickFormatter={(v) => `$${v}`} />
                 <Tooltip
                   contentStyle={tooltipStyle}
-                  cursor={{ fill: 'rgb(35 43 74 / 0.04)' }}
+                  cursor={{ fill: 'rgb(24 55 52 / 0.04)' }}
                   formatter={(v) => [`$${v}`, 'Revenue']}
                 />
-                <Bar dataKey="amount" fill="#232b4a" radius={[8, 8, 0, 0]} maxBarSize={44} />
+                <Bar dataKey="amount" fill="#183734" radius={[8, 8, 0, 0]} maxBarSize={44} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -142,16 +142,16 @@ export default function Earning() {
 
       <Card className="overflow-x-auto p-0">
         <div className="px-5 pt-5">
-          <h2 className="text-[16px] font-bold text-navy">Earning by article</h2>
+          <h2 className="text-[16px] font-bold text-forest-deep">Earning by article</h2>
         </div>
         {ledger.length === 0 ? (
-          <p className="px-5 py-10 text-center text-[14px] text-navy/50">
+          <p className="px-5 py-10 text-center text-[14px] text-forest-deep/50">
             Publish an article to start earning.
           </p>
         ) : (
           <table className="mt-4 w-full min-w-[600px] text-left">
             <thead>
-              <tr className="border-b border-navy/10 text-[12px] uppercase tracking-wide text-navy/50">
+              <tr className="border-b border-forest-deep/10 text-[12px] uppercase tracking-wide text-forest-deep/50">
                 <th className="px-5 py-3.5 font-semibold">Article</th>
                 <th className="px-4 py-3.5 font-semibold">Published</th>
                 <th className="px-4 py-3.5 font-semibold">Views</th>
@@ -160,19 +160,19 @@ export default function Earning() {
             </thead>
             <tbody>
               {ledger.map((row) => (
-                <tr key={row.id} className="border-b border-navy/5 last:border-0">
+                <tr key={row.id} className="border-b border-forest-deep/5 last:border-0">
                   <td className="max-w-[320px] px-5 py-3.5">
-                    <span className="line-clamp-1 text-[13.5px] font-semibold text-navy">
+                    <span className="line-clamp-1 text-[13.5px] font-semibold text-forest-deep">
                       {row.title}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3.5 text-[13px] text-navy/65">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-[13px] text-forest-deep/65">
                     {formatDate(row.publishedAt ?? row.createdAt)}
                   </td>
-                  <td className="px-4 py-3.5 text-[13px] text-navy/65">
+                  <td className="px-4 py-3.5 text-[13px] text-forest-deep/65">
                     {compact(row.views)}
                   </td>
-                  <td className="px-5 py-3.5 text-right text-[13.5px] font-bold text-navy">
+                  <td className="px-5 py-3.5 text-right text-[13.5px] font-bold text-forest-deep">
                     ${row.amount.toFixed(2)}
                   </td>
                 </tr>

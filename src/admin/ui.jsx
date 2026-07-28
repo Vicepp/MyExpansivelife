@@ -12,39 +12,40 @@ export function PageHead({ title, subtitle, action }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-[24px] font-bold text-navy">{title}</h1>
-        {subtitle && <p className="mt-1 text-[14px] text-navy/55">{subtitle}</p>}
+        <h1 className="text-[24px] font-bold text-forest-deep">{title}</h1>
+        {subtitle && <p className="mt-1 text-[14px] text-forest-deep/55">{subtitle}</p>}
       </div>
       {action}
     </div>
   )
 }
 
+/** Stat card tints, all derived from the MXL palette. */
 const TONES = {
-  mint: 'bg-mintcard',
-  lilac: 'bg-lilac',
-  blush: 'bg-blush',
-  sun: 'bg-sun/60',
+  sage: 'bg-sage-tint',
+  gold: 'bg-gold-tint',
+  brown: 'bg-brown-tint',
+  sand: 'bg-sand',
 }
 
-export function StatCard({ tone = 'mint', icon, value, label }) {
+export function StatCard({ tone = 'sage', icon, value, label }) {
   return (
     <div className={`flex items-center gap-4 rounded-2xl p-5 ${TONES[tone]}`}>
-      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-navy text-white">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-forest-deep text-white">
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="truncate text-[24px] font-bold leading-none text-navy">{value}</p>
-        <p className="mt-1 truncate text-[13px] text-navy/65">{label}</p>
+        <p className="truncate text-[24px] font-bold leading-none text-forest-deep">{value}</p>
+        <p className="mt-1 truncate text-[13px] text-forest-deep/65">{label}</p>
       </div>
     </div>
   )
 }
 
 const BUTTONS = {
-  primary: 'bg-navy text-white hover:bg-navy-soft',
-  sun: 'bg-sun text-navy hover:brightness-95',
-  ghost: 'border border-navy/15 text-navy hover:bg-navy/5',
+  primary: 'bg-forest-deep text-white hover:bg-forest-soft',
+  gold: 'bg-gold text-forest-deep hover:brightness-95',
+  ghost: 'border border-forest-deep/15 text-forest-deep hover:bg-forest-deep/5',
   danger: 'border border-red-200 text-red-600 hover:bg-red-50',
 }
 
@@ -74,15 +75,15 @@ export function Btn({
 export function Field({ label, hint, children, className = '' }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[13px] font-semibold text-navy">{label}</span>
+      <span className="mb-1.5 block text-[13px] font-semibold text-forest-deep">{label}</span>
       {children}
-      {hint && <span className="mt-1.5 block text-[12px] text-navy/50">{hint}</span>}
+      {hint && <span className="mt-1.5 block text-[12px] text-forest-deep/50">{hint}</span>}
     </label>
   )
 }
 
 export const inputClass =
-  'w-full rounded-xl border border-navy/15 bg-white px-3.5 py-2.5 text-[14px] text-navy outline-none transition-colors placeholder:text-navy/35 focus:border-navy/45'
+  'w-full rounded-xl border border-forest-deep/15 bg-white px-3.5 py-2.5 text-[14px] text-forest-deep outline-none transition-colors placeholder:text-forest-deep/35 focus:border-forest-deep/45'
 
 export function Input(props) {
   return <input className={inputClass} {...props} />
@@ -102,7 +103,7 @@ export function Select({ children, ...props }) {
 
 const STATUS_TONES = {
   published: 'bg-emerald-100 text-emerald-700',
-  draft: 'bg-navy/10 text-navy/70',
+  draft: 'bg-forest-deep/10 text-forest-deep/70',
   scheduled: 'bg-amber-100 text-amber-700',
 }
 
@@ -118,8 +119,8 @@ export function StatusPill({ status }) {
 
 export function Spinner({ label = 'Loading…' }) {
   return (
-    <div className="flex items-center justify-center gap-3 py-16 text-[14px] text-navy/55">
-      <span className="size-4 animate-spin rounded-full border-2 border-navy/20 border-t-navy" />
+    <div className="flex items-center justify-center gap-3 py-16 text-[14px] text-forest-deep/55">
+      <span className="size-4 animate-spin rounded-full border-2 border-forest-deep/20 border-t-forest-deep" />
       {label}
     </div>
   )
@@ -127,9 +128,9 @@ export function Spinner({ label = 'Loading…' }) {
 
 export function EmptyState({ title, body, action }) {
   return (
-    <div className="rounded-2xl border border-dashed border-navy/15 bg-white px-6 py-14 text-center">
-      <p className="text-[16px] font-semibold text-navy">{title}</p>
-      {body && <p className="mx-auto mt-2 max-w-[380px] text-[14px] text-navy/55">{body}</p>}
+    <div className="rounded-2xl border border-dashed border-forest-deep/15 bg-white px-6 py-14 text-center">
+      <p className="text-[16px] font-semibold text-forest-deep">{title}</p>
+      {body && <p className="mx-auto mt-2 max-w-[380px] text-[14px] text-forest-deep/55">{body}</p>}
       {action && <div className="mt-6 flex justify-center">{action}</div>}
     </div>
   )

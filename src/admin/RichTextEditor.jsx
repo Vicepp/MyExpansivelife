@@ -16,10 +16,11 @@ import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import { uploadImage, canUploadImages } from '../lib/posts'
 
-const COLORS = ['#232b4a', '#87492c', '#b3803f', '#183734', '#40b487', '#c0392b']
+/** Brand palette only — same values the marketing site uses. */
+const COLORS = ['#2b2219', '#183734', '#87492c', '#b3803f', '#7d886e', '#40b487']
 
 function Divider() {
-  return <span className="mx-1 h-6 w-px shrink-0 bg-navy/10" />
+  return <span className="mx-1 h-6 w-px shrink-0 bg-forest-deep/10" />
 }
 
 function Tool({ onClick, active, disabled, title, children }) {
@@ -32,7 +33,7 @@ function Tool({ onClick, active, disabled, title, children }) {
       aria-label={title}
       aria-pressed={active}
       className={`grid h-9 min-w-9 shrink-0 place-items-center rounded-lg px-2 text-[13px] font-semibold transition-colors disabled:opacity-35 ${
-        active ? 'bg-navy text-white' : 'text-navy hover:bg-navy/10'
+        active ? 'bg-forest-deep text-white' : 'text-forest-deep hover:bg-forest-deep/10'
       }`}
     >
       {children}
@@ -106,8 +107,8 @@ export default function RichTextEditor({ value, onChange }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-navy/15 bg-white">
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-navy/10 bg-admin-bg px-2 py-2">
+    <div className="overflow-hidden rounded-2xl border border-forest-deep/15 bg-white">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-forest-deep/10 bg-cream px-2 py-2">
         <Tool
           title="Undo"
           onClick={() => editor.chain().focus().undo().run()}
@@ -178,7 +179,7 @@ export default function RichTextEditor({ value, onChange }) {
           active={editor.isActive('highlight')}
           onClick={() => editor.chain().focus().toggleHighlight().run()}
         >
-          <span className="rounded bg-sun px-1">H</span>
+          <span className="rounded bg-gold px-1">H</span>
         </Tool>
         <Tool
           title="Inline code"
@@ -349,7 +350,7 @@ export default function RichTextEditor({ value, onChange }) {
               title={`Text colour ${color}`}
               aria-label={`Text colour ${color}`}
               onClick={() => editor.chain().focus().setColor(color).run()}
-              className="size-5 rounded-full ring-1 ring-navy/20"
+              className="size-5 rounded-full ring-1 ring-forest-deep/20"
               style={{ background: color }}
             />
           ))}
@@ -381,7 +382,7 @@ export default function RichTextEditor({ value, onChange }) {
         className="prose-mxl max-h-[640px] min-h-[420px] overflow-y-auto px-6 py-5"
       />
 
-      <div className="flex flex-wrap items-center gap-4 border-t border-navy/10 bg-admin-bg px-4 py-2 text-[12px] text-navy/55">
+      <div className="flex flex-wrap items-center gap-4 border-t border-forest-deep/10 bg-cream px-4 py-2 text-[12px] text-forest-deep/55">
         <span>{editor.storage.characterCount?.words?.() ?? wordCount(value)} words</span>
         <span>Tip: paste a YouTube link with the ▶ button to embed the player.</span>
       </div>

@@ -27,17 +27,6 @@ function GoogleMark() {
   )
 }
 
-function MicrosoftMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
-      <path fill="#F25022" d="M3 3h8.5v8.5H3z" />
-      <path fill="#7FBA00" d="M12.5 3H21v8.5h-8.5z" />
-      <path fill="#00A4EF" d="M3 12.5h8.5V21H3z" />
-      <path fill="#FFB900" d="M12.5 12.5H21V21h-8.5z" />
-    </svg>
-  )
-}
-
 export default function Login() {
   const {
     user,
@@ -45,7 +34,6 @@ export default function Login() {
     signIn,
     signUp,
     signInWithGoogle,
-    signInWithMicrosoft,
     resetPassword,
     startPreview,
     isFirebaseConfigured,
@@ -103,25 +91,25 @@ export default function Login() {
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="flex items-center justify-center bg-admin-bg px-6 py-16">
+      <div className="flex items-center justify-center bg-cream px-6 py-16">
         <div className="w-full max-w-[400px]">
           <Link to="/" className="mb-8 flex items-center gap-3">
-            <span className="grid size-11 place-items-center rounded-xl bg-sun">
+            <span className="grid size-11 place-items-center rounded-xl bg-gold">
               <img src={logo} alt="" className="size-7" />
             </span>
-            <span className="font-display text-[18px] leading-tight text-navy">
+            <span className="font-display text-[18px] leading-tight text-forest-deep">
               My Expansive Life
             </span>
           </Link>
 
-          <h1 className="text-[28px] font-bold text-navy">
+          <h1 className="text-[28px] font-bold text-forest-deep">
             {isSignUp ? 'Create your account' : 'Sign in'}
           </h1>
-          <p className="mt-2 text-[14px] text-navy/55">
+          <p className="mt-2 text-[14px] text-forest-deep/55">
             Admin access for writing and managing articles.
           </p>
 
-          <div className="mt-6 flex gap-1 rounded-xl bg-navy/5 p-1">
+          <div className="mt-6 flex gap-1 rounded-xl bg-forest-deep/5 p-1">
             {[
               ['signin', 'Sign in'],
               ['signup', 'Create account'],
@@ -135,7 +123,7 @@ export default function Login() {
                   setNotice('')
                 }}
                 className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${
-                  mode === key ? 'bg-white text-navy shadow-sm' : 'text-navy/55'
+                  mode === key ? 'bg-white text-forest-deep shadow-sm' : 'text-forest-deep/55'
                 }`}
               >
                 {label}
@@ -143,31 +131,20 @@ export default function Login() {
             ))}
           </div>
 
-          <div className="mt-6 grid gap-2.5 sm:grid-cols-2">
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => run(signInWithGoogle)}
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl border border-navy/15 bg-white px-4 py-2.5 text-[13.5px] font-semibold text-navy transition-colors hover:bg-navy/5 disabled:opacity-50"
-            >
-              <GoogleMark />
-              Google
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => run(signInWithMicrosoft)}
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl border border-navy/15 bg-white px-4 py-2.5 text-[13.5px] font-semibold text-navy transition-colors hover:bg-navy/5 disabled:opacity-50"
-            >
-              <MicrosoftMark />
-              Outlook
-            </button>
-          </div>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => run(signInWithGoogle)}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2.5 rounded-xl border border-forest-deep/15 bg-white px-4 py-2.5 text-[13.5px] font-semibold text-forest-deep transition-colors hover:bg-forest-deep/5 disabled:opacity-50"
+          >
+            <GoogleMark />
+            Continue with Google
+          </button>
 
           <div className="my-6 flex items-center gap-3">
-            <span className="h-px flex-1 bg-navy/10" />
-            <span className="text-[12px] uppercase tracking-wide text-navy/40">or</span>
-            <span className="h-px flex-1 bg-navy/10" />
+            <span className="h-px flex-1 bg-forest-deep/10" />
+            <span className="text-[12px] uppercase tracking-wide text-forest-deep/40">or</span>
+            <span className="h-px flex-1 bg-forest-deep/10" />
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -232,7 +209,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={onReset}
-                className="w-full text-center text-[13px] text-navy/60 hover:text-navy"
+                className="w-full text-center text-[13px] text-forest-deep/60 hover:text-forest-deep"
               >
                 Forgot password?
               </button>
@@ -254,10 +231,10 @@ export default function Login() {
               </p>
               <p className="mt-1.5 text-[13px] leading-relaxed text-amber-900/80">
                 Add your credentials to <code>.env</code> to enable real accounts,
-                Google and Outlook sign-in, and saving. Until then you can explore the
+                Google sign-in, and saving. Until then you can explore the
                 panel with sample data — nothing you change will be stored.
               </p>
-              <Btn variant="sun" onClick={startPreview} className="mt-4 w-full">
+              <Btn variant="gold" onClick={startPreview} className="mt-4 w-full">
                 Preview the panel
               </Btn>
             </div>
@@ -265,9 +242,9 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="relative hidden items-center justify-center overflow-hidden bg-navy p-16 lg:flex">
+      <div className="relative hidden items-center justify-center overflow-hidden bg-forest-deep p-16 lg:flex">
         <div className="relative max-w-[420px] text-white">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.25em] text-sun">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.25em] text-gold">
             MXL Studio
           </p>
           <h2 className="mt-5 font-display text-[40px] leading-[1.1]">
@@ -278,8 +255,8 @@ export default function Login() {
             audience actually reads.
           </p>
         </div>
-        <div className="pointer-events-none absolute -right-24 -top-24 size-[420px] rounded-full bg-navy-soft" />
-        <div className="pointer-events-none absolute -bottom-32 -left-20 size-[320px] rounded-full bg-sun/10" />
+        <div className="pointer-events-none absolute -right-24 -top-24 size-[420px] rounded-full bg-forest-soft" />
+        <div className="pointer-events-none absolute -bottom-32 -left-20 size-[320px] rounded-full bg-gold/10" />
       </div>
     </div>
   )

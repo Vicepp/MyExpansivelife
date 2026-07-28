@@ -22,10 +22,10 @@ function CalendarStrip() {
         const isToday = d.toDateString() === today.toDateString()
         return (
           <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-            <span className="text-[11px] text-navy/45">{WEEK[i]}</span>
+            <span className="text-[11px] text-forest-deep/45">{WEEK[i]}</span>
             <span
               className={`grid size-8 place-items-center rounded-full text-[13px] font-semibold ${
-                isToday ? 'bg-navy text-white' : 'text-navy/70'
+                isToday ? 'bg-forest-deep text-white' : 'text-forest-deep/70'
               }`}
             >
               {d.getDate()}
@@ -77,12 +77,12 @@ export default function Dashboard() {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-5">
-          <div className="relative overflow-hidden rounded-2xl bg-sun px-7 py-8">
+          <div className="relative overflow-hidden rounded-2xl bg-gold px-7 py-8">
             <div className="relative z-10 max-w-[440px]">
-              <h1 className="font-display text-[30px] leading-tight text-navy">
+              <h1 className="font-display text-[30px] leading-tight text-forest-deep">
                 Hello {name}!
               </h1>
-              <p className="mt-2 text-[14.5px] leading-relaxed text-navy/75">
+              <p className="mt-2 text-[14.5px] leading-relaxed text-forest-deep/75">
                 {stats.drafts > 0
                   ? `You have ${stats.drafts} draft${stats.drafts === 1 ? '' : 's'} waiting. Pick one up, or start something new.`
                   : 'Everything is published. A good day to start the next piece.'}
@@ -93,22 +93,22 @@ export default function Dashboard() {
               </Btn>
             </div>
             <div className="pointer-events-none absolute -right-10 -top-16 size-56 rounded-full bg-white/25" />
-            <div className="pointer-events-none absolute -bottom-20 right-24 size-44 rounded-full bg-navy/10" />
+            <div className="pointer-events-none absolute -bottom-20 right-24 size-44 rounded-full bg-forest-deep/10" />
           </div>
 
           <Card>
             <div className="mb-5 flex items-center justify-between gap-3">
-              <h2 className="font-display text-[20px] text-navy">Top articles</h2>
+              <h2 className="font-display text-[20px] text-forest-deep">Top articles</h2>
               <Link
                 to="/admin/posts"
-                className="text-[13px] font-semibold text-navy/60 hover:text-navy"
+                className="text-[13px] font-semibold text-forest-deep/60 hover:text-forest-deep"
               >
                 View all
               </Link>
             </div>
 
             {top.length === 0 ? (
-              <p className="py-8 text-center text-[14px] text-navy/50">
+              <p className="py-8 text-center text-[14px] text-forest-deep/50">
                 No articles yet. Your best performers will show up here.
               </p>
             ) : (
@@ -117,9 +117,9 @@ export default function Dashboard() {
                   <li key={post.id}>
                     <Link
                       to={`/admin/posts/${post.id}/edit`}
-                      className="flex items-center gap-4 rounded-xl px-2 py-3 transition-colors hover:bg-admin-bg"
+                      className="flex items-center gap-4 rounded-xl px-2 py-3 transition-colors hover:bg-cream"
                     >
-                      <span className="w-6 shrink-0 text-[14px] font-semibold text-navy/35">
+                      <span className="w-6 shrink-0 text-[14px] font-semibold text-forest-deep/35">
                         {String(i + 1).padStart(2, '0')}
                       </span>
 
@@ -130,21 +130,21 @@ export default function Dashboard() {
                           className="size-12 shrink-0 rounded-xl object-cover"
                         />
                       ) : (
-                        <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-lilac text-[13px] font-bold text-navy">
+                        <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gold-tint text-[13px] font-bold text-forest-deep">
                           {post.title.slice(0, 2).toUpperCase()}
                         </span>
                       )}
 
                       <span className="min-w-0 flex-1">
-                        <span className="line-clamp-2 block text-[14px] font-semibold text-navy">
+                        <span className="line-clamp-2 block text-[14px] font-semibold text-forest-deep">
                           {post.title}
                         </span>
-                        <span className="mt-0.5 block text-[12px] text-navy/45">
+                        <span className="mt-0.5 block text-[12px] text-forest-deep/45">
                           {formatDate(post.publishedAt ?? post.createdAt)}
                         </span>
                       </span>
 
-                      <span className="hidden shrink-0 items-center gap-5 text-[13px] text-navy/65 sm:flex">
+                      <span className="hidden shrink-0 items-center gap-5 text-[13px] text-forest-deep/65 sm:flex">
                         <span className="inline-flex items-center gap-1.5">
                           <IconEye className="size-4" />
                           {compact(post.views)}
@@ -164,19 +164,19 @@ export default function Dashboard() {
 
         <div className="space-y-4">
           <StatCard
-            tone="mint"
+            tone="sage"
             icon={<IconMoney />}
             value={`$${earning.toLocaleString()}`}
             label="Total earning"
           />
           <StatCard
-            tone="lilac"
+            tone="gold"
             icon={<IconPen />}
             value={stats.published}
             label="Published articles"
           />
           <StatCard
-            tone="blush"
+            tone="brown"
             icon={<IconClock />}
             value={String(stats.drafts).padStart(2, '0')}
             label="Pending articles"
@@ -184,29 +184,29 @@ export default function Dashboard() {
 
           <Card className="!p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-[15px] font-bold text-navy">Today’s articles</h2>
-              <span className="text-[12.5px] text-navy/50">
+              <h2 className="text-[15px] font-bold text-forest-deep">Today’s articles</h2>
+              <span className="text-[12.5px] text-forest-deep/50">
                 {new Intl.DateTimeFormat('en-GB', { month: 'long' }).format(new Date())}
               </span>
             </div>
 
             <CalendarStrip />
 
-            <ul className="mt-5 space-y-3 border-t border-navy/10 pt-4">
+            <ul className="mt-5 space-y-3 border-t border-forest-deep/10 pt-4">
               {upcoming.length === 0 ? (
-                <li className="py-3 text-center text-[13px] text-navy/50">
+                <li className="py-3 text-center text-[13px] text-forest-deep/50">
                   Nothing scheduled. Drafts you create will queue up here.
                 </li>
               ) : (
                 upcoming.map((post) => (
                   <li key={post.id} className="flex gap-3">
-                    <span className="shrink-0 text-[12.5px] font-semibold text-navy/60">
+                    <span className="shrink-0 text-[12.5px] font-semibold text-forest-deep/60">
                       {post.slot}
                     </span>
                     <span className="min-w-0">
                       <Link
                         to={`/admin/posts/${post.id}/edit`}
-                        className="line-clamp-2 block text-[13px] font-medium text-navy hover:text-navy/70"
+                        className="line-clamp-2 block text-[13px] font-medium text-forest-deep hover:text-forest-deep/70"
                       >
                         {post.title}
                       </Link>

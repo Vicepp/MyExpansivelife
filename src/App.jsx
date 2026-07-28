@@ -29,9 +29,9 @@ const Settings = lazy(() => import('./admin/Settings'))
 
 function AdminFallback() {
   return (
-    <div className="grid min-h-dvh place-items-center bg-[#f6f7fb]">
-      <div className="flex items-center gap-3 text-[14px] text-[#232b4a]/60">
-        <span className="size-4 animate-spin rounded-full border-2 border-[#232b4a]/20 border-t-[#232b4a]" />
+    <div className="grid min-h-dvh place-items-center bg-cream">
+      <div className="flex items-center gap-3 text-[14px] text-forest-deep/60">
+        <span className="size-4 animate-spin rounded-full border-2 border-forest-deep/20 border-t-forest-deep" />
         Loading the studio…
       </div>
     </div>

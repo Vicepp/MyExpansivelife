@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   GoogleAuthProvider,
-  OAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendPasswordResetEmail,
@@ -128,13 +127,6 @@ export function AuthProvider({ children }) {
 
       signInWithGoogle() {
         const provider = new GoogleAuthProvider()
-        provider.setCustomParameters({ prompt: 'select_account' })
-        return popup(provider)
-      },
-
-      signInWithMicrosoft() {
-        // Covers Outlook, Hotmail, Live and Microsoft 365 accounts.
-        const provider = new OAuthProvider('microsoft.com')
         provider.setCustomParameters({ prompt: 'select_account' })
         return popup(provider)
       },

@@ -171,10 +171,10 @@ export default function PostEditor() {
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <div className="mr-auto">
-          <Link to="/admin/posts" className="text-[13px] text-navy/55 hover:text-navy">
+          <Link to="/admin/posts" className="text-[13px] text-forest-deep/55 hover:text-forest-deep">
             ← All articles
           </Link>
-          <h1 className="mt-1 flex items-center gap-3 text-[24px] font-bold text-navy">
+          <h1 className="mt-1 flex items-center gap-3 text-[24px] font-bold text-forest-deep">
             {isNew ? 'New article' : 'Edit article'}
             {!isNew && <StatusPill status={form.status} />}
           </h1>
@@ -189,7 +189,7 @@ export default function PostEditor() {
         <Btn variant="ghost" disabled={saving} onClick={() => save('draft')}>
           Save draft
         </Btn>
-        <Btn variant="sun" disabled={saving} onClick={() => save('published')}>
+        <Btn variant="gold" disabled={saving} onClick={() => save('published')}>
           {saving ? 'Saving…' : 'Publish'}
         </Btn>
       </div>
@@ -222,7 +222,7 @@ export default function PostEditor() {
 
         <div className="space-y-5">
           <Card>
-            <h2 className="mb-4 text-[15px] font-bold text-navy">Publishing</h2>
+            <h2 className="mb-4 text-[15px] font-bold text-forest-deep">Publishing</h2>
             <div className="space-y-4">
               <Field label="Status">
                 <Select value={form.status} onChange={set('status')}>
@@ -268,7 +268,7 @@ export default function PostEditor() {
           </Card>
 
           <Card>
-            <h2 className="mb-4 text-[15px] font-bold text-navy">Cover image</h2>
+            <h2 className="mb-4 text-[15px] font-bold text-forest-deep">Cover image</h2>
             {form.coverImage ? (
               <img
                 src={form.coverImage}
@@ -276,7 +276,7 @@ export default function PostEditor() {
                 className="mb-3 aspect-[16/10] w-full rounded-xl object-cover"
               />
             ) : (
-              <div className="mb-3 grid aspect-[16/10] w-full place-items-center rounded-xl border border-dashed border-navy/20 text-[13px] text-navy/45">
+              <div className="mb-3 grid aspect-[16/10] w-full place-items-center rounded-xl border border-dashed border-forest-deep/20 text-[13px] text-forest-deep/45">
                 No cover yet
               </div>
             )}
@@ -322,21 +322,21 @@ export default function PostEditor() {
           </Card>
 
           <Card>
-            <h2 className="mb-3 text-[15px] font-bold text-navy">Details</h2>
+            <h2 className="mb-3 text-[15px] font-bold text-forest-deep">Details</h2>
             <dl className="space-y-2 text-[13px]">
               <div className="flex justify-between">
-                <dt className="text-navy/55">Reading time</dt>
-                <dd className="font-semibold text-navy">
+                <dt className="text-forest-deep/55">Reading time</dt>
+                <dd className="font-semibold text-forest-deep">
                   {readingMinutes(form.content)} min
                 </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-navy/55">Views</dt>
-                <dd className="font-semibold text-navy">{form.views ?? 0}</dd>
+                <dt className="text-forest-deep/55">Views</dt>
+                <dd className="font-semibold text-forest-deep">{form.views ?? 0}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-navy/55">Likes</dt>
-                <dd className="font-semibold text-navy">{form.likes ?? 0}</dd>
+                <dt className="text-forest-deep/55">Likes</dt>
+                <dd className="font-semibold text-forest-deep">{form.likes ?? 0}</dd>
               </div>
             </dl>
 

@@ -18,15 +18,15 @@ import { IconEye, IconHeart, IconDoc, IconChart } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
 import { compact, listPosts, summarise } from '../lib/posts'
 
-const SERIES_COLOURS = ['#232b4a', '#b3803f', '#40b487', '#7d886e', '#f2c53d', '#c0392b']
+const SERIES_COLOURS = ['#183734', '#b3803f', '#87492c', '#7d886e', '#40b487', '#712806']
 
-const axis = { stroke: '#232b4a', fontSize: 12, tickLine: false, axisLine: false }
+const axis = { stroke: '#183734', fontSize: 12, tickLine: false, axisLine: false }
 
 const tooltipStyle = {
   borderRadius: 12,
-  border: '1px solid rgb(35 43 74 / 0.12)',
+  border: '1px solid rgb(24 55 52 / 0.12)',
   fontSize: 13,
-  boxShadow: '0 10px 30px -12px rgb(35 43 74 / 0.3)',
+  boxShadow: '0 10px 30px -12px rgb(24 55 52 / 0.3)',
 }
 
 export default function Analytics() {
@@ -112,35 +112,35 @@ export default function Analytics() {
       {!isFirebaseConfigured && <SetupNotice what="These analytics" />}
 
       <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard tone="mint" icon={<IconEye />} value={compact(stats.views)} label="Total views" />
-        <StatCard tone="lilac" icon={<IconHeart />} value={compact(stats.likes)} label="Total likes" />
-        <StatCard tone="blush" icon={<IconDoc />} value={stats.published} label="Published" />
-        <StatCard tone="sun" icon={<IconChart />} value={`${engagement}%`} label="Engagement rate" />
+        <StatCard tone="sage" icon={<IconEye />} value={compact(stats.views)} label="Total views" />
+        <StatCard tone="gold" icon={<IconHeart />} value={compact(stats.likes)} label="Total likes" />
+        <StatCard tone="brown" icon={<IconDoc />} value={stats.published} label="Published" />
+        <StatCard tone="sand" icon={<IconChart />} value={`${engagement}%`} label="Engagement rate" />
       </div>
 
       <Card className="mb-5">
-        <h2 className="mb-5 text-[16px] font-bold text-navy">Views and likes over time</h2>
+        <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Views and likes over time</h2>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trend} margin={{ left: -18, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="viewsFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#232b4a" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#232b4a" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#183734" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#183734" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="likesFill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#b3803f" stopOpacity={0.35} />
                   <stop offset="100%" stopColor="#b3803f" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgb(35 43 74 / 0.08)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(24 55 52 / 0.08)" vertical={false} />
               <XAxis dataKey="label" {...axis} minTickGap={24} />
               <YAxis {...axis} width={56} />
               <Tooltip contentStyle={tooltipStyle} />
               <Area
                 type="monotone"
                 dataKey="views"
-                stroke="#232b4a"
+                stroke="#183734"
                 strokeWidth={2}
                 fill="url(#viewsFill)"
               />
@@ -158,18 +158,18 @@ export default function Analytics() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Most read articles</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Most read articles</h2>
           {topPosts.length === 0 ? (
-            <p className="py-10 text-center text-[14px] text-navy/50">No data yet.</p>
+            <p className="py-10 text-center text-[14px] text-forest-deep/50">No data yet.</p>
           ) : (
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topPosts} layout="vertical" margin={{ left: 12, right: 16 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgb(35 43 74 / 0.08)" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgb(24 55 52 / 0.08)" horizontal={false} />
                   <XAxis type="number" {...axis} />
                   <YAxis type="category" dataKey="name" {...axis} width={150} />
-                  <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgb(35 43 74 / 0.04)' }} />
-                  <Bar dataKey="views" fill="#232b4a" radius={[0, 8, 8, 0]} barSize={18} />
+                  <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgb(24 55 52 / 0.04)' }} />
+                  <Bar dataKey="views" fill="#183734" radius={[0, 8, 8, 0]} barSize={18} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -177,9 +177,9 @@ export default function Analytics() {
         </Card>
 
         <Card>
-          <h2 className="mb-5 text-[16px] font-bold text-navy">Views by category</h2>
+          <h2 className="mb-5 text-[16px] font-bold text-forest-deep">Views by category</h2>
           {byCategory.length === 0 ? (
-            <p className="py-10 text-center text-[14px] text-navy/50">No data yet.</p>
+            <p className="py-10 text-center text-[14px] text-forest-deep/50">No data yet.</p>
           ) : (
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -203,7 +203,7 @@ export default function Analytics() {
           )}
           <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
             {byCategory.map((entry, i) => (
-              <li key={entry.name} className="flex items-center gap-2 text-[12.5px] text-navy/70">
+              <li key={entry.name} className="flex items-center gap-2 text-[12.5px] text-forest-deep/70">
                 <span
                   className="size-2.5 rounded-full"
                   style={{ background: SERIES_COLOURS[i % SERIES_COLOURS.length] }}
