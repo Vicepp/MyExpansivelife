@@ -44,6 +44,16 @@
   --color-mint: #40b487;
   --color-ink: #2b2219;
 
+  /* Admin panel palette — deliberately separate from the marketing site. */
+  --color-navy: #232b4a;
+  --color-navy-soft: #2d3760;
+  --color-navy-line: #39426b;
+  --color-admin-bg: #f6f7fb;
+  --color-sun: #f2c53d;
+  --color-blush: #f4c7ce;
+  --color-mintcard: #c7ece2;
+  --color-lilac: #d6d9f3;
+
   --font-display: "The Seasons", "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
 
@@ -176,6 +186,170 @@ body {
   to {
     transform: translateX(-50%);
   }
+}
+
+/* --- article body -------------------------------------------------------- */
+/* Shared by the TipTap editor and the published article page so what you
+   write is what readers get. */
+
+.prose-mxl {
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.prose-mxl :focus-visible {
+  outline: none;
+}
+
+.prose-mxl > * + * {
+  margin-top: 1.1em;
+}
+
+.prose-mxl h2 {
+  font-family: var(--font-display);
+  font-size: 1.85em;
+  line-height: 1.2;
+  color: var(--color-forest);
+  margin-top: 1.6em;
+}
+
+.prose-mxl h3 {
+  font-size: 1.35em;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-forest-deep);
+  margin-top: 1.4em;
+}
+
+.prose-mxl h4 {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--color-forest-deep);
+  margin-top: 1.2em;
+}
+
+.prose-mxl a {
+  color: var(--color-gold-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-mxl strong {
+  font-weight: 700;
+  color: var(--color-forest-deep);
+}
+
+.prose-mxl ul,
+.prose-mxl ol {
+  padding-left: 1.3em;
+}
+
+.prose-mxl ul {
+  list-style: disc;
+}
+
+.prose-mxl ol {
+  list-style: decimal;
+}
+
+.prose-mxl li + li {
+  margin-top: 0.4em;
+}
+
+.prose-mxl blockquote {
+  border-left: 3px solid var(--color-gold);
+  padding: 0.2em 0 0.2em 1.2em;
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-ink) 80%, transparent);
+}
+
+.prose-mxl code {
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+}
+
+.prose-mxl pre {
+  background: var(--color-navy);
+  color: #eef1f8;
+  border-radius: 12px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+}
+
+.prose-mxl pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose-mxl img {
+  border-radius: 12px;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose-mxl hr {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 15%, transparent);
+}
+
+.prose-mxl mark {
+  background: var(--color-sun);
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+}
+
+/* Embedded video keeps a 16:9 box on every screen. */
+.prose-mxl div[data-youtube-video] {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.prose-mxl div[data-youtube-video] iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.prose-mxl table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose-mxl :is(th, td) {
+  border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+  padding: 0.6em 0.8em;
+  text-align: left;
+  vertical-align: top;
+  min-width: 7rem;
+}
+
+.prose-mxl th {
+  background: var(--color-cream-card);
+  font-weight: 700;
+}
+
+.prose-mxl .selectedCell {
+  background: color-mix(in srgb, var(--color-gold) 18%, transparent);
+}
+
+/* TipTap placeholder */
+.prose-mxl p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--color-ink) 40%, transparent);
 }
 
 /* --- interaction polish -------------------------------------------------- */

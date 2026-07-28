@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Container } from './primitives'
 import Reveal from './Reveal'
+import { sendMessage } from '../lib/messages'
 
 const FIELDS = [
   { name: 'fullName', label: 'Full Name', required: true, type: 'text' },
@@ -31,16 +32,34 @@ function Field({ field, value, onChange }) {
 
 export default function AffiliateForm() {
   const [values, setValues] = useState(EMPTY)
-  const [sent, setSent] = useState(false)
+  const [sent, setSent] = useState('')
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
 
   const update = (e) =>
     setValues((v) => ({ ...v, [e.target.name]: e.target.value }))
 
-  // No backend exists yet — this confirms locally so the flow is testable.
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    setSent(true)
-    setValues(EMPTY)
+    setError('')
+    setSending(true)
+    try {
+      // Lands in the admin Inbox. Returns false when Firebase is unconnected.
+      const stored = await sendMessage({
+        name: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        subject: 'Affiliate application',
+        body: values.message || 'No message provided.',
+        source: 'Affiliate page',
+      })
+      setSent(stored ? 'stored' : 'local')
+      setValues(EMPTY)
+    } catch {
+      setError('Something went wrong sending that. Please try again.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -89,13 +108,25 @@ export default function AffiliateForm() {
             <div className="mt-10 flex flex-wrap items-center gap-5">
               <button
                 type="submit"
-                className="rounded-full bg-gold px-8 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-gold-text"
+                disabled={sending}
+                className="rounded-full bg-gold px-8 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-gold-text disabled:opacity-60"
               >
-                Submit Application
+                {sending ? 'Sending…' : 'Submit Application'}
               </button>
-              {sent && (
+              {sent === 'stored' && (
                 <p role="status" className="text-[14px] font-medium text-mint">
-                  Thanks — your application has been recorded.
+                  Thanks — your application has been received.
+                </p>
+              )}
+              {sent === 'local' && (
+                <p role="status" className="text-[14px] font-medium text-ink/60">
+                  Form works, but no database is connected yet, so this wasn&rsquo;t
+                  saved.
+                </p>
+              )}
+              {error && (
+                <p role="alert" className="text-[14px] font-medium text-red-600">
+                  {error}
                 </p>
               )}
             </div>
