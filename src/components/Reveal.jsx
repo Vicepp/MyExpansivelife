@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 const reducedMotion = () =>
   typeof window !== 'undefined' &&
@@ -87,15 +87,19 @@ export function TextReveal({
         return segment.text.split(' ').map((word, wi) => {
           const wordDelay = delay + index++ * step
           return (
-            <span key={`${si}-${wi}`} className="word-mask">
-              <span
-                className={`word ${shown ? 'word-in' : ''} ${segment.className ?? ''}`}
-                style={{ '--word-delay': `${wordDelay}ms` }}
-              >
-                {word}
-                {' '}
-              </span>
-            </span>
+            // The space must sit OUTSIDE the mask. Inside it the run of
+            // inline-blocks has no break opportunity, and the heading
+            // refuses to wrap on narrow screens.
+            <Fragment key={`${si}-${wi}`}>
+              <span className="word-mask">
+                <span
+                  className={`word ${shown ? 'word-in' : ''} ${segment.className ?? ''}`}
+                  style={{ '--word-delay': `${wordDelay}ms` }}
+                >
+                  {word}
+                </span>
+              </span>{' '}
+            </Fragment>
           )
         })
       })}

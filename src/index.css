@@ -65,6 +65,9 @@
 html {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  /* clip, not hidden: contains stray horizontal overflow without turning the
+     root into a scroll container (which would break position: sticky). */
+  overflow-x: clip;
 }
 
 body {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Container, Button } from './primitives'
 import Reveal from './Reveal'
-import { EVENTS, statusOf, nextEventIndex } from '../data/events'
+import { listEvents, statusOf, nextEventIndex } from '../lib/events'
 import { breakdown, formatEventDate } from '../lib/eventTime'
 import logo from '../assets/design/logo.svg'
 
@@ -113,27 +113,49 @@ function Countdown({ event, now }) {
 }
 
 export default function UpcomingEvents() {
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
   const [now, setNow] = useState(() => Date.now())
-  const [index, setIndex] = useState(() => nextEventIndex(Date.now()))
+  const [index, setIndex] = useState(0)
   // Once the visitor navigates we stop re-selecting the next event for them.
   const browsing = useRef(false)
 
   useEffect(() => {
+    let cancelled = false
+    listEvents()
+      .then((rows) => {
+        if (cancelled) return
+        setEvents(rows)
+        setIndex(nextEventIndex(rows, Date.now()))
+      })
+      .catch((e) => console.error('Could not load events:', e))
+      .finally(() => !cancelled && setLoading(false))
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (events.length === 0) return
     const id = setInterval(() => {
       const t = Date.now()
       setNow(t)
-      if (!browsing.current) setIndex(nextEventIndex(t))
+      if (!browsing.current) setIndex(nextEventIndex(events, t))
     }, 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [events])
 
-  const event = EVENTS[index]
-  const status = statusOf(event, now)
+  const event = events[index]
 
   const go = (delta) => {
     browsing.current = true
-    setIndex((i) => Math.min(EVENTS.length - 1, Math.max(0, i + delta)))
+    setIndex((i) => Math.min(events.length - 1, Math.max(0, i + delta)))
   }
+
+  // Nothing scheduled: drop the whole section rather than show an empty frame.
+  if (loading || !event) return null
+
+  const status = statusOf(event, now)
 
   return (
     <section id="events" className="bg-cream py-20 lg:py-24">
@@ -153,7 +175,7 @@ export default function UpcomingEvents() {
                     {status === 'past' ? 'Past event' : event.badge}
                   </span>
                   <span className="text-[13px] text-ink/55">
-                    {index + 1} / {EVENTS.length}
+                    {index + 1} / {events.length}
                   </span>
                 </div>
 
@@ -161,7 +183,12 @@ export default function UpcomingEvents() {
                   {event.title}
                 </h3>
 
-                <Button variant="solid" to="/community" icon className="mt-6">
+                <Button
+                  variant="solid"
+                  to={event.registerUrl || '/community'}
+                  icon
+                  className="mt-6"
+                >
                   {status === 'past' ? 'Watch replay' : 'Register now'}
                 </Button>
               </div>
@@ -175,7 +202,7 @@ export default function UpcomingEvents() {
                   dir="up"
                   label="Show the next event"
                   onClick={() => go(1)}
-                  disabled={index === EVENTS.length - 1}
+                  disabled={index === events.length - 1}
                 />
                 <StepButton
                   dir="down"
@@ -184,7 +211,7 @@ export default function UpcomingEvents() {
                   disabled={index === 0}
                 />
 
-                {EVENTS.map((item, i) => {
+                {events.map((item, i) => {
                   const offset = i - index
                   const distance = Math.abs(offset)
                   if (distance > VISIBLE) return null
@@ -223,7 +250,7 @@ export default function UpcomingEvents() {
         </Reveal>
 
         <div className="mt-6 flex items-center justify-center gap-2">
-          {EVENTS.map((e, i) => (
+          {events.map((e, i) => (
             <button
               key={e.id}
               type="button"

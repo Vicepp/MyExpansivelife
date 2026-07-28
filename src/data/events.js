@@ -1,17 +1,13 @@
-import { zonedToUtc } from '../lib/eventTime'
-
 /**
+ * Bundled events.
+ *
+ * These are the fallback the site shows before anything exists in Firestore,
+ * and the source for the one-click import on the admin Events page. Once the
+ * `events` collection has documents, this file is no longer read.
+ *
  * `start` is Central wall-clock time, as printed on the banners.
- * `durationMinutes` only decides how long a session counts as "live now".
- *
- * Banners can be supplied two ways:
- *   `image`       — imported and hashed by Vite (preferred, cache-busted)
- *   `publicImage` — a path under /public, so a file can be dropped in without
- *                   touching code. Missing files fall back to a branded panel.
- *
- * Ordering and past/upcoming state are derived from the clock, never hand-set.
  */
-const SOURCE = [
+export const SEED_EVENTS = [
   {
     id: 'decision-fatigue',
     badge: 'Monday Momentum',
@@ -43,25 +39,3 @@ const SOURCE = [
     publicImage: '/events/real-estate.jpg',
   },
 ]
-
-export const EVENTS = SOURCE.map((event) => {
-  const startsAt = zonedToUtc(event.start)
-  return {
-    ...event,
-    startsAt,
-    endsAt: startsAt + event.durationMinutes * 60_000,
-  }
-}).sort((a, b) => a.startsAt - b.startsAt)
-
-/** 'past' | 'live' | 'upcoming' for a given moment. */
-export function statusOf(event, now) {
-  if (now >= event.endsAt) return 'past'
-  if (now >= event.startsAt) return 'live'
-  return 'upcoming'
-}
-
-/** Index of the next event that hasn't finished; falls back to the last one. */
-export function nextEventIndex(now) {
-  const i = EVENTS.findIndex((e) => now < e.endsAt)
-  return i === -1 ? EVENTS.length - 1 : i
-}

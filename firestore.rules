@@ -47,6 +47,13 @@ service cloud.firestore {
       allow read, update, delete: if signedIn();
     }
 
+    match /events/{eventId} {
+      // Events are public listings; hidden ones are filtered client-side
+      // because a rule condition here would break the collection query.
+      allow read: if true;
+      allow write: if signedIn();
+    }
+
     match /settings/{docId} {
       allow read: if true;
       allow write: if signedIn();

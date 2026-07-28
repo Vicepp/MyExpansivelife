@@ -21,6 +21,7 @@ const Login = lazy(() => import('./admin/Login'))
 const Dashboard = lazy(() => import('./admin/Dashboard'))
 const Posts = lazy(() => import('./admin/Posts'))
 const PostEditor = lazy(() => import('./admin/PostEditor'))
+const Events = lazy(() => import('./admin/Events'))
 const Analytics = lazy(() => import('./admin/Analytics'))
 const Inbox = lazy(() => import('./admin/Inbox'))
 const PostPlan = lazy(() => import('./admin/PostPlan'))
@@ -81,6 +82,7 @@ function App() {
           <Route path="posts" element={<Posts />} />
           <Route path="posts/new" element={<PostEditor />} />
           <Route path="posts/:id/edit" element={<PostEditor />} />
+          <Route path="events" element={<Events />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="inbox" element={<Inbox />} />
           <Route path="post-plan" element={<PostPlan />} />

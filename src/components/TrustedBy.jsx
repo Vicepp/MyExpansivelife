@@ -14,8 +14,13 @@ export default function TrustedBy() {
             Trusted by the best in the world
           </p>
 
-          {/* Continuous strip; the image repeats twice so the loop is seamless. */}
-          <div className="marquee min-w-0 grow">
+          {/*
+            Continuous strip; the image repeats twice so the loop is seamless.
+            w-full is load-bearing: the track is max-content wide, and in the
+            mobile column layout the element would otherwise size to it and
+            push the whole page wider than the viewport.
+          */}
+          <div className="marquee w-full min-w-0 lg:grow">
             <div className="marquee-track gap-16 pr-16">
               {[0, 1].map((i) => (
                 <img
