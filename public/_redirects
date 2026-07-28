@@ -1,0 +1,3 @@
+# SPA fallback for Netlify. Duplicated in netlify.toml — this file also covers
+# drag-and-drop deploys, where netlify.toml is not read.
+/*    /index.html   200

@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 requires Node 20.19+ / 22.12+. Netlify's default is older and the
+  # build fails without this.
+  NODE_VERSION = "22"
+
+# Client-side routing: every path must serve index.html so /blogs, /admin and
+# the rest resolve on a direct hit or refresh instead of 404ing.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
