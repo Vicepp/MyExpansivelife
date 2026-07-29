@@ -1,6 +1,7 @@
 import { Container, Button } from './primitives'
 import Reveal, { TextReveal } from './Reveal'
 import communityCluster from '../assets/design/community-hero-cluster.png'
+import { COMMUNITY_URL } from '../lib/links'
 
 /**
  * Left-aligned hero used by the community and affiliate pages. The community

@@ -1,5 +1,6 @@
 import { Container, Button } from './primitives'
 import Reveal, { TextReveal } from './Reveal'
+import { COMMUNITY_URL } from '../lib/links'
 
 export default function BlogHero() {
   return (

@@ -2,6 +2,7 @@ import { Container, Button } from './primitives'
 import Reveal, { TextReveal } from './Reveal'
 import clusterLeft from '../assets/design/hero-cluster-left.png'
 import clusterRight from '../assets/design/hero-cluster-right.png'
+import { COMMUNITY_URL } from '../lib/links'
 
 export default function Hero() {
   return (
