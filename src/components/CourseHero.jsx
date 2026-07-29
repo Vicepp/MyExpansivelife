@@ -11,17 +11,28 @@ const STATS = [
   { value: '41', label: 'Lessons, start to finish' },
 ]
 
-export function CourseStats() {
+export function CourseStats({ eyebrow, stats = STATS }) {
   return (
     <section className="bg-white py-12 lg:py-14">
       <Container>
-        <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
-          {STATS.map((s, i) => (
-            <Reveal key={s.label} delay={i * 90} className="text-center">
-              <dt className="text-[34px] font-bold leading-none text-gold lg:text-[40px]">
+        {eyebrow && (
+          <Reveal>
+            <p className="mb-8 text-center text-[12px] font-semibold uppercase tracking-[0.2em] text-ink/55">
+              {eyebrow}
+            </p>
+          </Reveal>
+        )}
+        <dl
+          className={`grid gap-y-10 ${stats.length === 3 ? 'sm:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4'}`}
+        >
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 90} className="px-4 text-center">
+              <dt className="text-[34px] font-bold leading-none text-gold lg:text-[42px]">
                 <CountUp value={s.value} />
               </dt>
-              <dd className="mt-2 text-[15px] text-ink/80">{s.label}</dd>
+              <dd className="mx-auto mt-2 max-w-[230px] text-[14px] leading-snug text-ink/80">
+                {s.label}
+              </dd>
             </Reveal>
           ))}
         </dl>

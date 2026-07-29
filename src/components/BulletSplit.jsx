@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Button } from './primitives'
 import Reveal from './Reveal'
 import { COMMUNITY_URL } from '../lib/links'
@@ -12,10 +13,17 @@ import awardBadge from '../assets/design/award-badge.png'
 export default function BulletSplit({
   eyebrow,
   title,
+  body,
   items,
   ctaLabel = 'Join Our Community',
   ctaTo = COMMUNITY_URL,
+  image = groupPhoto,
+  imageAlt = 'The My Expansive Life community at a live event',
+  flip = false,
+  badge = true,
 }) {
+  const [failed, setFailed] = useState(false)
+
   return (
     <section className="bg-cream">
       <div className="grid lg:grid-cols-[minmax(0,56%)_minmax(0,44%)]">
@@ -29,17 +37,40 @@ export default function BulletSplit({
                 {title}
               </h2>
             </Reveal>
+            {body && (
+              <Reveal delay={140}>
+                <p className="mt-5 max-w-[520px] text-[14.5px] leading-relaxed text-ink/75">
+                  {body}
+                </p>
+              </Reveal>
+            )}
+
             <Reveal delay={170}>
+              {/* Items are plain strings, or { title, body } for a bold lead-in. */}
               <ul className="mt-7 space-y-3">
-                {items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-3 text-[14.5px] leading-relaxed text-ink/85"
-                  >
-                    <span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-ink/60" />
-                    {item}
-                  </li>
-                ))}
+                {items.map((item) => {
+                  const title = typeof item === 'string' ? null : item.title
+                  const text = typeof item === 'string' ? item : item.body
+                  return (
+                    <li
+                      key={title ?? text}
+                      className="flex gap-3 text-[14.5px] leading-relaxed text-ink/85"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-2 size-1 shrink-0 rounded-full bg-ink/60"
+                      />
+                      <span>
+                        {title && (
+                          <strong className="block font-semibold text-forest-deep">
+                            {title}
+                          </strong>
+                        )}
+                        {text}
+                      </span>
+                    </li>
+                  )
+                })}
               </ul>
             </Reveal>
             <Reveal delay={250}>
@@ -51,19 +82,26 @@ export default function BulletSplit({
         </div>
 
         {/* No overflow-hidden — the award badge deliberately overhangs the edge. */}
-        <div className="relative">
+        <div className={`relative ${flip ? 'lg:order-first' : ''}`}>
           <img
-            src={groupPhoto}
-            alt="The My Expansive Life community at a live event"
-            className="h-64 w-full object-cover sm:h-96 lg:h-full"
+            src={failed ? groupPhoto : image}
+            alt={imageAlt}
+            // Lets a portrait be dropped into /public without risking a broken
+            // image if the file is not there yet.
+            onError={() => setFailed(true)}
+            className="h-64 w-full object-cover object-top sm:h-96 lg:h-full"
           />
-          <img
-            src={awardBadge}
-            alt="Number one best award, 2023"
-            // clipped to a circle: the crop carries cream corners that would
-            // otherwise show as a square against the photo
-            className="absolute left-0 top-[72%] aspect-square w-24 -translate-x-1/2 -translate-y-1/2 rounded-full object-cover lg:w-32"
-          />
+          {badge && (
+            <img
+              src={awardBadge}
+              alt="Number one best award, 2023"
+              // clipped to a circle: the crop carries cream corners that would
+              // otherwise show as a square against the photo
+              className={`absolute top-[72%] aspect-square w-24 -translate-y-1/2 rounded-full object-cover lg:w-32 ${
+                flip ? 'right-0 translate-x-1/2' : 'left-0 -translate-x-1/2'
+              }`}
+            />
+          )}
         </div>
       </div>
     </section>

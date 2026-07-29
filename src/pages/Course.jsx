@@ -11,24 +11,67 @@ import Blog from '../components/Blog'
 import { Newsletter } from '../components/Footer'
 import { COURSE_URL } from '../lib/links'
 
-/** The four outcomes, worded as they appear on the sales page. */
 const CHANGES = [
-  'Position yourself as a leader in your field. Move from well-kept secret to well-known authority on your own terms.',
-  'Build relationships with influential peers, investors, cross-functional teams, and industry leaders who open real doors.',
-  'Clients, capital, speaking invitations, and partnerships coming to you. No cold outreach required.',
-  'Earn the credibility that makes people choose you before they have even spoken to you. Reputation that compounds.',
+  {
+    title: 'Advance your career and expertise',
+    body: 'Position yourself as a leader in your field. Move from well-kept secret to well-known authority on your own terms.',
+  },
+  {
+    title: 'Connect with the people who matter',
+    body: 'Build relationships with influential peers, investors, cross-functional teams, and industry leaders who open real doors.',
+  },
+  {
+    title: 'Attract inbound opportunities',
+    body: 'Clients, capital, speaking invitations, and partnerships coming to you. No cold outreach required.',
+  },
+  {
+    title: 'Build unmatched trust and authority',
+    body: 'Earn the credibility that makes people choose you before they have even spoken to you. Reputation that compounds.',
+  },
+]
+
+const CREDENTIALS = [
+  {
+    title: '$153M+ in assets under management',
+    body: 'All capital partners found her through LinkedIn content.',
+  },
+  {
+    title: 'Invited to the UN General Assembly',
+    body: 'Recognised as a global voice in finance and leadership.',
+  },
+  {
+    title: '16,000+ high-value followers',
+    body: 'Built organically, zero paid advertising.',
+  },
+  {
+    title: 'Secured global speaking engagements',
+    body: 'All opportunities attracted through content, zero cold outreach.',
+  },
+]
+
+const PROOF_STATS = [
+  { value: '15K+', label: 'High-value followers built organically' },
+  { value: '$40M+', label: 'Capital raised using the LinkedIn Unlocked strategy' },
+  { value: '120+', label: 'Active investors attracted through content' },
 ]
 
 /*
- * Ordered to move a visitor from problem to purchase: hook, proof, the problem
- * named, credibility, what changes, how it works, a free way in, the ways to
- * buy, social proof, then the close.
+ * Ordered as a walk toward the webinar: hook, what changes, the reframe, proof,
+ * who is teaching it, the curriculum, then the ways in. The free webinar is the
+ * repeated ask — it is the page's real conversion, not the checkout.
  */
 export default function Course() {
   return (
     <>
       <CourseHero />
-      <CourseStats />
+
+      <BulletSplit
+        eyebrow="What changes for you"
+        title="Four things LinkedIn Unlocked delivers."
+        items={CHANGES}
+        ctaLabel="Join the Free Webinar"
+        ctaTo="#events"
+      />
 
       <SageFeature
         title="The algorithm isn’t against you. You just haven’t been given the system."
@@ -38,42 +81,58 @@ export default function Course() {
         videoCaption="Start here: a short introduction to how the course works."
       />
 
+      <CourseStats
+        eyebrow="Trusted by professionals across industries"
+        stats={PROOF_STATS}
+      />
+
       <TrustedBy />
 
       <BulletSplit
-        eyebrow="What changes for you"
-        title="From well-kept secret to well-known authority."
-        items={CHANGES}
-        ctaLabel="Enroll Now"
-        ctaTo={COURSE_URL}
+        flip
+        badge={false}
+        eyebrow="Meet your instructor"
+        title="Dr. Nkem Ezeamama"
+        image="/team/nkem-ezeamama.jpg"
+        imageAlt="Dr. Nkem Ezeamama"
+        body="Three years ago, I was an ER physician working 12-hour shifts with no audience, network, or platform. After realising expertise alone wasn’t enough, I intentionally built my presence on LinkedIn, post by post, connection by connection. That strategy helped me secure global speaking engagements, build a million-dollar real estate firm, and raise $153M AUM. Now I’m teaching the exact system I used, so other professionals can grow their influence, expand their opportunities, and achieve their biggest goals."
+        items={CREDENTIALS}
+        ctaLabel="Join the Free Webinar"
+        ctaTo="#events"
       />
 
       <Process />
 
-      {/* The free webinar is the low-friction way in, so it precedes the price. */}
-      <UpcomingEvents />
-
-      <ThreeWays title="Three ways to start." ways={COURSE_WAYS} />
-
       <GrowthBanner
         tone="gold"
         wide
-        title="You'll Be Able To Walk Into Any Room, Online Or Off, And Say Exactly Who You Help."
-        body="A walk through the profile, the posts and the conversations they start — the same approach behind 16,000+ followers and $153M+ in assets under management."
-        ctaLabel="Enroll Now"
-        ctaTo={COURSE_URL}
+        title="Ready to build visibility that lasts?"
+        body="Join the current cohort and start seeing results this week. One-time investment · Lifetime access · 30-day guarantee."
+        ctaLabel="Join the Free Webinar"
+        ctaTo="#events"
         videoUrl="https://www.youtube.com/watch?v=sbLVlEW_ibU"
         videoTitle="LinkedIn Unlocked — the strategy in action"
+      />
+
+      {/* The webinar itself, with its countdown, sits at the decision point. */}
+      <UpcomingEvents />
+
+      <ThreeWays
+        eyebrow="Enroll today"
+        title="Two paths. Same destination."
+        body="Learn it yourself or have it built for you. Either way, lifetime access."
+        ways={COURSE_WAYS}
       />
 
       <Testimonials />
 
       <GrowthBanner
         tone="sage"
+        wide
         title="You can stay the best-kept secret. Or you can become undeniable."
-        body="Join the current cohort and start seeing results this week. One-time investment, lifetime access, 30-day guarantee."
-        ctaLabel="I'm ready. Enroll me now"
-        ctaTo={COURSE_URL}
+        body="There is no algorithm keeping you stuck. No gatekeeper holding you back. Only a system you haven’t learned yet, and a community that’s waiting to watch you win."
+        ctaLabel="Join the Free Webinar"
+        ctaTo="#events"
       />
 
       <Newsletter />

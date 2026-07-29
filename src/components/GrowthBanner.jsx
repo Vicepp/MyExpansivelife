@@ -31,11 +31,16 @@ export default function GrowthBanner({
       className={`relative flex items-center overflow-hidden lg:min-h-[566px] ${t.bg}`}
     >
       {videoUrl ? (
-        /* A video takes the artwork's place, keeping the same footprint. */
+        /*
+         * A video takes the artwork's place, keeping the same footprint.
+         * z-20 is load-bearing: the copy Container is position:relative and
+         * later in the DOM, so without it the Container's box covers the
+         * player and swallows the click on the play button.
+         */
         <Reveal
           delay={150}
           y={0}
-          className="absolute inset-y-0 right-0 hidden w-[46%] items-center pr-6 lg:flex xl:pr-10"
+          className="absolute inset-y-0 right-0 z-20 hidden w-[46%] items-center pr-6 lg:flex xl:pr-10"
         >
           <VideoEmbed url={videoUrl} title={videoTitle} className="w-full" />
         </Reveal>
@@ -55,7 +60,8 @@ export default function GrowthBanner({
         </Reveal>
       )}
 
-      <Container className="relative">
+      {/* Sits below the video so it never intercepts clicks meant for it. */}
+      <Container className="relative z-10">
         <div className={`py-16 lg:py-24 ${wide ? 'max-w-[620px]' : 'max-w-[460px]'}`}>
           <Reveal>
             <h2 className="text-[32px] font-bold leading-headline text-white lg:text-[42px]">

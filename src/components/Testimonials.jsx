@@ -8,6 +8,13 @@ import Reveal from './Reveal'
  */
 const QUOTES = [
   {
+    id: 'leslie',
+    name: 'Leslie Awason',
+    role: 'Managing Partner, XSITE Capital',
+    photo: '/testimonials/leslie-awason.jpg',
+    body: 'I watched Dr. Nkem go from zero presence to building a powerful thought leadership platform that drove real capital. Her strategy helped us raise $30M and close $70M in deals.',
+  },
+  {
     id: 'jovi',
     name: 'Jovi Stevenson',
     role: 'Founder, BestView LLC',
@@ -73,18 +80,17 @@ export default function Testimonials() {
     <section className="bg-white py-20 lg:py-24">
       <Container>
         <Reveal>
-          <h2 className="text-center font-display text-[30px] text-forest lg:text-[36px]">
-            Results our members are posting
-          </h2>
-          <p className="mx-auto mt-3 max-w-[520px] text-center text-[15px] leading-relaxed text-ink/70">
-            Impressions, conversations and booked calls — from people who started
-            exactly where you are.
+          <p className="text-center text-[13px] font-semibold uppercase tracking-[0.2em] text-gold">
+            What students say
           </p>
+          <h2 className="mt-3 text-center font-display text-[30px] text-forest lg:text-[36px]">
+            Real professionals. Real results.
+          </h2>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {QUOTES.map((quote, i) => (
-            <Reveal key={quote.id} delay={(i % 4) * 110} className="flex">
+            <Reveal key={quote.id} delay={(i % 3) * 110} className="flex">
               <figure className="card-lift flex grow flex-col rounded-xl bg-cream-card p-7">
                 <span
                   aria-hidden="true"

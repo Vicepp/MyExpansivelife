@@ -1,37 +1,49 @@
 import { Container } from './primitives'
 import Reveal from './Reveal'
 
-/** The six modules, worded as they appear on the LinkedIn Unlocked page. */
+/** The six modules plus the bonus, worded as on the sales page. */
 const STEPS = [
   {
     n: '01',
     title: 'Personal Brand Strategy',
     body: 'Define your niche, your voice, and your positioning so that every piece of content you create is working toward the same goal.',
+    tag: 'Foundation',
   },
   {
     n: '02',
     title: 'Profile Optimization for Trust',
     body: 'Transform your profile from a resume into a trust-building landing page that compels the right people to reach out to you.',
+    tag: 'Authority',
   },
   {
     n: '03',
-    title: 'Content Creation System',
+    title: 'Create content that pulls people in',
     body: '5-post system. Content calendar. Done-for-you templates. Consistent 5,000+ impressions.',
+    tag: 'Visibility',
   },
   {
     n: '04',
     title: 'Growth & Engagement Strategy',
     body: 'How to grow strategically, engage authentically, and build a network of people who actually want what you’re offering.',
+    tag: 'Growth',
   },
   {
     n: '05',
     title: 'DM Scripts & Conversion Psychology',
     body: 'Word-for-word scripts to open conversations, spot real intent, and guide relationships from a comment to a committed call.',
+    tag: 'Conversation',
   },
   {
     n: '06',
     title: 'Mini CRM & Email Integration',
     body: 'Build a simple pipeline to track leads, set up your Mailchimp sequences, and never let a warm connection fall through the cracks.',
+    tag: 'Systems',
+  },
+  {
+    n: 'Bonus',
+    title: 'AI Tools for Content & Outreach',
+    body: 'The exact ChatGPT and Canva workflows I use to create high-performing content in a fraction of the time.',
+    tag: 'Accelerator',
   },
 ]
 
@@ -55,47 +67,55 @@ function ArrowWatermark() {
   )
 }
 
-export default function Process() {
+export default function Process({
+  eyebrow = 'The curriculum',
+  title = (
+    <>
+      Six modules. <br className="hidden sm:inline" />
+      Built to stack.
+    </>
+  ),
+  body = 'Each module builds on the last. Implement as you learn and results start before you finish.',
+  steps = STEPS,
+}) {
   return (
     <section className="bg-cream py-20 lg:py-24">
       <Container>
         <Reveal>
-          <p className="text-center text-[16px] font-semibold text-gold">
-            The LinkedIn Unlocked process
+          <p className="text-center text-[13px] font-semibold uppercase tracking-[0.2em] text-gold">
+            {eyebrow}
           </p>
           <h2 className="mt-3 text-center font-display text-[32px] leading-[1.2] text-forest lg:text-[42px]">
-            One connected journey, <br className="hidden sm:inline" />
-            not a pile of tips.
+            {title}
           </h2>
+          {body && (
+            <p className="mx-auto mt-4 max-w-[560px] text-center text-[15px] leading-relaxed text-ink/75">
+              {body}
+            </p>
+          )}
         </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <Reveal key={s.n} delay={(i % 3) * 120} className="flex">
               <article className="card-lift relative grow overflow-hidden rounded-2xl bg-white p-7">
                 <ArrowWatermark />
-                <p className="relative text-[22px] font-bold text-forest-deep">
-                  {s.n}
-                </p>
+                <p className="relative text-[22px] font-bold text-forest-deep">{s.n}</p>
                 <h3 className="relative mt-6 text-[17px] font-bold text-gold">
                   {s.title}
                 </h3>
                 <p className="relative mt-3 text-[13px] leading-relaxed text-ink/75">
                   {s.body}
                 </p>
+                {s.tag && (
+                  <p className="relative mt-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/45">
+                    {s.tag}
+                  </p>
+                )}
               </article>
             </Reveal>
           ))}
         </div>
-
-        <Reveal delay={140}>
-          <p className="mt-10 text-center text-[14px] text-ink/70">
-            Plus a bonus module:{' '}
-            <strong className="font-semibold text-forest-deep">
-              AI Tools for Content &amp; Outreach
-            </strong>
-          </p>
-        </Reveal>
       </Container>
     </section>
   )
