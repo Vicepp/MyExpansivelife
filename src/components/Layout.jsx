@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
 import EventBar from './EventBar'
+import ChatWidget from './ChatWidget'
 import { trackPageView } from '../lib/track'
 
 export default function Layout() {
@@ -23,6 +24,9 @@ export default function Layout() {
       </main>
       <Footer />
       <EventBar />
+      {/* Public pages only — Layout does not wrap /admin, so the assistant
+          never appears inside the studio. */}
+      <ChatWidget />
     </>
   )
 }

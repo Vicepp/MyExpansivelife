@@ -49,9 +49,14 @@ at `/admin/login` with a Firebase Auth account.
 | Firebase Auth | Admin sign-in (email/password, Google, Outlook) | [docs/FIREBASE.md](docs/FIREBASE.md) |
 | Firebase Firestore | Posts, views, likes, inbox messages | [docs/FIREBASE.md](docs/FIREBASE.md) |
 | Cloudinary | Article and cover images | [docs/CLOUDINARY.md](docs/CLOUDINARY.md) |
+| OpenRouter | The AI assistant on every public page | [docs/CHAT.md](docs/CHAT.md) |
 
-Both have free tiers that comfortably cover a new blog, and no card is needed
-for either.
+All three have free tiers that comfortably cover a new site, and no card is
+needed for any of them.
+
+`OPENROUTER_API_KEY` deliberately has **no `VITE_` prefix** — a `VITE_` key is
+inlined into the public bundle where anyone could read and spend it. See
+[docs/CHAT.md](docs/CHAT.md).
 
 Set `VITE_ADMIN_EMAILS` to a comma-separated allowlist — without it, anyone who
 finds `/admin/login` can create an account.
