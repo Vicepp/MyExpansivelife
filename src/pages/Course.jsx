@@ -2,6 +2,7 @@ import CourseHero, { CourseStats } from '../components/CourseHero'
 import SageFeature from '../components/SageFeature'
 import TrustedBy from '../components/TrustedBy'
 import BulletSplit from '../components/BulletSplit'
+import CardMarquee from '../components/CardMarquee'
 import Process from '../components/Process'
 import UpcomingEvents from '../components/UpcomingEvents'
 import ThreeWays, { COURSE_WAYS } from '../components/ThreeWays'
@@ -65,7 +66,7 @@ export default function Course() {
     <>
       <CourseHero />
 
-      <BulletSplit
+      <CardMarquee
         eyebrow="What changes for you"
         title="Four things LinkedIn Unlocked delivers."
         items={CHANGES}
