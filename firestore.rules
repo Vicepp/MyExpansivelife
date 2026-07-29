@@ -47,6 +47,40 @@ service cloud.firestore {
       allow read, update, delete: if signedIn();
     }
 
+    // Chat transcripts.
+    //
+    // A visitor is not signed in, so they must be able to create their own
+    // transcript and append to it. The risk that opens is junk writes, so the
+    // shape is pinned down here: required fields, capped sizes, a capped number
+    // of messages, and updates limited to the few fields a conversation
+    // actually changes. Reading anyone's transcript stays admin-only.
+    match /chats/{chatId} {
+      function validNewChat() {
+        return request.resource.data.keys().hasAll(['name', 'email', 'messages'])
+          && request.resource.data.name is string
+          && request.resource.data.email is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() < 200
+          && request.resource.data.email.size() < 200
+          && request.resource.data.messages.size() == 0;
+      }
+
+      // Appending a turn touches only these fields, and cannot grow the
+      // transcript without bound.
+      function validAppend() {
+        return request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['messages', 'messageCount', 'lastMessageAt', 'unread'])
+          && request.resource.data.messages.size() <= 60
+          && request.resource.data.messages.size() > resource.data.messages.size()
+          && request.resource.data.name == resource.data.name
+          && request.resource.data.email == resource.data.email;
+      }
+
+      allow create: if signedIn() || validNewChat();
+      allow update: if signedIn() || validAppend();
+      allow read, delete: if signedIn();
+    }
+
     match /events/{eventId} {
       // Events are public listings; hidden ones are filtered client-side
       // because a rule condition here would break the collection query.

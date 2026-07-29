@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { listEvents, nextEvent } from '../lib/events'
+import { listEvents } from '../lib/events'
 import { EVENT_TZ_LABEL, formatEventTime } from '../lib/eventTime'
-import { sendMessage } from '../lib/messages'
+import { appendTurn, startChat } from '../lib/chats'
 import { trackCta } from '../lib/track'
 import useEventRegistration from '../hooks/useEventRegistration'
 import RegisterModal from './RegisterModal'
+import ChatText from './ChatText'
 
 /*
  * Floating assistant, bottom-right of every public page.
  *
- * Three things it always does:
- *   1. Asks for a name and email before any conversation, so every chat is a
- *      captured lead in the admin Inbox.
+ * Four things it always does:
+ *   1. Asks for a name and email before any conversation, so every chat lands
+ *      in the admin Inbox as a named lead.
  *   2. Pins the next webinar above the conversation — title, date, link.
  *   3. Greets the visitor on arrival and tells them they can ask anything.
+ *   4. Saves the whole transcript, and restores it when they come back.
  *
  * The model is reached through /api/chat, never directly: the API key lives on
  * the server so it cannot be read out of the browser bundle.
@@ -22,14 +24,69 @@ import RegisterModal from './RegisterModal'
 
 const VISITOR_KEY = 'mxl.chat.visitor'
 const GREETED_KEY = 'mxl.chat.greeted'
+const THREAD_KEY = 'mxl.chat.thread'
+
+function read(key, fallback = null) {
+  try {
+    return JSON.parse(localStorage.getItem(key) ?? 'null') ?? fallback
+  } catch {
+    return fallback
+  }
+}
+
+function write(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    /* private browsing — the chat still works, it just won't be remembered */
+  }
+}
 
 /** Remembers the visitor between pages and visits, so they sign in once. */
 function loadVisitor() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(VISITOR_KEY) ?? 'null')
-    return saved?.email ? saved : null
-  } catch {
-    return null
+  const saved = read(VISITOR_KEY)
+  return saved?.email ? saved : null
+}
+
+/**
+ * The conversation so far.
+ *
+ * Kept in localStorage rather than re-read from Firestore: it is instant, it
+ * survives a dropped connection, and the copy in the database is the archive
+ * for the admin rather than the visitor's working copy.
+ */
+function loadThread() {
+  const saved = read(THREAD_KEY)
+  return {
+    id: typeof saved?.id === 'string' ? saved.id : null,
+    messages: Array.isArray(saved?.messages) ? saved.messages.slice(-40) : [],
+  }
+}
+
+/**
+ * What the assistant is told about one event.
+ *
+ * `registerUrl` defaults to an internal placeholder ("/community") for events
+ * that register through the button's booking widget. Passing that placeholder
+ * on as a registration link made the assistant tell people to sign up on the
+ * community page, which is not true. So a URL is handed over only when it is a
+ * genuine off-site registration page; otherwise the assistant is told to point
+ * at the Register button instead.
+ */
+function describeEvent(event) {
+  const url = event.registerUrl ?? ''
+  const isRealRegistrationPage =
+    event.registerMode === 'link' && /^https?:\/\//i.test(url)
+
+  return {
+    title: event.title,
+    date: `${new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'America/Chicago',
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }).format(event.startsAt)} at ${formatEventTime(event.startsAt)} ${EVENT_TZ_LABEL}`,
+    url: isRealRegistrationPage ? url : '',
   }
 }
 
@@ -98,14 +155,17 @@ function EventPin({ event, onRegister }) {
 export default function ChatWidget() {
   const { pathname } = useLocation()
 
+  const restored = useRef(loadThread()).current
+
   const [open, setOpen] = useState(false)
   const [teasing, setTeasing] = useState(false)
   const [visitor, setVisitor] = useState(loadVisitor)
   const [form, setForm] = useState({ name: '', email: '' })
   const [formError, setFormError] = useState('')
 
-  const [event, setEvent] = useState(null)
-  const [messages, setMessages] = useState([])
+  const [events, setEvents] = useState([])
+  const [chatId, setChatId] = useState(restored.id)
+  const [messages, setMessages] = useState(restored.messages)
   const [draft, setDraft] = useState('')
   const [thinking, setThinking] = useState(false)
 
@@ -113,18 +173,27 @@ export default function ChatWidget() {
   const inputRef = useRef(null)
   const { modalEvent, register, close } = useEventRegistration()
 
-  /* The pinned webinar. */
+  const event = events[0] ?? null
+
+  /* Upcoming sessions: the first is pinned, the rest give the assistant context. */
   useEffect(() => {
     let cancelled = false
     listEvents()
-      .then((events) => {
-        if (!cancelled) setEvent(nextEvent(events, Date.now()))
+      .then((all) => {
+        if (cancelled) return
+        const now = Date.now()
+        setEvents(all.filter((e) => now < e.endsAt))
       })
       .catch((e) => console.error('Chat could not load events:', e))
     return () => {
       cancelled = true
     }
   }, [])
+
+  /* Keep the visitor's copy of the conversation in step. */
+  useEffect(() => {
+    if (messages.length) write(THREAD_KEY, { id: chatId, messages: messages.slice(-40) })
+  }, [chatId, messages])
 
   /*
    * The welcome. A moment after landing, the launcher says hello once per
@@ -162,6 +231,21 @@ export default function ChatWidget() {
     if (open && visitor) inputRef.current?.focus()
   }, [open, visitor])
 
+  /**
+   * Clears the visitor's copy and opens a fresh transcript. The old
+   * conversation stays in the database — nothing an admin has seen disappears.
+   */
+  async function startFresh() {
+    setMessages([])
+    setChatId(null)
+    write(THREAD_KEY, { id: null, messages: [] })
+
+    if (visitor) {
+      const id = await startChat({ ...visitor, page: pathname })
+      if (id) setChatId(id)
+    }
+  }
+
   function toggle() {
     setTeasing(false)
     setOpen((wasOpen) => {
@@ -171,7 +255,7 @@ export default function ChatWidget() {
   }
 
   /* The gate: name and email before the first question. */
-  function submitVisitor(submitEvent) {
+  async function submitVisitor(submitEvent) {
     submitEvent.preventDefault()
     const name = form.name.trim()
     const email = form.email.trim()
@@ -184,22 +268,9 @@ export default function ChatWidget() {
     const identity = { name, email }
     setFormError('')
     setVisitor(identity)
-    try {
-      localStorage.setItem(VISITOR_KEY, JSON.stringify(identity))
-    } catch {
-      /* private browsing — the chat still works, they just re-enter next time */
-    }
+    write(VISITOR_KEY, identity)
 
     trackCta('chat_lead_captured')
-    // Every conversation becomes a lead in the admin Inbox.
-    sendMessage({
-      name,
-      email,
-      phone: '',
-      subject: 'Website chat',
-      body: `Started a chat from ${pathname}.`,
-      source: 'AI chat',
-    }).catch((e) => console.error('Could not save the chat lead:', e))
 
     setMessages((current) => [
       ...current,
@@ -208,6 +279,10 @@ export default function ChatWidget() {
         content: `Thanks ${name.split(' ')[0]} — go ahead and ask me anything.`,
       },
     ])
+
+    // Opening the transcript is what puts this person in the admin Inbox.
+    const id = await startChat({ name, email, page: pathname })
+    if (id) setChatId(id)
   }
 
   async function send(submitEvent) {
@@ -219,7 +294,9 @@ export default function ChatWidget() {
     setMessages(history)
     setDraft('')
     setThinking(true)
+    appendTurn(chatId, { role: 'user', content: question })
 
+    let reply
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -227,46 +304,24 @@ export default function ChatWidget() {
         body: JSON.stringify({
           name: visitor?.name ?? '',
           page: pathname,
-          event: event
-            ? {
-                title: event.title,
-                date: `${new Intl.DateTimeFormat('en-GB', {
-                  timeZone: 'America/Chicago',
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                }).format(event.startsAt)} at ${formatEventTime(event.startsAt)} ${EVENT_TZ_LABEL}`,
-                url: event.registerUrl ?? '',
-              }
-            : null,
+          events: events.map(describeEvent),
           // The greeting is ours, not part of what the model needs to see.
           messages: history.filter((m, i) => !(i === 0 && m.role === 'assistant')),
         }),
       })
 
       const data = await response.json().catch(() => ({}))
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          content:
-            data.reply ??
-            data.error ??
-            "Sorry — something went wrong at my end. Please try that again.",
-        },
-      ])
+      reply =
+        data.reply ??
+        data.error ??
+        'Sorry — something went wrong at my end. Please try that again.'
     } catch {
-      setMessages((current) => [
-        ...current,
-        {
-          role: 'assistant',
-          content:
-            "I couldn't connect just then. Please check your connection and try again.",
-        },
-      ])
-    } finally {
-      setThinking(false)
+      reply = "I couldn't connect just then. Please check your connection and try again."
     }
+
+    setMessages((current) => [...current, { role: 'assistant', content: reply }])
+    setThinking(false)
+    appendTurn(chatId, { role: 'assistant', content: reply })
   }
 
   // Sits clear of the sticky event bar when there is an event running.
@@ -316,14 +371,25 @@ export default function ChatWidget() {
                 Answers about the course, community and events
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Close the chat"
-              className="grid size-7 shrink-0 place-items-center rounded-full text-cream/70 transition-colors hover:bg-white/10 hover:text-cream"
-            >
-              <CloseIcon className="size-4" />
-            </button>
+            <div className="flex shrink-0 items-center gap-1">
+              {messages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={startFresh}
+                  className="rounded-full px-2.5 py-1 text-[11px] font-semibold text-cream/70 transition-colors hover:bg-white/10 hover:text-cream"
+                >
+                  New chat
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close the chat"
+                className="grid size-7 place-items-center rounded-full text-cream/70 transition-colors hover:bg-white/10 hover:text-cream"
+              >
+                <CloseIcon className="size-4" />
+              </button>
+            </div>
           </header>
 
           <EventPin event={event} onRegister={() => event && register(event)} />
@@ -341,7 +407,11 @@ export default function ChatWidget() {
                       : 'rounded-bl-sm bg-white text-ink ring-1 ring-ink/5'
                   }`}
                 >
-                  {message.content}
+                  {message.role === 'user' ? (
+                    message.content
+                  ) : (
+                    <ChatText text={message.content} />
+                  )}
                 </p>
               </div>
             ))}

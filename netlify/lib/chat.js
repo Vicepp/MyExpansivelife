@@ -118,7 +118,10 @@ export async function handleChat(input, env = process.env, referer = '') {
         content: buildSystemPrompt({
           name: String(input?.name ?? '').slice(0, 80),
           page: String(input?.page ?? '').slice(0, 120),
-          event: input?.event ?? null,
+          events: Array.isArray(input?.events) ? input.events.slice(0, 4) : [],
+          // Optional: set it in Netlify once there is a booking page to send
+          // people to. Absent, the assistant offers an email follow-up instead.
+          calendlyUrl: env.CHAT_BOOKING_URL?.trim() || '',
         }),
       },
       ...history,

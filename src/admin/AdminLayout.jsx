@@ -3,6 +3,8 @@ import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Spinner } from './ui'
 import { publishDueScheduled } from '../lib/posts'
+import { countUnreadChats, listChats } from '../lib/chats'
+import { listMessages } from '../lib/messages'
 import {
   IconGrid,
   IconDoc,
@@ -85,12 +87,39 @@ export default function AdminLayout() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [justPublished, setJustPublished] = useState(0)
+  const [unread, setUnread] = useState({ chats: 0, total: 0, latest: '' })
 
   // Anything scheduled for a moment that has now passed goes live here.
   useEffect(() => {
     publishDueScheduled()
       .then((n) => n > 0 && setJustPublished(n))
       .catch((e) => console.error('Could not publish due posts:', e))
+  }, [])
+
+  /*
+   * Unread count for the bell, and the name behind the newest chat so the
+   * badge can say who is waiting rather than just that someone is.
+   */
+  useEffect(() => {
+    Promise.allSettled([countUnreadChats(), listChats(), listMessages()])
+      .then(([chatCount, chats, messages]) => {
+        const chatsUnread = chatCount.status === 'fulfilled' ? chatCount.value : 0
+        const messagesUnread =
+          messages.status === 'fulfilled'
+            ? messages.value.filter((m) => !m.read).length
+            : 0
+        const newest =
+          chats.status === 'fulfilled'
+            ? chats.value.find((c) => c.unread)?.name ?? ''
+            : ''
+
+        setUnread({
+          chats: chatsUnread,
+          total: chatsUnread + messagesUnread,
+          latest: newest,
+        })
+      })
+      .catch(() => {})
   }, [])
 
   const name = user?.displayName || user?.email?.split('@')[0] || 'Admin'
@@ -147,19 +176,36 @@ export default function AdminLayout() {
             <div className="ml-auto flex items-center gap-2.5">
               <button
                 type="button"
-                aria-label="Messages"
+                aria-label={
+                  unread.chats > 0
+                    ? `${unread.chats} unread chat${unread.chats === 1 ? '' : 's'}`
+                    : 'Chats'
+                }
+                title={unread.chats > 0 ? `${unread.chats} unread chat${unread.chats === 1 ? '' : 's'}` : 'Chats'}
                 onClick={() => navigate('/admin/inbox')}
-                className="grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
+                className="relative grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
               >
                 <IconChat />
+                {unread.chats > 0 && (
+                  <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-gold px-1.5 text-[10.5px] font-bold text-white">
+                    {unread.chats > 9 ? '9+' : unread.chats}
+                  </span>
+                )}
               </button>
               <button
                 type="button"
-                aria-label="Notifications"
+                aria-label={
+                  unread.total > 0
+                    ? `${unread.total} unread in the inbox`
+                    : 'Notifications'
+                }
+                onClick={() => navigate('/admin/inbox')}
                 className="relative grid size-10 place-items-center rounded-xl bg-forest-soft text-white/80 hover:text-white"
               >
                 <IconBell />
-                <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-gold" />
+                {unread.total > 0 && (
+                  <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-gold" />
+                )}
               </button>
 
               <div className="flex items-center gap-2.5 pl-1">
@@ -183,6 +229,26 @@ export default function AdminLayout() {
           </header>
 
           <main className="min-w-0 flex-1 overflow-x-hidden bg-cream p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
+            {/* Names the person, not just the count — the point of the alert
+                is knowing who is waiting to hear back. */}
+            {unread.chats > 0 && (
+              <Link
+                to="/admin/inbox"
+                className="mb-5 flex flex-wrap items-center gap-2 rounded-xl bg-sage-tint px-4 py-3 text-[13.5px] text-forest-deep transition-colors hover:bg-sand"
+              >
+                <span className="size-2 shrink-0 rounded-full bg-gold" />
+                <span>
+                  <strong className="font-semibold">
+                    {unread.latest || 'Someone'}
+                  </strong>{' '}
+                  {unread.chats === 1
+                    ? 'started a chat with the assistant.'
+                    : `and ${unread.chats - 1} other${unread.chats === 2 ? '' : 's'} started chats with the assistant.`}
+                </span>
+                <span className="ml-auto font-semibold underline">Read the conversation</span>
+              </Link>
+            )}
+
             {justPublished > 0 && (
               <p className="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-[13.5px] text-emerald-800">
                 {justPublished} scheduled{' '}
