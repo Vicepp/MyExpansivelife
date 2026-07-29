@@ -1,6 +1,5 @@
 import { Container } from './primitives'
 import Reveal from './Reveal'
-import VideoEmbed from './VideoEmbed'
 
 /** The six modules, worded as they appear on the LinkedIn Unlocked page. */
 const STEPS = [
@@ -89,11 +88,13 @@ export default function Process() {
           ))}
         </div>
 
-        <Reveal delay={140} className="mx-auto mt-14 max-w-[860px]">
-          <VideoEmbed
-            url="https://www.youtube.com/watch?v=sbLVlEW_ibU"
-            title="LinkedIn Unlocked — the strategy in action"
-          />
+        <Reveal delay={140}>
+          <p className="mt-10 text-center text-[14px] text-ink/70">
+            Plus a bonus module:{' '}
+            <strong className="font-semibold text-forest-deep">
+              AI Tools for Content &amp; Outreach
+            </strong>
+          </p>
         </Reveal>
       </Container>
     </section>

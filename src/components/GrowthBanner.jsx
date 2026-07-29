@@ -1,5 +1,6 @@
 import { Container, Button } from './primitives'
 import Reveal from './Reveal'
+import VideoEmbed from './VideoEmbed'
 import { COMMUNITY_URL } from '../lib/links'
 import sageArt from '../assets/design/growth-art.png'
 import goldArt from '../assets/design/course-gold-art.png'
@@ -20,6 +21,8 @@ export default function GrowthBanner({
   ctaLabel,
   ctaTo = COMMUNITY_URL,
   wide = false,
+  videoUrl,
+  videoTitle = 'Video',
 }) {
   const t = TONES[tone]
 
@@ -27,19 +30,30 @@ export default function GrowthBanner({
     <section
       className={`relative flex items-center overflow-hidden lg:min-h-[566px] ${t.bg}`}
     >
-      {/* Artwork carries its own backdrop, so it blends into the section fill. */}
-      <Reveal
-        delay={150}
-        y={0}
-        className="pointer-events-none absolute inset-y-0 right-0 hidden lg:block"
-      >
-        <img
-          src={t.art}
-          alt=""
-          aria-hidden="true"
-          className="h-full w-auto max-w-none object-cover object-left"
-        />
-      </Reveal>
+      {videoUrl ? (
+        /* A video takes the artwork's place, keeping the same footprint. */
+        <Reveal
+          delay={150}
+          y={0}
+          className="absolute inset-y-0 right-0 hidden w-[46%] items-center pr-6 lg:flex xl:pr-10"
+        >
+          <VideoEmbed url={videoUrl} title={videoTitle} className="w-full" />
+        </Reveal>
+      ) : (
+        /* Artwork carries its own backdrop, so it blends into the section fill. */
+        <Reveal
+          delay={150}
+          y={0}
+          className="pointer-events-none absolute inset-y-0 right-0 hidden lg:block"
+        >
+          <img
+            src={t.art}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-auto max-w-none object-cover object-left"
+          />
+        </Reveal>
+      )}
 
       <Container className="relative">
         <div className={`py-16 lg:py-24 ${wide ? 'max-w-[620px]' : 'max-w-[460px]'}`}>
