@@ -1,6 +1,6 @@
 import { Container } from './primitives'
 import Reveal from './Reveal'
-import videoThumb from '../assets/design/video-thumb.jpg'
+import VideoEmbed from './VideoEmbed'
 
 export default function SageFeature() {
   return (
@@ -22,11 +22,10 @@ export default function SageFeature() {
           </Reveal>
         </div>
 
-        <Reveal delay={100} className="media-reveal mt-12 overflow-hidden rounded-3xl">
-          <img
-            src={videoThumb}
-            alt="Members working through the course together"
-            className="w-full object-cover"
+        <Reveal delay={100} className="mt-12 overflow-hidden rounded-3xl">
+          <VideoEmbed
+            url="https://www.youtube.com/watch?v=8znehZDXdaY"
+            title="LinkedIn Unlocked — course introduction"
           />
         </Reveal>
       </Container>

@@ -25,7 +25,7 @@ export default function BlogHero() {
           </Reveal>
           <Reveal delay={220}>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Button variant="solid" to="/community">
+              <Button variant="solid" to={COMMUNITY_URL}>
                 Join Our Community
               </Button>
               <Button variant="outline" to="/courses/linkedin-unlocked">

@@ -1,5 +1,6 @@
 import { Button } from './primitives'
 import Reveal from './Reveal'
+import { COMMUNITY_URL } from '../lib/links'
 import groupPhoto from '../assets/design/group-photo.jpg'
 import awardBadge from '../assets/design/award-badge.png'
 
@@ -13,7 +14,7 @@ export default function BulletSplit({
   title,
   items,
   ctaLabel = 'Join Our Community',
-  ctaTo = '/community',
+  ctaTo = COMMUNITY_URL,
 }) {
   return (
     <section className="bg-cream">

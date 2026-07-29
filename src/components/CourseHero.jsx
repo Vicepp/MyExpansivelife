@@ -1,12 +1,14 @@
 import { Container, Button } from './primitives'
 import Reveal, { CountUp, TextReveal } from './Reveal'
+import { COURSE_URL } from '../lib/links'
 import cluster from '../assets/design/course-hero-cluster.png'
 
+/** Figures from the LinkedIn Unlocked sales page. */
 const STATS = [
-  { value: '09', label: 'Core teaching areas' },
+  { value: '15,000+', label: 'Followers built organically' },
+  { value: '$40M+', label: 'Capital raised' },
+  { value: '120+', label: 'Investors attracted' },
   { value: '41', label: 'Lessons, start to finish' },
-  { value: '$153.5M', label: 'Deals traced' },
-  { value: '73K+', label: 'Impressions' },
 ]
 
 export function CourseStats() {
@@ -43,24 +45,31 @@ export default function CourseHero() {
               as="h1"
               delay={90}
               className="mt-5 font-display text-[38px] leading-display text-forest sm:text-[48px] lg:text-[56px]"
-              segments={[{ text: 'Stop being your industry’s best-kept secret.' }]}
+              segments={[
+                { text: 'Get known for what you do' },
+                { text: 'best.', className: 'text-gold-text' },
+              ]}
             />
             <Reveal delay={180}>
               <p className="mt-5 max-w-[480px] text-[15px] leading-relaxed text-ink/80">
-                A practical system for turning your LinkedIn profile into a working
-                business tool, one that leads to real conversations and real
-                opportunities.
+                Transform your LinkedIn profile to attract the opportunities that
+                match your expertise.
               </p>
             </Reveal>
             <Reveal delay={270}>
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Button variant="solid" to="/courses/linkedin-unlocked">
+                <Button variant="solid" to={COURSE_URL}>
                   Enroll Now
                 </Button>
-                <Button variant="outline" to="/affiliate">
-                  Earn 20% promoting it
+                <Button variant="outline" to="#events">
+                  Join the Free Webinar
                 </Button>
               </div>
+            </Reveal>
+            <Reveal delay={330}>
+              <p className="mt-6 text-[13.5px] text-ink/65">
+                One-time investment · Lifetime access · 30-day guarantee
+              </p>
             </Reveal>
           </div>
 

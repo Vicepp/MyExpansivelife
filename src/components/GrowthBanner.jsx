@@ -1,5 +1,6 @@
 import { Container, Button } from './primitives'
 import Reveal from './Reveal'
+import { COMMUNITY_URL } from '../lib/links'
 import sageArt from '../assets/design/growth-art.png'
 import goldArt from '../assets/design/course-gold-art.png'
 
@@ -17,7 +18,7 @@ export default function GrowthBanner({
   title,
   body = "We're not here to talk anyone out of the career they've worked hard for.",
   ctaLabel,
-  ctaTo = '/community',
+  ctaTo = COMMUNITY_URL,
   wide = false,
 }) {
   const t = TONES[tone]

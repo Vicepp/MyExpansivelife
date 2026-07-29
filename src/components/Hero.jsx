@@ -44,7 +44,7 @@ export default function Hero() {
           </Reveal>
           <Reveal delay={220}>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-              <Button variant="solid" to="/community">
+              <Button variant="solid" to={COMMUNITY_URL}>
                 Get started
               </Button>
               <Button variant="outline" to="/courses/linkedin-unlocked">

@@ -1,36 +1,38 @@
 import { Container } from './primitives'
 import Reveal from './Reveal'
+import VideoEmbed from './VideoEmbed'
 
+/** The six modules, worded as they appear on the LinkedIn Unlocked page. */
 const STEPS = [
   {
     n: '01',
-    title: 'Positioning & Profile',
-    body: 'Get clear on who you serve and how you want to be known, then rebuild your profile into a persuasive introduction: banner, headline, Featured section and booking link included.',
+    title: 'Personal Brand Strategy',
+    body: 'Define your niche, your voice, and your positioning so that every piece of content you create is working toward the same goal.',
   },
   {
     n: '02',
-    title: 'Lead Magnets & Content',
-    body: 'Give people a reason to take the next step. Learn the five post types built to convert, plus a 30-day content system so you’re never starting from a blank page.',
+    title: 'Profile Optimization for Trust',
+    body: 'Transform your profile from a resume into a trust-building landing page that compels the right people to reach out to you.',
   },
   {
     n: '03',
-    title: 'Network & Discovery',
-    body: 'Use the Network tab, profile viewers, search and Sales Navigator to find the people who are actually a fit, instead of collecting random connections.',
+    title: 'Content Creation System',
+    body: '5-post system. Content calendar. Done-for-you templates. Consistent 5,000+ impressions.',
   },
   {
     n: '04',
-    title: 'Messaging & Relationships',
-    body: 'A five-part DM framework for opening conversations that don’t sound automated, and knowing exactly when someone’s ready to talk further.',
+    title: 'Growth & Engagement Strategy',
+    body: 'How to grow strategically, engage authentically, and build a network of people who actually want what you’re offering.',
   },
   {
     n: '05',
-    title: 'Lead Tracking',
-    body: 'A simple CRM-style system so no promising conversation gets lost in your inbox again.',
+    title: 'DM Scripts & Conversion Psychology',
+    body: 'Word-for-word scripts to open conversations, spot real intent, and guide relationships from a comment to a committed call.',
   },
   {
     n: '06',
-    title: 'Calls, Objections & Conversion',
-    body: 'How to run a discovery call, handle hesitation with confidence, spot red flags early, and close the loop clearly either way.',
+    title: 'Mini CRM & Email Integration',
+    body: 'Build a simple pipeline to track leads, set up your Mailchimp sequences, and never let a warm connection fall through the cracks.',
   },
 ]
 
@@ -86,6 +88,13 @@ export default function Process() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={140} className="mx-auto mt-14 max-w-[860px]">
+          <VideoEmbed
+            url="https://www.youtube.com/watch?v=sbLVlEW_ibU"
+            title="LinkedIn Unlocked — the strategy in action"
+          />
+        </Reveal>
       </Container>
     </section>
   )

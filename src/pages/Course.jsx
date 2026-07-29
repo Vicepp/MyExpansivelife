@@ -6,6 +6,7 @@ import GrowthBanner from '../components/GrowthBanner'
 import Testimonials from '../components/Testimonials'
 import Blog from '../components/Blog'
 import { Newsletter } from '../components/Footer'
+import { COURSE_URL } from '../lib/links'
 
 export default function Course() {
   return (
@@ -20,7 +21,7 @@ export default function Course() {
         wide
         title="You'll Be Able To Walk Into Any Room, Online Or Off, And Say Exactly Who You Help."
         ctaLabel="Enroll Now"
-        ctaTo="/courses/linkedin-unlocked"
+        ctaTo={COURSE_URL}
       />
       <Testimonials />
       <Newsletter />

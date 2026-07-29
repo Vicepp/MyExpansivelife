@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { isExternal } from '../lib/links'
 
 export function Container({ className = '', children }) {
   return (
@@ -41,26 +42,54 @@ export function Button({
     dark: 'bg-ink text-white px-8 py-3.5 text-[15px] hover:bg-brown-deep',
   }
 
-  return (
-    <Link to={to} className={`group ${base} ${variants[variant]} ${className}`}>
+  const inner = (
+    <>
       {children}
       {icon && (
         <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-white/25">
           <ArrowIcon className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-4" />
         </span>
       )}
+    </>
+  )
+
+  const cls = `group ${base} ${variants[variant]} ${className}`
+
+  // Off-site destinations open in a new tab; internal paths use the router.
+  if (isExternal(to)) {
+    return (
+      <a href={to} target="_blank" rel="noopener noreferrer" className={cls}>
+        {inner}
+      </a>
+    )
+  }
+
+  return (
+    <Link to={to} className={cls}>
+      {inner}
     </Link>
   )
 }
 
 export function TextLink({ to = '/', children, className = '' }) {
+  const cls = `group inline-flex items-center gap-2 text-sm font-semibold text-brown-deep ${className}`
+  const arrow = (
+    <ArrowIcon className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5" />
+  )
+
+  if (isExternal(to)) {
+    return (
+      <a href={to} target="_blank" rel="noopener noreferrer" className={cls}>
+        {children}
+        {arrow}
+      </a>
+    )
+  }
+
   return (
-    <Link
-      to={to}
-      className={`group inline-flex items-center gap-2 text-sm font-semibold text-brown-deep ${className}`}
-    >
+    <Link to={to} className={cls}>
       {children}
-      <ArrowIcon className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5" />
+      {arrow}
     </Link>
   )
 }

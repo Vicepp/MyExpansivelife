@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Container } from './primitives'
+import { COMMUNITY_URL } from '../lib/links'
 import logo from '../assets/design/logo.svg'
 
 export const COURSES = [
@@ -136,12 +137,14 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            to="/community"
+          <a
+            href={COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden rounded-full border border-gold px-6 py-2.5 text-sm font-semibold text-gold-text transition-colors hover:bg-gold hover:text-white sm:inline-flex"
           >
             Join Circle
-          </Link>
+          </a>
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
