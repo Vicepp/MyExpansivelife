@@ -1,5 +1,13 @@
 /** Outbound destinations, kept in one place so they are changed once. */
 
+/**
+ * The public origin of this site, used for canonical URLs, Open Graph tags
+ * and the sitemap. Change this one line when the custom domain is live —
+ * everything SEO-facing follows it.
+ */
+export const SITE_URL = 'https://myexpansivelife.netlify.app'
+
+
 export const COMMUNITY_URL = 'https://www.myexpansivelife.com/c/coaching-program'
 export const COURSE_URL = 'https://linkedinunlocked.myexpansivelife.com/'
 

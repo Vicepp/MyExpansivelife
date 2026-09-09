@@ -1,3 +1,4 @@
+import Seo from '../components/Seo'
 import CourseHero, { CourseStats } from '../components/CourseHero'
 import SageFeature from '../components/SageFeature'
 import TrustedBy from '../components/TrustedBy'
@@ -51,6 +52,11 @@ const PROOF_STATS = [
 export default function Course() {
   return (
     <>
+      <Seo
+        title="LinkedIn Unlocked"
+        description="Position your expertise, tell stories that build trust, and create content that attracts the right opportunities — without pretending to be an influencer."
+        path="/courses/linkedin-unlocked"
+      />
       <CourseHero />
 
       <CardMarquee

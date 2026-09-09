@@ -1,3 +1,4 @@
+import Seo from '../components/Seo'
 import Hero from '../components/Hero'
 import Pillars from '../components/Pillars'
 import TrustedBy from '../components/TrustedBy'
@@ -13,6 +14,11 @@ import { Newsletter } from '../components/Footer'
 export default function Home() {
   return (
     <>
+      <Seo
+        title="Your Life Can Be Bigger Than Your Career"
+        description="A growth community for ambitious professionals building beyond a single career, income stream or definition of success."
+        path="/"
+      />
       <Hero />
       {/* The six pillars sit straight under the hero — everything below is one
           of them, so the reader meets the map before the detail. */}

@@ -5,6 +5,22 @@ import Footer from './Footer'
 import EventBar from './EventBar'
 import ChatWidget from './ChatWidget'
 import { trackPageView } from '../lib/track'
+import { isPreviewingPosts } from '../lib/posts'
+
+/**
+ * Dev-only ribbon, so unpublished drafts showing on the real pages can never
+ * be mistaken for live content. Compiled out of the production bundle with the
+ * flag it depends on.
+ */
+function PreviewRibbon() {
+  if (!isPreviewingPosts) return null
+  return (
+    <div className="sticky top-0 z-50 bg-brown-deep px-4 py-1.5 text-center text-[12.5px] font-semibold text-white">
+      Draft preview — seed articles are showing on this site but are not
+      published. Unset VITE_PREVIEW_POSTS to hide them.
+    </div>
+  )
+}
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -17,6 +33,7 @@ export default function Layout() {
 
   return (
     <>
+      <PreviewRibbon />
       <Header />
       {/* Keyed on pathname so each route replays the entrance animation. */}
       <main key={pathname} className="page-enter">

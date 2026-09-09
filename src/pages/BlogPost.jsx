@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Container, Button, TextLink } from '../components/primitives'
 import Reveal from '../components/Reveal'
+import Seo, { articleSchema } from '../components/Seo'
 import Testimonials from '../components/Testimonials'
 import { Newsletter } from '../components/Footer'
 import {
@@ -74,6 +75,7 @@ export default function BlogPost() {
   if (!post) {
     return (
       <section className="bg-cream py-28 text-center lg:py-36">
+        <Seo title="Article not found" path="/blogs" />
         <Container>
           <h1 className="font-display text-[38px] text-forest lg:text-[48px]">
             Article not found
@@ -91,6 +93,17 @@ export default function BlogPost() {
 
   return (
     <>
+      <Seo
+        title={post.title}
+        description={post.excerpt}
+        path={`/blogs/${post.slug}`}
+        image={post.coverImage}
+        type="article"
+        publishedAt={post.publishedAt ?? post.createdAt}
+        author={post.author?.name}
+        schema={articleSchema(post)}
+      />
+
       <article className="bg-cream pb-16 pt-10 lg:pb-20">
         <Container>
           <div className="mx-auto max-w-[760px]">

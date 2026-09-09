@@ -171,6 +171,51 @@ export async function listPosts({ status, max } = {}) {
   return max ? rows.slice(0, max) : rows
 }
 
+/* ------------------------------------------------------------------ */
+/* Local preview of unpublished drafts                                 */
+/*                                                                     */
+/* Set VITE_PREVIEW_POSTS=true in .env.local, run                      */
+/* `node scripts/build-preview-data.mjs`, and the seed articles in     */
+/* scripts/content appear throughout the real site — blog index, home  */
+/* page journal strip, article pages — without being written to        */
+/* Firestore. It is how a batch gets reviewed in place before anyone   */
+/* decides to publish it.                                              */
+/*                                                                     */
+/* Fetched at runtime rather than imported. An `import()` of a file    */
+/* outside src/ gets bundled even behind a dead branch, which put the  */
+/* whole draft batch into the production build; a fetch cannot.        */
+/* ------------------------------------------------------------------ */
+
+export const isPreviewingPosts =
+  import.meta.env.DEV && import.meta.env.VITE_PREVIEW_POSTS === 'true'
+
+let previewCache = null
+
+async function previewPosts() {
+  if (!isPreviewingPosts) return []
+  if (previewCache) return previewCache
+
+  try {
+    const res = await fetch('/_preview/posts.json')
+    if (!res.ok) throw new Error(`${res.status} — run node scripts/build-preview-data.mjs`)
+    const rows = await res.json()
+    previewCache = rows.map((post) => ({
+      ...post,
+      createdAt: toDate(post.createdAt),
+      updatedAt: toDate(post.updatedAt),
+      publishedAt: toDate(post.publishedAt),
+      publishAt: null,
+      // Marked so the UI can tell these are not real rows.
+      id: `preview-${post.slug}`,
+      isPreview: true,
+    }))
+    return previewCache
+  } catch (e) {
+    console.error('Could not load preview posts:', e.message)
+    return []
+  }
+}
+
 /**
  * What the public blog shows.
  *
@@ -180,16 +225,30 @@ export async function listPosts({ status, max } = {}) {
  * can explain why it is empty rather than looking like there is no content.
  */
 export async function listLive({ max } = {}) {
+  const preview = await previewPosts()
+
   if (!isFirebaseConfigured) {
-    const rows = SAMPLE_POSTS.filter((p) => p.status === 'published')
+    const rows = sortNewestFirst([
+      ...preview,
+      ...SAMPLE_POSTS.filter((p) => p.status === 'published'),
+    ])
     return max ? rows.slice(0, max) : rows
   }
 
-  const snap = await getDocs(
-    query(collection(db, POSTS), where('status', '==', 'published')),
-  )
+  let live = []
+  try {
+    const snap = await getDocs(
+      query(collection(db, POSTS), where('status', '==', 'published')),
+    )
+    live = snap.docs.map(fromDoc)
+  } catch (e) {
+    // While previewing, an unreachable backend should not hide the drafts
+    // that are the whole point of the run.
+    if (!preview.length) throw e
+    console.warn('Preview mode: showing drafts only, Firestore unreachable —', e.message)
+  }
 
-  const rows = sortNewestFirst(snap.docs.map(fromDoc))
+  const rows = sortNewestFirst([...preview, ...live])
   return max ? rows.slice(0, max) : rows
 }
 
@@ -235,6 +294,10 @@ export async function getPost(id) {
 }
 
 export async function getPostBySlug(slug) {
+  // A preview draft wins, so its article page opens from the blog index.
+  const preview = (await previewPosts()).find((p) => p.slug === slug)
+  if (preview) return preview
+
   if (!isFirebaseConfigured) {
     return SAMPLE_POSTS.find((p) => p.slug === slug) ?? null
   }

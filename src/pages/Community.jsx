@@ -1,3 +1,4 @@
+import Seo from '../components/Seo'
 import PageHero from '../components/PageHero'
 import TrustedBy from '../components/TrustedBy'
 import Problem from '../components/Problem'
@@ -22,6 +23,11 @@ const FITS = [
 export default function Community() {
   return (
     <>
+      <Seo
+        title="The Circle Community"
+        description="The private membership where ambitious professionals stop building alone: clarity, visibility, financial confidence and a network that shows up."
+        path="/community"
+      />
       <PageHero
         cluster
         courseCta={false}

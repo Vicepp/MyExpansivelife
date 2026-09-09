@@ -3,6 +3,42 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 /**
+ * Serves GET /_preview/posts.json during `npm run dev`, when
+ * VITE_PREVIEW_POSTS=true.
+ *
+ * This is how unpublished seed articles appear on the real blog pages for
+ * review without ever being written to Firestore. It is a dev middleware
+ * rather than a file in public/ or an import for two reasons: everything in
+ * public/ is copied into dist and would deploy, and an `import()` reaching
+ * outside src/ gets bundled even behind a dead branch. A route that only
+ * exists in `apply: 'serve'` cannot leak either way.
+ */
+function previewPostsDevApi(env) {
+  return {
+    name: 'mxl-preview-posts',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/_preview/posts.json', async (req, res, next) => {
+        if (env.VITE_PREVIEW_POSTS !== 'true') return next()
+
+        try {
+          // Imported per request so edits to the articles show up on reload.
+          const module = await server.ssrLoadModule('/scripts/content/index.mjs')
+          const posts = module.buildPosts()
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Cache-Control', 'no-store')
+          res.end(JSON.stringify(posts))
+        } catch (e) {
+          res.statusCode = 500
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ error: e.message }))
+        }
+      })
+    },
+  }
+}
+
+/**
  * Serves POST /api/chat during `npm run dev`.
  *
  * In production that path is a Netlify Function (netlify/functions/chat.js).
@@ -50,7 +86,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    plugins: [react(), tailwindcss(), chatDevApi(env)],
+    plugins: [react(), tailwindcss(), chatDevApi(env), previewPostsDevApi(env)],
     server: {
       port: 5173,
       open: true,
