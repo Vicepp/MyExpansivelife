@@ -25,13 +25,13 @@ export function Newsletter({ tone = 'brown' }) {
       <Container>
         <Reveal>
           <h2 className="mx-auto max-w-[520px] text-[30px] font-bold leading-headline text-white lg:text-[40px]">
-            Want Articles Like This In Your Inbox?
+            Stay Connected to What&rsquo;s Next
           </h2>
         </Reveal>
         <Reveal delay={120}>
-          <p className="mx-auto mt-5 max-w-[440px] text-[15px] leading-relaxed text-white/85">
-            Join the Circle Community and get new articles, resources and Monday
-            Momentum sessions delivered straight to you.
+          <p className="mx-auto mt-5 max-w-[470px] text-[15px] leading-relaxed text-white/85">
+            Get the latest news, opportunities, events, and updates from My
+            Expansive Life delivered straight to your inbox.
           </p>
         </Reveal>
         <Reveal delay={220}>
@@ -41,7 +41,7 @@ export function Newsletter({ tone = 'brown' }) {
             icon
             className="mt-8"
           >
-            Join Community
+            Keep me in the loop
           </Button>
         </Reveal>
       </Container>

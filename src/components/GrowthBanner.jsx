@@ -69,7 +69,9 @@ export default function GrowthBanner({
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 max-w-[360px] text-[15px] leading-relaxed text-white/90">
+            <p
+              className={`mt-4 text-[15px] leading-relaxed text-white/90 ${wide ? 'max-w-[520px]' : 'max-w-[360px]'}`}
+            >
               {body}
             </p>
           </Reveal>

@@ -36,6 +36,13 @@ const QUOTES = [
     body: 'I booked two appointments without selling a single thing. The mindset shift from consistently showing up on LinkedIn has been truly remarkable.',
   },
   {
+    id: 'lajide',
+    name: 'Lajide Lawoyin',
+    role: 'Circle Community Member',
+    photo: '/testimonials/lajide-lawoyin.jpg',
+    body: 'I sincerely enjoy this community and gain a ton of value from it.',
+  },
+  {
     id: 'oge',
     name: 'Oge Ozimakor, MD, MBA, FAPA',
     role: 'Physician Leader',

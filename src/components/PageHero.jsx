@@ -7,7 +7,13 @@ import { COMMUNITY_URL } from '../lib/links'
  * Left-aligned hero used by the community and affiliate pages. The community
  * variant carries the photo cluster; the affiliate one is copy only.
  */
-export default function PageHero({ lead, accent, body, cluster = false }) {
+export default function PageHero({
+  lead,
+  accent,
+  body,
+  cluster = false,
+  courseCta = true,
+}) {
   return (
     <section className="bg-cream pb-16 pt-6 lg:pb-20">
       <Container>
@@ -37,9 +43,11 @@ export default function PageHero({ lead, accent, body, cluster = false }) {
                 <Button variant="solid" to={COMMUNITY_URL}>
                   Join Our Community
                 </Button>
-                <Button variant="outline" to="/courses/linkedin-unlocked">
-                  Explore Course
-                </Button>
+                {courseCta && (
+                  <Button variant="outline" to="/courses/linkedin-unlocked">
+                    Explore Course
+                  </Button>
+                )}
               </div>
             </Reveal>
           </div>

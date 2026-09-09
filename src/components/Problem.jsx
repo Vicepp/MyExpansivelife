@@ -6,7 +6,7 @@ const STATS = [
   { value: '$153.5M', label: 'Generate Rales' },
   { value: '150+', label: 'Grew Revenue' },
   { value: '20%', label: 'Commission' },
-  { value: '10+', label: 'Growth Pillars' },
+  { value: '6', label: 'Growth Pillars' },
 ]
 
 /**
@@ -14,13 +14,13 @@ const STATS = [
  * Brown on the home page, gold on the community and affiliate pages — the
  * stat numbers follow the band.
  */
-export default function Problem({ tone = 'brown' }) {
+export default function Problem({ tone = 'brown', media = true, stats = true }) {
   const bandBg = tone === 'gold' ? 'bg-gold' : 'bg-brown'
   const statColor = tone === 'gold' ? 'text-gold' : 'text-forest-deep'
 
   return (
     <>
-      <section className={`${bandBg} pt-20 lg:pt-24`}>
+      <section className={`${bandBg} pt-20 lg:pt-24 ${media ? '' : 'pb-20 lg:pb-24'}`}>
         <Container>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
             <Reveal>
@@ -39,35 +39,39 @@ export default function Problem({ tone = 'brown' }) {
           </div>
 
           {/* Bottom edge is square in the design — the frame meets the stats strip flush. */}
-          <Reveal
-            delay={100}
-            className="media-reveal relative mt-14 overflow-hidden rounded-t-3xl"
-          >
-            <img
-              src={videoThumb}
-              alt="Members working through ideas together"
-              className="w-full object-cover"
-            />
-          </Reveal>
+          {media && (
+            <Reveal
+              delay={100}
+              className="media-reveal relative mt-14 overflow-hidden rounded-t-3xl"
+            >
+              <img
+                src={videoThumb}
+                alt="Members working through ideas together"
+                className="w-full object-cover"
+              />
+            </Reveal>
+          )}
         </Container>
       </section>
 
-      <section className="bg-white py-12 lg:py-14">
-        <Container>
-          <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
-            {STATS.map((s, i) => (
-              <Reveal key={s.label} delay={i * 90} className="text-center">
-                <dt
-                  className={`text-[34px] font-bold leading-none lg:text-[40px] ${statColor}`}
-                >
-                  <CountUp value={s.value} />
-                </dt>
-                <dd className="mt-2 text-[15px] text-ink/80">{s.label}</dd>
-              </Reveal>
-            ))}
-          </dl>
-        </Container>
-      </section>
+      {stats && (
+        <section className="bg-white py-12 lg:py-14">
+          <Container>
+            <dl className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
+              {STATS.map((s, i) => (
+                <Reveal key={s.label} delay={i * 90} className="text-center">
+                  <dt
+                    className={`text-[34px] font-bold leading-none lg:text-[40px] ${statColor}`}
+                  >
+                    <CountUp value={s.value} />
+                  </dt>
+                  <dd className="mt-2 text-[15px] text-ink/80">{s.label}</dd>
+                </Reveal>
+              ))}
+            </dl>
+          </Container>
+        </section>
+      )}
     </>
   )
 }

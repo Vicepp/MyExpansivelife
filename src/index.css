@@ -74,7 +74,9 @@ body {
   font-family: var(--font-sans);
   color: var(--color-ink);
   background: var(--color-cream);
-  overflow-x: hidden;
+  /* clip for the same reason as html above: `hidden` would turn body into a
+     scroll container, and position: sticky inside it would stop working. */
+  overflow-x: clip;
 }
 
 /* --- scroll reveal ------------------------------------------------------- */

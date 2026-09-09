@@ -14,6 +14,7 @@ export default function BulletSplit({
   eyebrow,
   title,
   body,
+  note,
   items,
   ctaLabel = 'Join Our Community',
   ctaTo = COMMUNITY_URL,
@@ -37,11 +38,17 @@ export default function BulletSplit({
                 {title}
               </h2>
             </Reveal>
+            {/* One paragraph, or several when passed an array. */}
             {body && (
               <Reveal delay={140}>
-                <p className="mt-5 max-w-[520px] text-[14.5px] leading-relaxed text-ink/75">
-                  {body}
-                </p>
+                {(Array.isArray(body) ? body : [body]).map((para) => (
+                  <p
+                    key={para}
+                    className="mt-5 max-w-[520px] text-[14.5px] leading-relaxed text-ink/75"
+                  >
+                    {para}
+                  </p>
+                ))}
               </Reveal>
             )}
 
@@ -73,6 +80,13 @@ export default function BulletSplit({
                 })}
               </ul>
             </Reveal>
+            {note && (
+              <Reveal delay={210}>
+                <p className="mt-7 max-w-[520px] text-[14.5px] leading-relaxed text-ink/75">
+                  {note}
+                </p>
+              </Reveal>
+            )}
             <Reveal delay={250}>
               <Button variant="solid" to={ctaTo} icon className="mt-9">
                 {ctaLabel}

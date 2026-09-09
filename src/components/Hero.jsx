@@ -30,17 +30,14 @@ export default function Hero() {
             as="h1"
             className="font-display text-[42px] leading-display text-forest sm:text-[56px] lg:text-[64px]"
             segments={[
-              { text: 'Your career was' },
+              { text: 'Your Life Can Be Bigger' },
               { br: true, className: 'hidden lg:inline' },
-              { text: 'never meant to be the' },
-              { br: true, className: 'hidden lg:inline' },
-              { text: 'whole story.', className: 'text-gold-text' },
+              { text: 'Than Your Career.', className: 'text-gold-text' },
             ]}
           />
           <Reveal delay={120}>
             <p className="mx-auto mt-7 max-w-[540px] text-[16px] leading-relaxed text-ink/75">
-              You built a career worth being proud of. Now it&rsquo;s time to build
-              everything else, on your own terms.
+              Your career is part of your life, not the limit of it.
             </p>
           </Reveal>
           <Reveal delay={220}>
