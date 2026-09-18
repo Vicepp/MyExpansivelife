@@ -110,19 +110,102 @@ console.log(`collections: ${targets.join(', ')}${dryRun ? '   (dry run)' : ''}\n
 
 const sourceApp = initializeApp(sourceConfig, 'source')
 const sourceDb = getFirestore(sourceApp)
-await signInWithEmailAndPassword(getAuth(sourceApp), email, password)
-console.log(`signed in to ${sourceConfig.projectId}`)
+
+/*
+ * Signing in to the source is preferred but not required. When the admin
+ * account exists in only one of the two projects, an authenticated read is
+ * impossible — so fall back to what the security rules expose publicly
+ * (published posts, events, settings) and say plainly what is being left
+ * behind, rather than migrating nothing at all.
+ */
+let sourceAuthed = false
+try {
+  await signInWithEmailAndPassword(getAuth(sourceApp), email, password)
+  sourceAuthed = true
+  console.log(`signed in to ${sourceConfig.projectId}`)
+} catch (e) {
+  console.log(`could NOT sign in to ${sourceConfig.projectId} — ${e.code ?? e.message}`)
+  console.log('falling back to publicly readable data only\n')
+}
+
+/** Reads a collection over REST, subject to the public security rules. */
+async function publicRead(name) {
+  const base = `https://firestore.googleapis.com/v1/projects/${sourceConfig.projectId}/databases/(default)/documents`
+  const decode = (fields) => {
+    const value = (v) => {
+      if ('stringValue' in v) return v.stringValue
+      if ('integerValue' in v) return Number(v.integerValue)
+      if ('doubleValue' in v) return v.doubleValue
+      if ('booleanValue' in v) return v.booleanValue
+      if ('timestampValue' in v) return new Date(v.timestampValue)
+      if ('nullValue' in v) return null
+      if ('arrayValue' in v) return (v.arrayValue.values ?? []).map(value)
+      if ('mapValue' in v) return decode(v.mapValue.fields ?? {})
+      return null
+    }
+    return Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, value(v)]))
+  }
+
+  // posts are only public when filtered to published; the rest allow read: true
+  if (name === 'posts') {
+    const res = await fetch(`${base}:runQuery?key=${sourceConfig.apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: 'posts' }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'status' },
+              op: 'EQUAL',
+              value: { stringValue: 'published' },
+            },
+          },
+          limit: 500,
+        },
+      }),
+    })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const rows = await res.json()
+    return rows
+      .filter((r) => r.document)
+      .map((r) => ({ id: r.document.name.split('/').pop(), data: decode(r.document.fields ?? {}) }))
+  }
+
+  const res = await fetch(`${base}/${name}?pageSize=300&key=${sourceConfig.apiKey}`)
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const data = await res.json()
+  return (data.documents ?? []).map((d) => ({
+    id: d.name.split('/').pop(),
+    data: decode(d.fields ?? {}),
+  }))
+}
 
 const exported = {}
+const unreadable = []
 for (const name of targets) {
   try {
-    const snap = await getDocs(collection(sourceDb, name))
-    exported[name] = snap.docs.map((d) => ({ id: d.id, data: d.data() }))
+    if (sourceAuthed) {
+      const snap = await getDocs(collection(sourceDb, name))
+      exported[name] = snap.docs.map((d) => ({ id: d.id, data: d.data() }))
+    } else {
+      exported[name] = await publicRead(name)
+    }
     console.log(`  read ${String(exported[name].length).padStart(4)}  ${name}`)
   } catch (e) {
     exported[name] = []
-    console.log(`  read    ?  ${name}  — ${e.message}`)
+    unreadable.push(name)
+    console.log(`  read    -  ${name}  — ${e.message}`)
   }
+}
+
+if (!sourceAuthed) {
+  console.log(
+    '\nNOTE: without a source login this carries across published posts,\n' +
+      'events and settings only. Drafts, chat transcripts, inbox messages\n' +
+      'and analytics stay behind.',
+  )
+  if (unreadable.length) console.log(`Could not read: ${unreadable.join(', ')}`)
 }
 
 const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
