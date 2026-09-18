@@ -8,6 +8,7 @@
  *   SEED_EMAIL=you@example.com SEED_PASSWORD=... node scripts/seed-posts.mjs
  *
  * Flags:
+ *   --to-new   write into MIGRATE_TO_FIREBASE_* instead of the live project
  *   --draft    write as drafts instead of published (safe first run)
  *   --dry-run  print what would happen and write nothing
  *   --force    overwrite a post whose slug already exists
@@ -30,17 +31,19 @@ import {
 } from 'firebase/firestore'
 import { buildPosts } from './content/index.mjs'
 
+/** .env for project config, .env.local for credentials — local wins. */
 async function loadEnv() {
-  try {
-    const raw = await readFile('.env', 'utf8')
-    for (const line of raw.split(/\r?\n/)) {
-      const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line)
-      if (!match) continue
-      const value = match[2].trim().replace(/^["']|["']$/g, '')
-      if (!(match[1] in process.env)) process.env[match[1]] = value
+  for (const file of ['.env', '.env.local']) {
+    try {
+      const raw = await readFile(file, 'utf8')
+      for (const line of raw.split(/\r?\n/)) {
+        const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line)
+        if (!match) continue
+        process.env[match[1]] = match[2].trim().replace(/^["']|["']$/g, '')
+      }
+    } catch {
+      /* a missing file is fine */
     }
-  } catch {
-    /* fine */
   }
 }
 
@@ -50,6 +53,11 @@ const args = new Set(process.argv.slice(2))
 const dryRun = args.has('--dry-run')
 const force = args.has('--force')
 const status = args.has('--draft') ? 'draft' : 'published'
+
+// --to-new writes into the migration target (MIGRATE_TO_FIREBASE_*) instead of
+// the project the site currently reads from. Useful while the two coexist.
+const toNew = args.has('--to-new')
+const prefix = toNew ? 'MIGRATE_TO_FIREBASE_' : 'VITE_FIREBASE_'
 
 const posts = buildPosts({ status })
 
@@ -76,13 +84,15 @@ if (!email || !password) {
 }
 
 const app = initializeApp({
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID,
+  apiKey: process.env[`${prefix}API_KEY`],
+  authDomain: process.env[`${prefix}AUTH_DOMAIN`],
+  projectId: process.env[`${prefix}PROJECT_ID`],
+  storageBucket: process.env[`${prefix}STORAGE_BUCKET`],
+  messagingSenderId: process.env[`${prefix}MESSAGING_SENDER_ID`],
+  appId: process.env[`${prefix}APP_ID`],
 })
+
+console.log(`target project: ${process.env[`${prefix}PROJECT_ID`]}\n`)
 
 const auth = getAuth(app)
 const db = getFirestore(app)
