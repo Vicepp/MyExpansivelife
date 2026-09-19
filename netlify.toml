@@ -10,6 +10,25 @@
   # build fails without this.
   NODE_VERSION = "22"
 
+  # Firebase project: mxl-website.
+  #
+  # Kept here rather than in the Netlify UI so the database the site talks to
+  # is version-controlled and reviewable, and so a stale value in the dashboard
+  # cannot silently point production at a different project — which is exactly
+  # what happened during the migration from myexpansivelife-a8bec.
+  #
+  # None of this is secret. VITE_ variables are inlined into the client bundle
+  # at build time, so every one of these values is already downloadable from
+  # the deployed JavaScript. What actually guards the data is firestore.rules
+  # plus Firebase Auth, never the obscurity of these ids.
+  VITE_FIREBASE_API_KEY = "AIzaSyCqNUvjn6tnGXkct6PqMkeOKWb7oOocwg0"
+  VITE_FIREBASE_AUTH_DOMAIN = "mxl-website.firebaseapp.com"
+  VITE_FIREBASE_PROJECT_ID = "mxl-website"
+  VITE_FIREBASE_STORAGE_BUCKET = "mxl-website.firebasestorage.app"
+  VITE_FIREBASE_MESSAGING_SENDER_ID = "1053266479094"
+  VITE_FIREBASE_APP_ID = "1:1053266479094:web:81d38dc0d6bfc5fd3ea9d7"
+  VITE_MEASUREMENT_ID = "G-Q6S9SDQE2P"
+
 # Client-side routing: every path must serve index.html so /blogs, /admin and
 # the rest resolve on a direct hit or refresh instead of 404ing.
 [[redirects]]
