@@ -15,7 +15,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage, isFirebaseConfigured } from './firebase'
+import { auth, db, storage, isFirebaseConfigured } from './firebase'
 import { isCloudinaryConfigured, uploadToCloudinary } from './cloudinary'
 
 export const POSTS = 'posts'
@@ -293,6 +293,19 @@ export async function getPost(id) {
   return snap.exists() ? fromDoc(snap) : null
 }
 
+/**
+ * One article, by its URL slug.
+ *
+ * A visitor cannot query on slug alone. The rules allow a read only when the
+ * query itself proves every document it returns is published, and a slug filter
+ * proves nothing of the sort — Firestore rejects the whole query with
+ * PERMISSION_DENIED rather than filtering as it goes. Adding status to the
+ * query would fix that but needs a composite index, which this codebase
+ * deliberately avoids.
+ *
+ * So: signed-in admins query directly, which also lets them open drafts for
+ * review. Everyone else gets the published set and matches in JS.
+ */
 export async function getPostBySlug(slug) {
   // A preview draft wins, so its article page opens from the blog index.
   const preview = (await previewPosts()).find((p) => p.slug === slug)
@@ -301,10 +314,16 @@ export async function getPostBySlug(slug) {
   if (!isFirebaseConfigured) {
     return SAMPLE_POSTS.find((p) => p.slug === slug) ?? null
   }
-  const snap = await getDocs(
-    query(collection(db, POSTS), where('slug', '==', slug), fbLimit(1)),
-  )
-  return snap.empty ? null : fromDoc(snap.docs[0])
+
+  if (auth?.currentUser) {
+    const snap = await getDocs(
+      query(collection(db, POSTS), where('slug', '==', slug), fbLimit(1)),
+    )
+    if (!snap.empty) return fromDoc(snap.docs[0])
+  }
+
+  const live = await listLive()
+  return live.find((p) => p.slug === slug) ?? null
 }
 
 /* ------------------------------------------------------------------ */
