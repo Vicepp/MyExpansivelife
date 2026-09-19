@@ -1,106 +1,87 @@
-# Migrating to the mxl-website Firebase project
+# Firebase project migration
 
-Moving from `myexpansivelife-a8bec` to `mxl-website`, carrying every collection
-across: posts, events, settings, inbox messages, chat transcripts and analytics.
+The site moved from `myexpansivelife-a8bec` to `mxl-website` in September 2026.
 
-Document IDs are preserved, so article slugs, event registration links and chat
-threads keep working.
+This is the record of what happened and what was deliberately left behind. For
+the tooling itself see [`scripts/migrate-firebase.mjs`](../scripts/migrate-firebase.mjs).
 
-## Before anything else
+## Status
 
-The target project is empty in the strongest sense — **Cloud Firestore has
-never been enabled on it**. Until that changes, nothing can read or write there,
-including the migration script.
+| | |
+| --- | --- |
+| New project | `mxl-website` |
+| Firestore | created, real rules from `firestore.rules` deployed |
+| Auth | Email/Password enabled; `info@` and `grace@phcinvest.com` can sign in |
+| Content | 13 published posts, 4 events |
+| Old project | still live, still serving the deployed site until Netlify is switched |
 
-These four steps need the Firebase Console and cannot be done from the command
-line without an authenticated CLI:
+## What moved
 
-1. **Create the Firestore database.**
-   [console.firebase.google.com](https://console.firebase.google.com) →
-   `mxl-website` → Build → Firestore Database → Create database.
-   Pick the same region as the old project to keep latency the same.
-   Start in **production mode** — the real rules go on in step 3.
+**Posts.** The twelve seed articles were written straight into the new project
+with `scripts/seed-posts.mjs --to-new`. The one pre-existing published post came
+across with the migration.
 
-2. **Enable Email/Password authentication.**
-   Build → Authentication → Get started → Sign-in method → Email/Password →
-   Enable.
+**Events.** All four.
 
-3. **Publish the security rules.** Copy [`firestore.rules`](../firestore.rules)
-   into Firestore → Rules and publish. Do the same with
-   [`storage.rules`](../storage.rules) under Storage → Rules.
+## What did not move, and why
 
-   With the CLI instead, from the project root:
-   ```bash
-   npx firebase-tools login
-   npx firebase-tools deploy --only firestore:rules,storage --project mxl-website
-   ```
+Chat transcripts, inbox messages, analytics counters and any drafts stayed in
+the old project.
 
-4. **Recreate the admin accounts.** Authentication → Users → Add user, for each
-   address in `VITE_ADMIN_EMAILS`. The account you plan to migrate with must
-   exist in **both** projects with the **same password**, because the script
-   signs in to each one in turn.
+Neither admin account could sign in to `myexpansivelife-a8bec` — its passwords
+differ from both. Without a source login the migration falls back to what the
+security rules expose publicly, which is published posts, events and settings.
 
-## Then run the migration
+This was judged acceptable: the old project was set up during development rather
+than run as a production database, so what remains there is test data. If any of
+it is ever wanted, reset a password in the old project's Authentication tab, set
+it locally with `node scripts/set-password.mjs`, and re-run
+`node scripts/migrate-firebase.mjs` — it skips documents that already exist.
 
-Put the admin password in `.env.local` (gitignored, never committed):
+## The bug this exposed
+
+`getPostBySlug` queried on `slug` alone. The rules allow a read only when the
+query itself proves every document it returns is published, and a slug filter
+proves nothing about status — so Firestore rejected the whole query and every
+article rendered as "not found".
+
+It had always been wrong. The old project was running permissive test-mode
+rules, so the query was never refused there. Publishing the real rules on the
+new project surfaced it within minutes.
+
+Worth remembering when adding any new query: **the rules constrain the shape of
+the query, not just the result.** Filtering client-side after a
+status-constrained read is the pattern this codebase uses, because the
+alternative is composite indexes.
+
+## Remaining step
+
+The deployed site reads its Firebase config from **Netlify**, not from `.env`.
+Until these are updated and the site redeployed, visitors are still on the old
+database:
 
 ```
-SEED_EMAIL=info@phcinvest.com
-SEED_PASSWORD=your-password
+VITE_FIREBASE_API_KEY              AIzaSyCqNUvjn6tnGXkct6PqMkeOKWb7oOocwg0
+VITE_FIREBASE_AUTH_DOMAIN          mxl-website.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID           mxl-website
+VITE_FIREBASE_STORAGE_BUCKET       mxl-website.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID  1053266479094
+VITE_FIREBASE_APP_ID               1:1053266479094:web:81d38dc0d6bfc5fd3ea9d7
+VITE_MEASUREMENT_ID                G-Q6S9SDQE2P
 ```
 
-Dry run first — reads everything, writes a backup, touches nothing:
+Site configuration → Environment variables → redeploy.
 
-```bash
-node scripts/migrate-firebase.mjs --dry-run
-```
-
-Check the counts look right, then run it for real:
-
-```bash
-node scripts/migrate-firebase.mjs
-```
-
-Every document read is written to `backup/` before a single write happens.
-Re-running skips documents that already exist, so it is safe to repeat; add
-`--force` to overwrite.
-
-## Point the site at the new project
-
-1. Replace the `VITE_FIREBASE_*` values in `.env` with the
-   `MIGRATE_TO_FIREBASE_*` ones, and delete the migration block.
-2. **Update the same variables in Netlify** — Site configuration → Environment
-   variables. The deployed site reads them from there, not from `.env`. Missing
-   this means the local site moves and the live one does not.
-3. Redeploy.
-
-## Verify
-
-```bash
-node scripts/check-posts.mjs     # the twelve drafts still validate
-npm run build                    # sitemap should report the live article count
-```
-
-Then load the site and confirm: the blog index lists posts, an article page
-opens, the events bar shows the four events, and `/admin` accepts a login.
-
-## Publish the twelve articles
-
-Once the new project is live and verified:
-
-```bash
-node scripts/seed-posts.mjs --dry-run
-node scripts/seed-posts.mjs
-npm run build                    # refresh the sitemap with the new URLs
-```
-
-Then remove `VITE_PREVIEW_POSTS` from `.env.local` — the drafts are real posts
-at that point and the preview ribbon is no longer telling the truth.
+`.env` locally already points at the new project. The old values are kept
+alongside as `# OLD_VITE_FIREBASE_*`, so rolling back is uncommenting seven
+lines.
 
 ## Afterwards
 
-- Keep the old project until the new one has run for a week. It is the only
-  rollback.
-- Update `SITE_URL` in [`src/lib/links.js`](../src/lib/links.js) if the domain
-  changes with the move.
-- Cloudinary is unaffected — image uploads do not touch Firebase.
+- Verify on the live site: an article page opens, the events bar shows four
+  events, `/sitemap.xml` lists 18 URLs, `/admin` accepts a login.
+- Keep the old project a few days as a rollback, then delete it. It holds a
+  public API key and permissive rules, so it is not worth leaving around.
+- Rotate any admin password that has been shared in plain text.
+  `node scripts/set-password.mjs` takes it with hidden input and verifies it
+  against both projects.

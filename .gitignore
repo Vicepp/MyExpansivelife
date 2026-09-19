@@ -37,3 +37,8 @@ public/_preview/
 
 # Firestore exports — contain chat transcripts and inbox messages
 backup/
+
+# Course source material used by the blog-post skill to pick topics.
+# Untracked pending a decision on whether this repo is public: the
+# documents carry pricing and business model detail.
+mXL document for blog/
