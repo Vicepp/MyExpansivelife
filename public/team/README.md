@@ -2,7 +2,7 @@
 
 | File | Used by | Status |
 | --- | --- | --- |
-| `nkem-ezeamama.jpg` | "Meet your instructor" on the course page | **missing** |
+| `nkem-ezeamama.jpg` | Hero, "sounds familiar" and "Why I’m teaching this" on the course page | added |
 
 Drop the file in with that exact name and it appears on reload — no code change.
 Until then the section falls back to the community photo, so nothing breaks.

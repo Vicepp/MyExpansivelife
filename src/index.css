@@ -53,6 +53,8 @@
 
   --font-display: "The Seasons", "Playfair Display", Georgia, serif;
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  /* Handwritten notes on the webinar sections. */
+  --font-script: "Allison", cursive;
 
   /* Leading ratios taken from the Figma type specs. */
   --leading-display: 1.01; /* 78.61 / 77.97 */
