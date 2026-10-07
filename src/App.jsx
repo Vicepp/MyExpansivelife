@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Blogs from './pages/Blogs'
 import BlogPost from './pages/BlogPost'
 import Course from './pages/Course'
+import WebinarLanding from './pages/WebinarLanding'
 import Community from './pages/Community'
 import Affiliate from './pages/Affiliate'
 import ComingSoon from './pages/ComingSoon'
@@ -61,6 +62,9 @@ function App() {
         <Route path="/affiliate" element={<Affiliate />} />
         <Route path="*" element={<ComingSoon title="Page not found" />} />
       </Route>
+
+      {/* Webinar landing page — standalone, without the site navigation. */}
+      <Route path="/linkedin-unlocked" element={<WebinarLanding />} />
 
       {/* Admin panel — deliberately unlinked from the public navigation. */}
       <Route
