@@ -11,6 +11,7 @@ import {
   WebinarTestimonials,
   WebinarPlaybook,
   WebinarRegister,
+  WebinarFooter,
 } from '../components/Webinar'
 import { trackPageView } from '../lib/track'
 import logo from '../assets/design/logo.svg'
@@ -21,6 +22,13 @@ import logo from '../assets/design/logo.svg'
  * carries no site navigation, event bar or chat — one page, one ask: every
  * button leads to #register.
  */
+/* In-page links, as on the original landing page. */
+const NAV = [
+  ['#learn', 'What You’ll Learn'],
+  ['#about', 'About'],
+  ['#playbook', 'Your Free Playbook'],
+]
+
 export default function WebinarLanding() {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -45,6 +53,17 @@ export default function WebinarLanding() {
               <span className="text-[10.5px] tracking-[0.16em] text-ink/60">BY DR. NKEM</span>
             </span>
           </Link>
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="On this page">
+            {NAV.map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                className="rounded-full px-3.5 py-2.5 text-[15px] font-medium text-forest transition-colors hover:bg-gold/10"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
           <Button variant="solid" to="#register" icon className="px-5! py-2.5! text-[14px]">
             Save My Seat
           </Button>
@@ -62,12 +81,7 @@ export default function WebinarLanding() {
         <WebinarRegister />
       </main>
 
-      <footer className="bg-cream pb-8">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-4 border-t border-gold/20 px-4 pt-6 text-[13px] text-ink/60 sm:px-6 lg:px-8">
-          <span>LinkedIn Unlocked is a program of My Expansive Life.</span>
-          <span>© {new Date().getFullYear()} My Expansive Life. All rights reserved.</span>
-        </div>
-      </footer>
+      <WebinarFooter />
     </>
   )
 }

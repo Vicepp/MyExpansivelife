@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Button } from './primitives'
 import Reveal, { TextReveal } from './Reveal'
 import logo from '../assets/design/logo.svg'
+import logoMark from '../assets/design/logo-mark.png'
+import logoLight from '../assets/design/logo-light.png'
 
 /**
  * The LinkedIn Unlocked course page: the free webinar funnel, adapted from the
@@ -251,6 +253,7 @@ export function WebinarLearn() {
     <section id="learn" className="bg-cream py-20 lg:py-24">
       <Wide>
         <Reveal className="text-center">
+          <img src={logoMark} alt="" aria-hidden="true" className="mx-auto mb-4 h-10 w-auto" />
           <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-brown">
             What you’ll learn
           </p>
@@ -498,7 +501,7 @@ export function WebinarPlaybook() {
               <span className="h-1.5 w-2/3 rounded bg-gold/20" />
             </div>
             <div className="absolute bottom-0 left-0 flex h-[290px] w-[200px] rotate-[-4deg] flex-col justify-between rounded-l-md rounded-r-2xl border-l-[10px] border-brown-deep bg-brown p-6 shadow-2xl">
-              <img src={logo} alt="" aria-hidden="true" className="w-20 brightness-0 invert" />
+              <img src={logoLight} alt="My Expansive Life" className="w-24" />
               <span className="font-display text-[30px] leading-[1.05]">
                 Your Personal Brand Playbook
               </span>
@@ -589,10 +592,44 @@ export function WebinarRegister() {
                 allowFullScreen
                 className="block h-[1480px] w-full border-0"
               />
+              <p className="px-7 pb-6 pt-4 text-center text-[12.5px] leading-relaxed text-ink/55">
+                We respect your privacy. No spam. Unsubscribe anytime.
+              </p>
             </div>
           </Reveal>
         </div>
       </Wide>
     </section>
+  )
+}
+
+/* --- footer --------------------------------------------------------------- */
+
+export function WebinarFooter() {
+  return (
+    <footer className="bg-cream pb-6">
+      <Wide>
+        <div className="rounded-3xl bg-forest px-6 pb-8 pt-12 text-cream lg:px-14">
+          <div className="flex flex-wrap items-end justify-between gap-8">
+            <img
+              src={logoLight}
+              alt="My Expansive Life, Life Beyond Boundaries"
+              className="w-[200px]"
+            />
+            <a
+              href="#register"
+              className="group inline-flex items-center gap-3 rounded-full bg-cream px-6 py-3.5 text-[15px] font-semibold text-forest transition-colors hover:bg-white"
+            >
+              Save My Seat
+              <Icon d={<path d="M5 12h14M13 6l6 6-6 6" />} className="size-4" strokeWidth={2.2} />
+            </a>
+          </div>
+          <div className="mt-8 flex flex-wrap justify-between gap-4 border-t border-white/15 pt-6 text-[13.5px] text-cream/75">
+            <span>LinkedIn Unlocked is a program of My Expansive Life.</span>
+            <span>© {new Date().getFullYear()} My Expansive Life. All rights reserved.</span>
+          </div>
+        </div>
+      </Wide>
+    </footer>
   )
 }
