@@ -40,7 +40,8 @@ export default function Seo({
   title,
   description,
   path = '',
-  image,
+  /* The home page hero, unless a page (e.g. an article) has its own. */
+  image = '/og-image.jpg',
   type = 'website',
   publishedAt,
   author,
