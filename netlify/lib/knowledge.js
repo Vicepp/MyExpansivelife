@@ -24,7 +24,7 @@ Site pages (relative paths — link them exactly as written):
 
 Off-site:
 - Course sales and checkout page: https://linkedinunlocked.myexpansivelife.com/
-- Join The Circle: https://www.myexpansivelife.com/c/coaching-program
+- Join The Circle: https://community.myexpansivelife.com/
 - LinkedIn: https://www.linkedin.com/in/nkemezeamamamd/
 - YouTube: https://www.youtube.com/@MyExpansiveLife
 - Instagram: https://www.instagram.com/myexpansivelife/
@@ -83,7 +83,7 @@ strategy, 120+ active investors attracted through content.
 ## The Circle (community)
 A private home base for learning, connection and weekly accountability,
 including the live Monday Momentum session. The "/community" page explains it;
-joining happens at https://www.myexpansivelife.com/c/coaching-program
+joining happens at https://community.myexpansivelife.com/
 
 ## Affiliate programme
 Share LinkedIn Unlocked with people who would genuinely benefit and earn 20% on

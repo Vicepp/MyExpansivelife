@@ -8,7 +8,7 @@
 export const SITE_URL = 'https://myexpansivelife.netlify.app'
 
 
-export const COMMUNITY_URL = 'https://www.myexpansivelife.com/c/coaching-program'
+export const COMMUNITY_URL = 'https://community.myexpansivelife.com/'
 export const COURSE_URL = 'https://linkedinunlocked.myexpansivelife.com/'
 
 export const SOCIALS = [
