@@ -24,7 +24,10 @@ export default function Home() {
           of them, so the reader meets the map before the detail. */}
       <Pillars />
       <TrustedBy />
-      <Problem />
+      <Problem
+        videoUrl="https://youtu.be/lChC8eWuMY0"
+        videoTitle="Beyond Career Success: Building a More Fulfilling Life"
+      />
       <Ceiling />
       <ThreeWays />
       <UpcomingEvents />

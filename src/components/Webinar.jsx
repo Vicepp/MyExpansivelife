@@ -4,6 +4,8 @@ import Reveal, { TextReveal } from './Reveal'
 import logo from '../assets/design/logo.svg'
 import logoMark from '../assets/design/logo-mark.png'
 import logoLight from '../assets/design/logo-light.png'
+import familiarPhoto from '../assets/design/webinar-familiar.jpg'
+import VideoEmbed from './VideoEmbed'
 
 /**
  * The LinkedIn Unlocked course page: the free webinar funnel, adapted from the
@@ -43,6 +45,8 @@ function Portrait({ className = '', alt = 'Dr. Nkem Ezeamama' }) {
   )
 }
 const WEBINAR = {
+  video: 'https://www.youtube.com/watch?v=zc9V3jmUxBY',
+  videoTitle: 'How to Turn LinkedIn Posts Into Business Opportunities',
   title: 'How a Single LinkedIn Post Turned Into a Six Figure Partnership',
   date: 'Thursday, October 29, 2026',
   times: '6:00 PM CST | 7:00 PM EST | 4:00 PM PST',
@@ -112,7 +116,7 @@ export function WebinarHero() {
   return (
     <section className="bg-cream pb-12 pt-6 lg:pb-16">
       <Wide>
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)]">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)]">
           <div>
             <Reveal>
               <span className="inline-flex items-center gap-2.5 rounded-full border border-gold/40 px-4 py-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-forest">
@@ -157,14 +161,18 @@ export function WebinarHero() {
           </div>
 
           {/* y={0}: the wrapper holds absolutely-positioned notes. */}
-          <Reveal y={0} delay={200} className="relative mx-auto w-full max-w-[440px] pt-16">
+          <Reveal y={0} delay={200} className="relative mx-auto w-full max-w-[560px] pt-16 pb-12">
             <span className="absolute right-0 top-0 z-10 rotate-[-6deg] text-right font-script text-[46px] leading-[0.9] text-brown">
               Join me live,
               <br />
               Dr. Nkem
             </span>
-            <Portrait className="aspect-[4/5] w-full rounded-[28px] shadow-[0_30px_60px_-20px_rgb(24_55_52/0.4)]" />
-            <div className="absolute -left-2 bottom-6 flex items-center gap-3.5 rounded-2xl bg-cream-card px-5 py-4 shadow-[0_18px_40px_-12px_rgb(24_55_52/0.25)] ring-1 ring-gold/15 sm:-left-5">
+            <VideoEmbed
+              url={WEBINAR.video}
+              title={WEBINAR.videoTitle}
+              className="rounded-[28px]! shadow-[0_30px_60px_-20px_rgb(24_55_52/0.4)]"
+            />
+            <div className="absolute -left-2 bottom-0 flex items-center gap-3.5 rounded-2xl bg-cream-card px-5 py-4 shadow-[0_18px_40px_-12px_rgb(24_55_52/0.25)] ring-1 ring-gold/15 sm:-left-5">
               <span className="grid size-11 place-items-center rounded-full bg-forest font-display text-[18px] text-cream">
                 N
               </span>
@@ -328,7 +336,11 @@ export function WebinarFamiliar() {
           </Reveal>
 
           <Reveal y={0} delay={150} className="relative mx-auto w-full max-w-[420px]">
-            <Portrait className="aspect-[4/5] w-full rounded-t-[28px] rounded-b-full" />
+            <img
+              src={familiarPhoto}
+              alt="Professionals from the My Expansive Life community"
+              className="aspect-square w-full rounded-t-[28px] rounded-b-full object-cover"
+            />
             <div className="absolute -left-2 top-8 rotate-[-4deg] rounded-2xl bg-cream-card px-6 pb-4 pt-5 font-script text-[40px] leading-[0.85] text-forest shadow-[0_18px_40px_-12px_rgb(24_55_52/0.25)] sm:-left-6">
               Same expertise.
               <br />

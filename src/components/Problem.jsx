@@ -1,5 +1,6 @@
 import { Container } from './primitives'
 import Reveal, { CountUp } from './Reveal'
+import VideoEmbed from './VideoEmbed'
 import videoThumb from '../assets/design/video-thumb.jpg'
 
 const STATS = [
@@ -14,7 +15,13 @@ const STATS = [
  * Brown on the home page, gold on the community and affiliate pages — the
  * stat numbers follow the band.
  */
-export default function Problem({ tone = 'brown', media = true, stats = true }) {
+export default function Problem({
+  tone = 'brown',
+  media = true,
+  stats = true,
+  videoUrl,
+  videoTitle = 'Video',
+}) {
   const bandBg = tone === 'gold' ? 'bg-gold' : 'bg-brown'
   const statColor = tone === 'gold' ? 'text-gold' : 'text-forest-deep'
 
@@ -44,11 +51,15 @@ export default function Problem({ tone = 'brown', media = true, stats = true }) 
               delay={100}
               className="media-reveal relative mt-14 overflow-hidden rounded-t-3xl"
             >
-              <img
-                src={videoThumb}
-                alt="Members working through ideas together"
-                className="w-full object-cover"
-              />
+              {videoUrl ? (
+                <VideoEmbed url={videoUrl} title={videoTitle} className="rounded-none!" />
+              ) : (
+                <img
+                  src={videoThumb}
+                  alt="Members working through ideas together"
+                  className="w-full object-cover"
+                />
+              )}
             </Reveal>
           )}
         </Container>
