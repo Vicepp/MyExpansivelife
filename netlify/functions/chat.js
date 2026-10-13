@@ -1,4 +1,4 @@
-import { handleChat } from '../lib/chat.js'
+import { handleChat } from '../../server/chat.js'
 
 /**
  * POST /api/chat — the assistant's endpoint.

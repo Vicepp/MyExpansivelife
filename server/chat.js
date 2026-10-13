@@ -3,9 +3,9 @@ import { buildSystemPrompt } from './knowledge.js'
 /**
  * The chat brain, framework-free.
  *
- * Lives here rather than in the Netlify handler so the Vite dev server can run
- * exactly the same code locally (see vite.config.js) — one implementation, no
- * "works in dev, breaks in production" gap.
+ * Lives here rather than in the Vercel function (api/chat.js) so the Vite dev
+ * server can run exactly the same code locally (see vite.config.js) — one
+ * implementation, no "works in dev, breaks in production" gap.
  *
  * The OpenRouter and Google keys are read from the server environment and never
  * leave it.

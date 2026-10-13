@@ -41,7 +41,7 @@ function previewPostsDevApi(env) {
 /**
  * Serves POST /api/chat during `npm run dev`.
  *
- * In production that path is a Netlify Function (netlify/functions/chat.js).
+ * In production that path is a Vercel function (api/chat.js).
  * Both call the same handleChat(), so the assistant behaves identically here
  * and on the deployed site. The API key is read from .env without a VITE_
  * prefix, which keeps it out of the browser bundle.
@@ -68,7 +68,7 @@ function chatDevApi(env) {
 
         // Imported lazily so an error in the handler cannot stop the dev
         // server from booting.
-        const { handleChat } = await import('./netlify/lib/chat.js')
+        const { handleChat } = await import('./server/chat.js')
         const { status, body } = await handleChat(payload, { ...process.env, ...env })
 
         res.statusCode = status

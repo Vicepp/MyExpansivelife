@@ -5,7 +5,7 @@
  * and the sitemap. Change this one line when the custom domain is live —
  * everything SEO-facing follows it.
  */
-export const SITE_URL = 'https://myexpansivelife.netlify.app'
+export const SITE_URL = 'https://www.myexpansivelife.com'
 
 
 export const COMMUNITY_URL = 'https://community.myexpansivelife.com/'

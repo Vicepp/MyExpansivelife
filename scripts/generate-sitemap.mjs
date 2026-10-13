@@ -15,7 +15,7 @@ import { writeFile, readFile } from 'node:fs/promises'
 
 /**
  * Minimal .env reader — dotenv is not a dependency and this needs two keys.
- * Netlify injects the same variables into the environment directly, so a
+ * Vercel injects the same variables into the environment directly, so a
  * missing .env is normal in CI, not an error.
  */
 async function loadEnv() {
@@ -34,7 +34,7 @@ async function loadEnv() {
 
 await loadEnv()
 
-const SITE_URL = process.env.SITE_URL ?? 'https://myexpansivelife.netlify.app'
+const SITE_URL = process.env.SITE_URL ?? 'https://www.myexpansivelife.com'
 
 /** path -> change frequency + priority */
 const STATIC_ROUTES = [
