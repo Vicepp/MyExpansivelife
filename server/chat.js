@@ -46,12 +46,26 @@ const GEMINI_ENDPOINT =
   'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
 const GEMINI_DEFAULTS = ['gemini-flash-latest', 'gemini-flash-lite-latest']
 /* A stalled upstream must not eat the whole function time budget. */
-const GEMINI_TIMEOUT_MS = 15_000
+const GEMINI_TIMEOUT_MS = 25_000
 
 /* Guard rails — this endpoint is public, so cap what one request can cost. */
 const MAX_MESSAGE_CHARS = 1200
 const MAX_HISTORY = 16
 const MAX_TOKENS = 700
+
+/**
+ * Env values pasted or imported into a host dashboard often arrive with stray
+ * whitespace, a Windows , or the quotes from a .env file — any of which makes
+ * a key unusable in an Authorization header. Normalise once, up front.
+ */
+function tidyEnv(env) {
+  const out = {}
+  for (const [key, value] of Object.entries(env ?? {})) {
+    out[key] =
+      typeof value === 'string' ? value.trim().replace(/^(['"])(.*)$/s, '$2').trim() : value
+  }
+  return out
+}
 
 function models(env) {
   const primary = env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL
@@ -141,7 +155,8 @@ async function askGemini(model, payload, env) {
  *
  * @returns {{status: number, body: object}} ready to serialise as JSON.
  */
-export async function handleChat(input, env = process.env, referer = '') {
+export async function handleChat(input, rawEnv = process.env, referer = '') {
+  const env = tidyEnv(rawEnv)
   if (!env.OPENROUTER_API_KEY && !env.GOOGLE_API_KEY) {
     return {
       status: 503,
