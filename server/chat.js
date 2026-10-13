@@ -68,12 +68,20 @@ function tidyEnv(env) {
   return out
 }
 
+/**
+ * A model id looks like "vendor/name" or "vendor/name:tag". Anything else in a
+ * model variable (an API key pasted into the wrong field, say) is ignored, so a
+ * dashboard mistake degrades to the defaults instead of breaking the chat.
+ */
+const MODEL_ID = /^[\w.-]+\/[\w.:-]+$/
+
 function models(env) {
-  const primary = env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL
+  const configured = env.OPENROUTER_MODEL?.trim()
+  const primary = MODEL_ID.test(configured ?? '') ? configured : DEFAULT_MODEL
   const fallbacks = (env.OPENROUTER_FALLBACK_MODELS ?? '')
     .split(',')
     .map((m) => m.trim())
-    .filter(Boolean)
+    .filter((m) => MODEL_ID.test(m))
 
   // Set() so naming a default as the primary doesn't make us try it twice.
   return [...new Set([primary, ...(fallbacks.length ? fallbacks : DEFAULT_FALLBACKS)])]
@@ -123,7 +131,8 @@ async function ask(model, payload, env, referer) {
 }
 
 function geminiModels(env) {
-  const primary = env.GEMINI_MODEL?.trim()
+  const configured = env.GEMINI_MODEL?.trim()
+  const primary = /^[\w.-]+$/.test(configured ?? '') ? configured : ''
   return [...new Set([primary, ...GEMINI_DEFAULTS].filter(Boolean))]
 }
 
@@ -227,7 +236,9 @@ export async function handleChat(input, rawEnv = process.env, referer = '') {
     body: {
       // Model and status code only (no keys, no upstream bodies), so an outage
       // can be diagnosed from the browser's network tab without host logs.
-      attempts: failures.map((f) => f.split(' ').slice(0, 3).join(' ').slice(0, 80)),
+      // Status codes only: model names can come from env, and a misconfigured
+      // model variable may hold a secret, so nothing env-derived is echoed.
+      attempts: failures.map((f) => f.match(/→ (\d{3})/)?.[1] ?? 'error'),
       configured: {
         openrouter: Boolean(env.OPENROUTER_API_KEY),
         google: Boolean(env.GOOGLE_API_KEY),
