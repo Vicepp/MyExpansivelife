@@ -341,7 +341,7 @@ export function WebinarFamiliar() {
               alt="Professionals from the My Expansive Life community"
               className="aspect-square w-full rounded-t-[28px] rounded-b-full object-cover"
             />
-            <div className="absolute -left-2 top-8 rotate-[-4deg] rounded-2xl bg-cream-card px-6 pb-4 pt-5 font-script text-[40px] leading-[0.85] text-forest shadow-[0_18px_40px_-12px_rgb(24_55_52/0.25)] sm:-left-6">
+            <div className="absolute -left-2 bottom-16 rotate-[-4deg] rounded-2xl bg-cream-card px-6 pb-4 pt-5 font-script text-[40px] leading-[0.85] text-forest shadow-[0_18px_40px_-12px_rgb(24_55_52/0.25)] sm:-left-6">
               Same expertise.
               <br />
               <span className="text-brown">Bigger opportunities.</span>

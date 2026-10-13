@@ -55,6 +55,16 @@ export function Button({
 
   const cls = `group ${base} ${variants[variant]} ${className}`
 
+  // In-page anchors (#register) must be plain links: the router updates the
+  // URL hash but never scrolls to the target.
+  if (String(to).startsWith('#')) {
+    return (
+      <a href={to} className={cls}>
+        {inner}
+      </a>
+    )
+  }
+
   // Off-site destinations open in a new tab; internal paths use the router.
   if (isExternal(to)) {
     return (
@@ -76,6 +86,15 @@ export function TextLink({ to = '/', children, className = '' }) {
   const arrow = (
     <ArrowIcon className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5" />
   )
+
+  if (String(to).startsWith('#')) {
+    return (
+      <a href={to} className={cls}>
+        {children}
+        {arrow}
+      </a>
+    )
+  }
 
   if (isExternal(to)) {
     return (

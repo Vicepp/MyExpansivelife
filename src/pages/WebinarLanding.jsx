@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Seo from '../components/Seo'
-import { Button } from '../components/primitives'
 import {
   WebinarHero,
   WebinarStats,
@@ -64,9 +63,6 @@ export default function WebinarLanding() {
               </a>
             ))}
           </nav>
-          <Button variant="solid" to="#register" icon className="px-5! py-2.5! text-[14px]">
-            Save My Seat
-          </Button>
         </div>
       </header>
 
