@@ -55,7 +55,8 @@ const MAX_TOKENS = 700
 
 /**
  * Env values pasted or imported into a host dashboard often arrive with stray
- * whitespace, a Windows , or the quotes from a .env file — any of which makes
+ * whitespace, a Windows 
+, or the quotes from a .env file — any of which makes
  * a key unusable in an Authorization header. Normalise once, up front.
  */
 function tidyEnv(env) {
@@ -224,6 +225,13 @@ export async function handleChat(input, rawEnv = process.env, referer = '') {
   return {
     status: 502,
     body: {
+      // Model and status code only (no keys, no upstream bodies), so an outage
+      // can be diagnosed from the browser's network tab without host logs.
+      attempts: failures.map((f) => f.split(' ').slice(0, 3).join(' ').slice(0, 80)),
+      configured: {
+        openrouter: Boolean(env.OPENROUTER_API_KEY),
+        google: Boolean(env.GOOGLE_API_KEY),
+      },
       error:
         "Sorry — I couldn't reach the assistant just then. Please try again, or email us and we'll come straight back to you.",
     },
