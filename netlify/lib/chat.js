@@ -7,7 +7,8 @@ import { buildSystemPrompt } from './knowledge.js'
  * exactly the same code locally (see vite.config.js) — one implementation, no
  * "works in dev, breaks in production" gap.
  *
- * The OpenRouter key is read from the server environment and never leaves it.
+ * The OpenRouter and Google keys are read from the server environment and never
+ * leave it.
  * Nothing in src/ imports this file, so the key can never end up in the browser
  * bundle.
  */
@@ -31,6 +32,21 @@ const DEFAULT_FALLBACKS = [
   'google/gemma-4-31b-it:free',
   'openai/gpt-oss-20b:free',
 ]
+
+/**
+ * Last resort: Google's Gemini API, called directly with GOOGLE_API_KEY.
+ *
+ * Only used when every OpenRouter model has failed (or OPENROUTER_API_KEY is
+ * missing), so a bad day at OpenRouter's free tier doesn't take the assistant
+ * down. Gemini's OpenAI-compatible endpoint takes the same payload. The
+ * "-latest" aliases follow Google's current Flash models; GEMINI_MODEL
+ * overrides the first.
+ */
+const GEMINI_ENDPOINT =
+  'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
+const GEMINI_DEFAULTS = ['gemini-flash-latest', 'gemini-flash-lite-latest']
+/* A stalled upstream must not eat the whole function time budget. */
+const GEMINI_TIMEOUT_MS = 15_000
 
 /* Guard rails — this endpoint is public, so cap what one request can cost. */
 const MAX_MESSAGE_CHARS = 1200
@@ -91,16 +107,48 @@ async function ask(model, payload, env, referer) {
   return reply
 }
 
+function geminiModels(env) {
+  const primary = env.GEMINI_MODEL?.trim()
+  return [...new Set([primary, ...GEMINI_DEFAULTS].filter(Boolean))]
+}
+
+/** Same contract as ask(), against Gemini instead of OpenRouter. */
+async function askGemini(model, payload, env) {
+  const response = await fetch(GEMINI_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.GOOGLE_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ...payload, model }),
+    signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
+  })
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '')
+    throw new Error(`gemini/${model} → ${response.status} ${detail.slice(0, 300)}`)
+  }
+
+  const data = await response.json()
+  const reply = data?.choices?.[0]?.message?.content?.trim()
+  if (!reply) throw new Error(`gemini/${model} returned an empty reply`)
+
+  return reply
+}
+
 /**
  * Handles one chat turn.
  *
  * @returns {{status: number, body: object}} ready to serialise as JSON.
  */
 export async function handleChat(input, env = process.env, referer = '') {
-  if (!env.OPENROUTER_API_KEY) {
+  if (!env.OPENROUTER_API_KEY && !env.GOOGLE_API_KEY) {
     return {
       status: 503,
-      body: { error: 'The assistant is not configured yet. OPENROUTER_API_KEY is missing.' },
+      body: {
+        error:
+          'The assistant is not configured yet. Set OPENROUTER_API_KEY or GOOGLE_API_KEY.',
+      },
     }
   }
 
@@ -128,18 +176,32 @@ export async function handleChat(input, env = process.env, referer = '') {
     ],
   }
 
-  const chain = models(env)
   const failures = []
 
   // Walk the chain: the paid model first, then the free ones. A model that is
   // out of credit, rate-limited or unavailable just moves us to the next.
-  for (const model of chain) {
-    try {
-      const reply = await ask(model, payload, env, referer)
-      return { status: 200, body: { reply, model } }
-    } catch (error) {
-      failures.push(error.message)
-      console.warn('chat: model failed —', error.message)
+  if (env.OPENROUTER_API_KEY) {
+    for (const model of models(env)) {
+      try {
+        const reply = await ask(model, payload, env, referer)
+        return { status: 200, body: { reply, model } }
+      } catch (error) {
+        failures.push(error.message)
+        console.warn('chat: model failed —', error.message)
+      }
+    }
+  }
+
+  // Every OpenRouter model failed (or there is no OpenRouter key): Gemini.
+  if (env.GOOGLE_API_KEY) {
+    for (const model of geminiModels(env)) {
+      try {
+        const reply = await askGemini(model, payload, env)
+        return { status: 200, body: { reply, model: `gemini/${model}` } }
+      } catch (error) {
+        failures.push(error.message)
+        console.warn('chat: model failed —', error.message)
+      }
     }
   }
 
