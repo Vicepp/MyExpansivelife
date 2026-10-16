@@ -50,7 +50,9 @@ export default function TrustedBy() {
                       <img
                         src={p.src}
                         alt={copy === 0 ? p.name : ''}
-                        className={`${p.h} w-auto max-w-none object-contain`}
+                        // Grey at rest, full colour on hover (the marquee
+                        // pauses on hover, so the logo holds still for it).
+                        className={`${p.h} w-auto max-w-none object-contain opacity-60 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0`}
                       />
                     </li>
                   ))}
