@@ -6,4 +6,4 @@ Allow: /
 # The admin panel is unlinked from the public site; keep it out of the index.
 Disallow: /admin
 
-Sitemap: https://myexpansivelife.netlify.app/sitemap.xml
+Sitemap: https://www.myexpansivelife.com/sitemap.xml

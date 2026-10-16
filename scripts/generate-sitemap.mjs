@@ -11,30 +11,15 @@
  *
  * Runs automatically as part of `npm run build`.
  */
-import { writeFile, readFile } from 'node:fs/promises'
-
-/**
- * Minimal .env reader — dotenv is not a dependency and this needs two keys.
- * Vercel injects the same variables into the environment directly, so a
- * missing .env is normal in CI, not an error.
- */
-async function loadEnv() {
-  try {
-    const raw = await readFile('.env', 'utf8')
-    for (const line of raw.split(/\r?\n/)) {
-      const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line)
-      if (!match) continue
-      const value = match[2].trim().replace(/^["']|["']$/g, '')
-      if (!(match[1] in process.env)) process.env[match[1]] = value
-    }
-  } catch {
-    /* no .env locally is fine */
-  }
-}
+import { writeFile } from 'node:fs/promises'
+import {
+  SITE_URL,
+  NOINDEX_SLUGS,
+  loadEnv,
+  fetchPublishedPosts,
+} from './lib/published-posts.mjs'
 
 await loadEnv()
-
-const SITE_URL = process.env.SITE_URL ?? 'https://www.myexpansivelife.com'
 
 /** path -> change frequency + priority */
 const STATIC_ROUTES = [
@@ -45,60 +30,6 @@ const STATIC_ROUTES = [
   ['/linkedin-unlocked', 'weekly', '0.9'],
   ['/affiliate', 'monthly', '0.6'],
 ]
-
-async function fetchPublishedPosts() {
-  const projectId = process.env.VITE_FIREBASE_PROJECT_ID
-  const key = process.env.VITE_FIREBASE_API_KEY
-  if (!projectId || !key) {
-    console.warn('sitemap: Firebase env not set — writing static routes only')
-    return []
-  }
-
-  // runQuery, not a plain document list: the security rules only allow a read
-  // they can prove returns published posts, so the status filter has to be part
-  // of the query itself. An unfiltered list is rejected with a 403.
-  const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:runQuery?key=${key}`
-
-  const body = {
-    structuredQuery: {
-      from: [{ collectionId: 'posts' }],
-      where: {
-        fieldFilter: {
-          field: { fieldPath: 'status' },
-          op: 'EQUAL',
-          value: { stringValue: 'published' },
-        },
-      },
-      limit: 500,
-    },
-  }
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) {
-      console.warn(`sitemap: Firestore returned ${res.status} — static routes only`)
-      return []
-    }
-    const rows = await res.json()
-    return rows
-      .filter((row) => row.document)
-      .map(({ document }) => ({
-        slug: document.fields?.slug?.stringValue,
-        updatedAt:
-          document.fields?.updatedAt?.timestampValue ??
-          document.fields?.publishedAt?.timestampValue ??
-          document.updateTime,
-      }))
-      .filter((p) => p.slug)
-  } catch (e) {
-    console.warn('sitemap: could not reach Firestore —', e.message)
-    return []
-  }
-}
 
 function urlEntry(loc, lastmod, changefreq, priority) {
   return [
@@ -113,7 +44,7 @@ function urlEntry(loc, lastmod, changefreq, priority) {
     .join('\n')
 }
 
-const posts = await fetchPublishedPosts()
+const posts = (await fetchPublishedPosts('sitemap')).filter((p) => !NOINDEX_SLUGS.has(p.slug))
 const today = new Date().toISOString().slice(0, 10)
 
 const body = [
