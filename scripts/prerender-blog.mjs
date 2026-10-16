@@ -1,6 +1,7 @@
 /**
  * Writes a real HTML page for /blogs and every published article after a
- * build: dist/blogs/index.html and dist/blogs/<slug>/index.html.
+ * build — dist/blogs/index.html and dist/blogs/<slug>/index.html — plus
+ * head-and-summary pages for the other main routes (see STATIC_PAGES).
  *
  * The site is a single-page app, so without this every article is served as
  * the same empty shell — one generic <title>, no description, an empty
@@ -38,6 +39,12 @@ function esc(value = '') {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+}
+
+/** Same rule as withSiteName() in src/components/Seo.jsx. */
+function withSiteName(title) {
+  const full = `${title} | ${SITE_NAME}`
+  return full.length <= 60 ? full : title
 }
 
 function absolute(url) {
@@ -138,7 +145,7 @@ function page(
 
 function articlePage(template, post, related) {
   const path = `/blogs/${post.slug}`
-  const title = `${post.title} | ${SITE_NAME}`
+  const title = withSiteName(post.title)
   const description = excerptOf(post)
   const image = absolute(post.coverImage)
   const author = post.author?.name ?? SITE_NAME
@@ -217,9 +224,10 @@ ${more ? `<nav aria-label="More articles"><h2>More from the blog</h2><ul>${more}
 }
 
 function indexPage(template, posts) {
-  const title = `Blog | ${SITE_NAME}`
+  // Matches the Seo props in src/pages/Blogs.jsx.
+  const title = `The Expansive Journal | ${SITE_NAME}`
   const description =
-    'Practical articles on LinkedIn, personal branding, entrepreneurship and building wealth beyond a single career, from Dr. Nkem Ezeamama and My Expansive Life.'
+    'Practical writing on personal branding, LinkedIn strategy, investing and building a career that expands instead of confines.'
 
   const items = posts
     .map(
@@ -233,7 +241,7 @@ function indexPage(template, posts) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    name: `${SITE_NAME} Blog`,
+    name: 'The Expansive Journal',
     url: `${SITE_URL}/blogs`,
     description,
     blogPost: posts.map((p) => ({
@@ -244,7 +252,7 @@ function indexPage(template, posts) {
     })),
   }
 
-  const body = `<main><h1>The ${SITE_NAME} Blog</h1><p>${esc(description)}</p><ul>
+  const body = `<main><h1>The Expansive Journal</h1><p>${esc(description)}</p><ul>
 ${items}
 </ul></main>`
 
@@ -258,8 +266,81 @@ ${items}
   })
 }
 
+/**
+ * The other indexable routes. Their bodies are React-only, so crawlers that
+ * don't run JavaScript get the page's own title, description and canonical,
+ * a short summary and links into the rest of the site. Titles and
+ * descriptions mirror each page's <Seo> props — keep them in step.
+ * (The home page is dist/index.html itself, which is also the SPA fallback
+ * for every other route, so it deliberately carries no canonical.)
+ */
+const STATIC_PAGES = [
+  {
+    path: '/community',
+    title: 'The Circle Community',
+    description:
+      'The private membership where ambitious professionals stop building alone: clarity, visibility, financial confidence and a network that shows up.',
+  },
+  {
+    path: '/courses/linkedin-unlocked',
+    title: 'LinkedIn Unlocked',
+    description:
+      'Position your expertise, tell stories that build trust, and create content that attracts the right opportunities — without pretending to be an influencer.',
+  },
+  {
+    path: '/linkedin-unlocked',
+    title: 'LinkedIn Unlocked — Free Live Webinar',
+    description:
+      'Free live webinar with Dr. Nkem Ezeamama: how one LinkedIn post turned into a six figure partnership, and how to apply the same thinking to your own profile.',
+  },
+  {
+    path: '/affiliate',
+    title: 'Affiliate Program',
+    description:
+      'Recommend LinkedIn Unlocked to your audience and earn 20% on every enrolment that comes through your personal link.',
+  },
+]
+
+const SITE_LINKS = [
+  ['/', 'Home'],
+  ['/community', 'The Circle Community'],
+  ['/courses/linkedin-unlocked', 'LinkedIn Unlocked course'],
+  ['/linkedin-unlocked', 'Free LinkedIn webinar'],
+  ['/blogs', 'The Expansive Journal'],
+  ['/affiliate', 'Affiliate Program'],
+]
+
+function staticPage(template, { path, title, description }, latest) {
+  const links = SITE_LINKS.filter(([href]) => href !== path)
+    .map(([href, label]) => `<li><a href="${href}">${esc(label)}</a></li>`)
+    .join('')
+  const articles = latest
+    .map((p) => `<li><a href="/blogs/${esc(p.slug)}">${esc(p.title)}</a></li>`)
+    .join('')
+
+  const body = `<main><h1>${esc(title)}</h1><p>${esc(description)}</p>
+<nav aria-label="Site"><ul>${links}</ul></nav>
+${articles ? `<nav aria-label="Latest articles"><h2>Latest from the journal</h2><ul>${articles}</ul></nav>` : ''}
+</main>`
+
+  return page(template, {
+    path,
+    title: withSiteName(title),
+    description,
+    image: `${SITE_URL}/og-image.jpg`,
+    body,
+  })
+}
+
 const template = await readFile('dist/index.html', 'utf8')
 const posts = await fetchPublishedPosts('prerender')
+
+const latest = posts.filter((p) => !NOINDEX_SLUGS.has(p.slug)).slice(0, 5)
+for (const route of STATIC_PAGES) {
+  await mkdir(`dist${route.path}`, { recursive: true })
+  await writeFile(`dist${route.path}/index.html`, staticPage(template, route, latest), 'utf8')
+}
+console.log(`prerender: wrote ${STATIC_PAGES.length} site pages`)
 
 if (!posts.length) {
   console.warn('prerender: no posts — blog routes keep serving the SPA shell')

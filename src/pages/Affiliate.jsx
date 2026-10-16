@@ -1,3 +1,4 @@
+import Seo from '../components/Seo'
 import PageHero from '../components/PageHero'
 import TrustedBy from '../components/TrustedBy'
 import Problem from '../components/Problem'
@@ -20,6 +21,11 @@ const RECEIVE = [
 export default function Affiliate() {
   return (
     <>
+      <Seo
+        title="Affiliate Program"
+        description="Recommend LinkedIn Unlocked to your audience and earn 20% on every enrolment that comes through your personal link."
+        path="/affiliate"
+      />
       <PageHero
         lead="Recommend it because you believe in it."
         accent="Get paid because it works."

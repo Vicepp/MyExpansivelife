@@ -38,7 +38,7 @@ export default function WebinarLanding() {
     <>
       <Seo
         title="LinkedIn Unlocked — Free Live Webinar"
-        description="Free live webinar with Dr. Nkem Ezeamama: how a single LinkedIn post turned into a six figure partnership, and how to apply the same thinking to your own LinkedIn presence."
+        description="Free live webinar with Dr. Nkem Ezeamama: how one LinkedIn post turned into a six figure partnership, and how to apply the same thinking to your own profile."
         path="/linkedin-unlocked"
       />
 

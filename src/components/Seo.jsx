@@ -36,6 +36,16 @@ function upsertLink(rel, href) {
   el.setAttribute('href', href)
 }
 
+/**
+ * Appends the site name only while the whole title still fits in the ~60
+ * characters Google shows; longer titles stand alone (Google typically adds
+ * the site name to the result itself).
+ */
+export function withSiteName(title) {
+  const full = `${title} | My Expansive Life`
+  return full.length <= 60 ? full : title
+}
+
 export default function Seo({
   title,
   description,
@@ -47,14 +57,20 @@ export default function Seo({
   author,
   /* JSON-LD, so an article can describe itself to search and to answer engines. */
   schema,
+  /* Placeholder and not-found pages: keep them out of search results. */
+  noindex = false,
 }) {
   useEffect(() => {
     const previousTitle = document.title
     const url = `${SITE_URL}${path}`
-    const fullTitle = title ? `${title} | My Expansive Life` : previousTitle
+    const fullTitle = title ? withSiteName(title) : previousTitle
 
     document.title = fullTitle
     upsertLink('canonical', url)
+
+    if (noindex) {
+      upsertMeta('meta[name="robots"]', { name: 'robots', content: 'noindex' })
+    }
 
     if (description) {
       upsertMeta('meta[name="description"]', { name: 'description', content: description })
@@ -112,12 +128,13 @@ export default function Seo({
     return () => {
       document.title = previousTitle
       ld?.remove()
+      if (noindex) document.head.querySelector('meta[name="robots"]')?.remove()
       // Article-only tags must not leak onto the next route.
       document.head
         .querySelectorAll('meta[property^="article:"]')
         .forEach((el) => el.remove())
     }
-  }, [title, description, path, image, type, publishedAt, author, schema])
+  }, [title, description, path, image, type, publishedAt, author, schema, noindex])
 
   return null
 }

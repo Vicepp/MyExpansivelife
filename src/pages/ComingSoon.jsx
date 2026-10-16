@@ -1,12 +1,18 @@
+import { useLocation } from 'react-router-dom'
 import { Container, Button } from '../components/primitives'
+import Seo from '../components/Seo'
 
 /**
  * Placeholder for routes that exist in the navigation but have no design on the
  * board yet (Community, Affiliate, the two unreleased courses).
  */
 export default function ComingSoon({ title }) {
+  const { pathname } = useLocation()
+
   return (
     <section className="bg-cream py-28 text-center lg:py-36">
+      {/* Thin placeholder content: never worth a search result. */}
+      <Seo title={title} path={pathname} noindex />
       <Container>
         <p className="text-[12px] font-medium uppercase tracking-[0.28em] text-ink/60">
           My Expansive Life
