@@ -42,3 +42,6 @@ backup/
 # Untracked pending a decision on whether this repo is public: the
 # documents carry pricing and business model detail.
 mXL document for blog/
+
+# Google service account key for Search Console (scripts/google-sitemap.mjs)
+google-service-account.json

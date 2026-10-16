@@ -27,6 +27,7 @@ import {
   readingMinutes,
   toLocalInput,
 } from '../lib/posts'
+import { requestRebuild } from '../lib/rebuild'
 import { useSearchParams } from 'react-router-dom'
 
 const BLANK = {
@@ -176,6 +177,10 @@ export default function PostEditor() {
           ? `Scheduled for ${new Date(form.publishAt).toLocaleString()}.`
           : 'Draft saved.'
 
+    // Anything that changes what's public — publishing, editing a live post,
+    // or taking one down — needs the static pages and sitemap rebuilt.
+    const affectsPublicSite = status === 'published' || form.status === 'published'
+
     setSaving(true)
     try {
       if (isNew) {
@@ -187,6 +192,7 @@ export default function PostEditor() {
         setForm((f) => ({ ...f, status }))
         setMessage(done)
       }
+      if (affectsPublicSite) requestRebuild(`post saved: ${payload.slug}`)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -198,6 +204,7 @@ export default function PostEditor() {
     if (!window.confirm('Delete this post permanently? This cannot be undone.')) return
     try {
       await deletePost(id)
+      if (form.status === 'published') requestRebuild(`post deleted: ${form.slug}`)
       navigate('/admin/posts', { replace: true })
     } catch (e) {
       setError(e.message)

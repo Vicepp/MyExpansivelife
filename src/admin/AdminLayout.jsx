@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Spinner } from './ui'
 import { publishDueScheduled } from '../lib/posts'
+import { requestRebuild } from '../lib/rebuild'
 import { countUnreadChats, listChats } from '../lib/chats'
 import { listMessages } from '../lib/messages'
 import {
@@ -92,7 +93,12 @@ export default function AdminLayout() {
   // Anything scheduled for a moment that has now passed goes live here.
   useEffect(() => {
     publishDueScheduled()
-      .then((n) => n > 0 && setJustPublished(n))
+      .then((n) => {
+        if (n > 0) {
+          setJustPublished(n)
+          requestRebuild(`${n} scheduled post(s) went live`)
+        }
+      })
       .catch((e) => console.error('Could not publish due posts:', e))
   }, [])
 

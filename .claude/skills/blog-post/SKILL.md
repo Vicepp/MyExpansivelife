@@ -6,7 +6,7 @@ description: Write and publish SEO-ready articles for the My Expansive Life blog
 # Writing blog posts for My Expansive Life
 
 The full pipeline: pick topics, write, preview locally, publish to Firestore,
-regenerate the sitemap.
+redeploy so the posts become crawlable and search engines are notified.
 
 ## Before writing anything
 
@@ -116,9 +116,16 @@ SEED_EMAIL=... SEED_PASSWORD=... node scripts/seed-posts.mjs
 #    --dry-run   print the plan, write nothing
 #    --force     overwrite existing slugs
 
-# 5. refresh the sitemap so the new URLs are crawlable
-npm run build
+# 5. redeploy production and wait until every new post is live and crawlable
+node scripts/rebuild-site.mjs <slug> [<slug> …]
 ```
+
+Step 5 is what makes a post findable. The production build prerenders each
+article (own title, description, JSON-LD, full text), rebuilds the sitemap,
+pings IndexNow (Bing, DuckDuckGo, Yahoo, Yandex…) and resubmits the sitemap to
+Google Search Console. A local `npm run build` changes nothing on the live
+site. New cover images in `public/blog/` must be committed and pushed too —
+the push deploys on its own, so run step 5 after that deploy if needed.
 
 **Never run step 4 without explicit approval.** The default is published and
 public. Use `--dry-run` freely; it touches nothing.
@@ -127,9 +134,12 @@ Re-running the seed skips slugs that already exist, so it is safe to repeat.
 
 ## After publishing
 
-- `npm run build` regenerates `dist/sitemap.xml` from the published posts.
-- Ask whether to submit the sitemap in Google Search Console.
+- Report each post's live URL from step 5's output.
+- Run the SEO checks: title ≤ 60 characters (" | My Expansive Life" is only
+  added when it fits), description 70–160, one H1, cover image alt text.
 - Consider adding a link from an existing post to the new one.
+- Publishing from the admin panel triggers the same redeploy automatically
+  (`api/rebuild.js`); only scripted publishing needs step 5.
 
 ## Files
 
@@ -141,5 +151,8 @@ Re-running the seed skips slugs that already exist, so it is safe to repeat.
 | `scripts/preview-posts.mjs` | Local review page |
 | `scripts/seed-posts.mjs` | Writes to Firestore |
 | `scripts/generate-sitemap.mjs` | Runs inside `npm run build` |
+| `scripts/prerender-blog.mjs` | Crawler-readable page per post, inside the build |
+| `scripts/indexnow.mjs`, `scripts/google-sitemap.mjs` | Search-engine pings, production builds only |
+| `scripts/rebuild-site.mjs` | Redeploy via the Vercel Deploy Hook + verify posts are live |
 | `src/components/Seo.jsx` | Per-page title, meta, canonical, JSON-LD |
 | `public/blog/` | Cover images |
