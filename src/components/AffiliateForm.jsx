@@ -1,66 +1,32 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Container } from './primitives'
 import Reveal from './Reveal'
-import { sendMessage } from '../lib/messages'
 
-const FIELDS = [
-  { name: 'fullName', label: 'Full Name', required: true, type: 'text' },
-  { name: 'email', label: 'Email Address', required: true, type: 'email' },
-  { name: 'phone', label: 'Phone Number', required: false, type: 'tel' },
-]
+/**
+ * Affiliate applications go to the "LinkedIn Affiliate Support" form in
+ * LeadConnector (GoHighLevel), so they land in the CRM with the rest of the
+ * pipeline rather than in the site's own inbox.
+ */
+const FORM_ID = 'aex5atZbDDaLMpNIfuDI'
+const EMBED_SCRIPT = 'https://link.msgsndr.com/js/form_embed.js'
 
-const EMPTY = { fullName: '', email: '', phone: '', message: '' }
-
-function Field({ field, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="text-[14px] font-semibold text-ink">
-        {field.label}
-        {field.required && <span className="text-gold">*</span>}
-      </span>
-      <input
-        type={field.type}
-        name={field.name}
-        value={value}
-        required={field.required}
-        onChange={onChange}
-        className="mt-3 w-full border-b border-ink/40 bg-transparent pb-2 text-[15px] outline-none transition-colors focus:border-gold"
-      />
-    </label>
-  )
+/**
+ * LeadConnector's helper sizes the iframe to the form and handles its
+ * cookie-consent and redirect behaviour. Added once per page load; React
+ * re-mounts on navigation must not stack copies.
+ */
+function useFormEmbedScript() {
+  useEffect(() => {
+    if (document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) return
+    const script = document.createElement('script')
+    script.src = EMBED_SCRIPT
+    script.async = true
+    document.body.appendChild(script)
+  }, [])
 }
 
 export default function AffiliateForm() {
-  const [values, setValues] = useState(EMPTY)
-  const [sent, setSent] = useState('')
-  const [sending, setSending] = useState(false)
-  const [error, setError] = useState('')
-
-  const update = (e) =>
-    setValues((v) => ({ ...v, [e.target.name]: e.target.value }))
-
-  const onSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setSending(true)
-    try {
-      // Lands in the admin Inbox. Returns false when Firebase is unconnected.
-      const stored = await sendMessage({
-        name: values.fullName,
-        email: values.email,
-        phone: values.phone,
-        subject: 'Affiliate application',
-        body: values.message || 'No message provided.',
-        source: 'Affiliate page',
-      })
-      setSent(stored ? 'stored' : 'local')
-      setValues(EMPTY)
-    } catch {
-      setError('Something went wrong sending that. Please try again.')
-    } finally {
-      setSending(false)
-    }
-  }
+  useFormEmbedScript()
 
   return (
     <section className="bg-cream py-20 lg:py-24">
@@ -81,57 +47,32 @@ export default function AffiliateForm() {
           </Reveal>
         </div>
 
-        <Reveal delay={120}>
-          <form onSubmit={onSubmit} className="mt-14">
-            <div className="grid gap-x-12 gap-y-10 md:grid-cols-3">
-              {FIELDS.map((f) => (
-                <Field
-                  key={f.name}
-                  field={f}
-                  value={values[f.name]}
-                  onChange={update}
-                />
-              ))}
-            </div>
-
-            <label className="mt-10 block">
-              <span className="text-[14px] font-semibold text-ink">Message</span>
-              <input
-                type="text"
-                name="message"
-                value={values.message}
-                onChange={update}
-                className="mt-3 w-full border-b border-ink/40 bg-transparent pb-2 text-[15px] outline-none transition-colors focus:border-gold"
-              />
-            </label>
-
-            <div className="mt-10 flex flex-wrap items-center gap-5">
-              <button
-                type="submit"
-                disabled={sending}
-                className="rounded-full bg-gold px-8 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-gold-text disabled:opacity-60"
-              >
-                {sending ? 'Sending…' : 'Submit Application'}
-              </button>
-              {sent === 'stored' && (
-                <p role="status" className="text-[14px] font-medium text-mint">
-                  Thanks — your application has been received.
-                </p>
-              )}
-              {sent === 'local' && (
-                <p role="status" className="text-[14px] font-medium text-ink/60">
-                  Form works, but no database is connected yet, so this wasn&rsquo;t
-                  saved.
-                </p>
-              )}
-              {error && (
-                <p role="alert" className="text-[14px] font-medium text-red-600">
-                  {error}
-                </p>
-              )}
-            </div>
-          </form>
-        </Reveal>
+        {/*
+          Attributes are LeadConnector's embed code verbatim; form_embed.js
+          reads them. The 490px starting height is the form's data-height, so
+          the page doesn't jump before the script resizes it.
+        */}
+        <div className="mt-14">
+          <iframe
+            src={`https://api.leadconnectorhq.com/widget/form/${FORM_ID}`}
+            id={`inline-${FORM_ID}`}
+            title="LinkedIn Affiliate Support"
+            style={{ width: '100%', height: '490px', border: 'none', borderRadius: '20px' }}
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="LinkedIn Affiliate Support"
+            data-height="490"
+            data-layout-iframe-id={`inline-${FORM_ID}`}
+            data-form-id={FORM_ID}
+            data-cookie-consent="true"
+            data-cookie-consent-provider="auto"
+          />
+        </div>
       </Container>
     </section>
   )
