@@ -8,8 +8,20 @@
 export const SITE_URL = 'https://www.myexpansivelife.com'
 
 
-export const COMMUNITY_URL = 'https://community.myexpansivelife.com/'
-export const COURSE_URL = 'https://linkedinunlocked.myexpansivelife.com/'
+/*
+ * Circle's join page. The bare community domain lands on a members-only login
+ * wall, so new visitors could never actually join from it.
+ */
+export const COMMUNITY_URL = 'https://community.myexpansivelife.com/c/join-the-community-957bfc'
+
+/* Enrolment for the LinkedIn Unlocked course, inside the Circle community. */
+export const COURSE_URL = 'https://community.myexpansivelife.com/c/linkedinunlocked'
+
+/* The free webinar's registration page (ClickMeeting form) on this site. */
+export const WEBINAR_PATH = '/linkedin-unlocked'
+
+/* "Let's talk" / done-for-you enquiries: a 30-minute call with the team. */
+export const BOOKING_URL = 'https://calendly.com/pheenyxcapital/30min'
 
 export const SOCIALS = [
   {

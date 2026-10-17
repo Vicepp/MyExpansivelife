@@ -10,7 +10,7 @@ import ThreeWays, { COURSE_WAYS } from '../components/ThreeWays'
 import GrowthBanner from '../components/GrowthBanner'
 import Testimonials from '../components/Testimonials'
 import Blog from '../components/Blog'
-import { COURSE_URL } from '../lib/links'
+import { WEBINAR_PATH } from '../lib/links'
 
 const CHANGES = [
   {
@@ -64,7 +64,7 @@ export default function Course() {
         title="Four things LinkedIn Unlocked delivers."
         items={CHANGES}
         ctaLabel="Join the Free Webinar"
-        ctaTo="#events"
+        ctaTo={WEBINAR_PATH}
       />
 
       <SageFeature
@@ -96,7 +96,7 @@ export default function Course() {
         items={CREDENTIALS}
         note="LinkedIn didn’t change what Dr. Nkem knew. It helped the right people see it. Now, she’s helping other professionals do the same."
         ctaLabel="Join the Free Webinar"
-        ctaTo="#events"
+        ctaTo={WEBINAR_PATH}
       />
 
       <Process />
@@ -114,7 +114,7 @@ export default function Course() {
         title="Ready to build visibility that lasts?"
         body="Join the current cohort and start seeing results this week. One-time investment · Lifetime access · 30-day guarantee."
         ctaLabel="Join the Free Webinar"
-        ctaTo="#events"
+        ctaTo={WEBINAR_PATH}
       />
 
       {/* The webinar itself, with its countdown, sits at the decision point. */}

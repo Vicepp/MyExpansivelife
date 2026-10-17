@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/join",
+      "destination": "https://community.myexpansivelife.com/c/join-the-community-957bfc",
+      "permanent": false
+    },
+    {
       "source": "/c/:path*",
       "destination": "https://community.myexpansivelife.com/c/:path*",
       "permanent": true

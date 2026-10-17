@@ -1,4 +1,5 @@
 import { Container, TextLink } from './primitives'
+import { COMMUNITY_URL } from '../lib/links'
 import Reveal from './Reveal'
 
 const SPACES = [
@@ -69,7 +70,7 @@ export default function AccessGrid() {
                 <p className="relative mt-3 text-[13px] leading-relaxed text-ink/75">
                   {s.body}
                 </p>
-                <TextLink to="/community" className="relative mt-6">
+                <TextLink to={COMMUNITY_URL} className="relative mt-6">
                   Explore the Circle
                 </TextLink>
               </article>
@@ -78,7 +79,7 @@ export default function AccessGrid() {
         </div>
 
         <div className="mt-8 flex justify-end">
-          <TextLink to="/community" className="!text-white">
+          <TextLink to={COMMUNITY_URL} className="!text-white">
             See All
           </TextLink>
         </div>

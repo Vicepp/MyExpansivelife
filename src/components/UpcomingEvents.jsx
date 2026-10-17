@@ -128,8 +128,12 @@ export default function UpcomingEvents() {
     listEvents()
       .then((rows) => {
         if (cancelled) return
-        setEvents(rows)
-        setIndex(nextEventIndex(rows, Date.now()))
+        // Upcoming and live only. Past events have no replay to send people
+        // to, so their "Watch replay" button led nowhere useful; with nothing
+        // scheduled the whole section hides instead.
+        const current = rows.filter((e) => Date.now() < e.endsAt)
+        setEvents(current)
+        setIndex(nextEventIndex(current, Date.now()))
       })
       .catch((e) => console.error('Could not load events:', e))
       .finally(() => !cancelled && setLoading(false))

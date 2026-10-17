@@ -23,8 +23,10 @@ Site pages (relative paths — link them exactly as written):
 - "/blogs" — articles
 
 Off-site:
-- Course sales and checkout page: https://linkedinunlocked.myexpansivelife.com/
-- Join The Circle: https://community.myexpansivelife.com/
+- Enrol in LinkedIn Unlocked (inside the Circle community): https://community.myexpansivelife.com/c/linkedinunlocked
+- Free LinkedIn webinar registration: https://www.myexpansivelife.com/linkedin-unlocked
+- Book a 30-minute strategy call: https://calendly.com/pheenyxcapital/30min
+- Join The Circle: https://community.myexpansivelife.com/c/join-the-community-957bfc
 - LinkedIn: https://www.linkedin.com/in/nkemezeamamamd/
 - YouTube: https://www.youtube.com/@MyExpansiveLife
 - Instagram: https://www.instagram.com/myexpansivelife/
@@ -83,7 +85,7 @@ strategy, 120+ active investors attracted through content.
 ## The Circle (community)
 A private home base for learning, connection and weekly accountability,
 including the live Monday Momentum session. The "/community" page explains it;
-joining happens at https://community.myexpansivelife.com/
+joining happens at https://community.myexpansivelife.com/c/join-the-community-957bfc
 
 ## Affiliate programme
 Share LinkedIn Unlocked with people who would genuinely benefit and earn 20% on

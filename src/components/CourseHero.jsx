@@ -1,6 +1,6 @@
 import { Container, Button } from './primitives'
 import Reveal, { CountUp, TextReveal } from './Reveal'
-import { COURSE_URL } from '../lib/links'
+import { COURSE_URL, WEBINAR_PATH } from '../lib/links'
 import cluster from '../assets/design/course-hero-cluster.png'
 
 /** Figures from the LinkedIn Unlocked sales page. */
@@ -72,7 +72,7 @@ export default function CourseHero() {
                 <Button variant="solid" to={COURSE_URL}>
                   Enroll Now
                 </Button>
-                <Button variant="outline" to="#events">
+                <Button variant="outline" to={WEBINAR_PATH}>
                   Join the Free Webinar
                 </Button>
               </div>

@@ -1,6 +1,6 @@
 import { Container, TextLink } from './primitives'
 import Reveal from './Reveal'
-import { COMMUNITY_URL, COURSE_URL } from '../lib/links'
+import { COMMUNITY_URL, WEBINAR_PATH, BOOKING_URL } from '../lib/links'
 
 const HOME_WAYS = [
   {
@@ -40,7 +40,7 @@ export const COURSE_WAYS = [
       'Peer community for accountability, networking, and momentum',
     ],
     cta: 'Join the Free Webinar',
-    to: '#events',
+    to: WEBINAR_PATH,
   },
   {
     n: '02',
@@ -54,7 +54,7 @@ export const COURSE_WAYS = [
       'Ongoing system monitoring and scaling support',
     ],
     cta: 'Schedule a Strategy Call',
-    to: COURSE_URL,
+    to: BOOKING_URL,
   },
 ]
 
