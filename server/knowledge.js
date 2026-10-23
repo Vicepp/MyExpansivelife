@@ -17,14 +17,15 @@
 export const LINK_DIRECTORY = `
 Site pages (relative paths — link them exactly as written):
 - "/" — Home
-- "/courses/linkedin-unlocked" — the LinkedIn Unlocked course page
+- "/linkedin-unlocked" — the free LinkedIn webinar page, with the registration form
+- "/courses/linkedin-unlocked" — the LinkedIn Unlocked course page (details, enrolment, strategy call)
 - "/community" — about The Circle community
 - "/affiliate" — the affiliate programme, including the application form
-- "/blogs" — articles
+- "/blogs" — The Expansive Journal (all articles)
+- Individual articles — listed under "The Expansive Journal" further down
 
 Off-site:
 - Enrol in LinkedIn Unlocked (inside the Circle community): https://community.myexpansivelife.com/c/linkedinunlocked
-- Free LinkedIn webinar registration: https://www.myexpansivelife.com/linkedin-unlocked
 - Book a 30-minute strategy call: https://calendly.com/pheenyxcapital/30min
 - Join The Circle: https://community.myexpansivelife.com/c/join-the-community-957bfc
 - LinkedIn: https://www.linkedin.com/in/nkemezeamamamd/
@@ -33,8 +34,8 @@ Off-site:
 - Facebook: https://www.facebook.com/myexpansivelife/
 
 Forms on the site:
+- Webinar registration (ClickMeeting) — on the "/linkedin-unlocked" page.
 - Affiliate application — on the "/affiliate" page.
-- Newsletter signup — at the foot of most pages.
 `.trim()
 
 export const SITE_KNOWLEDGE = `
@@ -49,7 +50,9 @@ opportunities and income — mostly through LinkedIn.
 - Formerly an ER physician working 12-hour shifts with no audience, network or platform.
 - Built her presence on LinkedIn deliberately — post by post, connection by connection.
 - Result: $153M+ in assets under management, with every capital partner found through LinkedIn content.
-- 16,000+ high-value followers, built organically with zero paid advertising.
+- 17,000+ LinkedIn followers and a growing professional community, built organically with zero paid advertising.
+- Her firm, Pheenyx Capital, manages $153 million in assets.
+- One LinkedIn post she shared led to a six figure partnership — the story behind the free webinar.
 - Invited to speak at the UN General Assembly; secured global speaking engagements, all attracted through content rather than cold outreach.
 - Founder & CEO. She teaches the exact system she used herself.
 
@@ -82,6 +85,10 @@ with ongoing monitoring and scaling support. This one starts with a strategy cal
 15K+ followers built organically, $40M+ raised using the LinkedIn Unlocked
 strategy, 120+ active investors attracted through content.
 
+## The other courses
+"Investment 101" and "Personal Branding" appear in the Courses menu but are not
+released yet (their pages say "coming soon"). There are no dates for them.
+
 ## The Circle (community)
 A private home base for learning, connection and weekly accountability,
 including the live Monday Momentum session. The "/community" page explains it;
@@ -89,12 +96,18 @@ joining happens at https://community.myexpansivelife.com/c/join-the-community-95
 
 ## Affiliate programme
 Share LinkedIn Unlocked with people who would genuinely benefit and earn 20% on
-every enrolment you bring in. Applications go through the form on the
-"/affiliate" page.
+every enrolment you bring in through your personal link. Applications go
+through the form on the "/affiliate" page; once reviewed, applicants are invited
+into the MXL Circle Community, where the rest of the affiliate setup happens.
 
 ## Events
 Free live sessions run regularly — Monday Momentum sessions and longer free
 webinars. Registration is always free.
+
+## The Expansive Journal (blog)
+Practical writing on personal branding, LinkedIn strategy, investing and building
+a career that expands instead of confines, at "/blogs". When someone asks about a
+topic an article covers, recommend that article by its link.
 
 ## Things you do NOT know
 Exact prices, refund terms, cohort start dates, payment plans, affiliate payout
@@ -102,6 +115,49 @@ schedules, and anything about a specific person's account or order. Do not guess
 at these. Say you don't have that detail and offer to pass the question on — the
 visitor's name and email are already captured, so the team can follow up.
 `.trim()
+
+/**
+ * The free LinkedIn webinar and its landing page. Kept here (not only in the
+ * events collection) so the assistant knows it even when Admin → Events has
+ * no entry for it. Update this when the next webinar is scheduled.
+ */
+const WEBINAR = {
+  title: 'How a Single LinkedIn Post Turned Into a Six Figure Partnership',
+  when: 'Thursday, October 29, 2026 — 6:00 PM CST / 7:00 PM EST / 4:00 PM PST',
+  // End of the session in UTC (6 PM CST = 23:00 UTC; allow 90 minutes).
+  endsAt: Date.parse('2026-10-30T00:30:00Z'),
+}
+
+function describeWebinar(now = Date.now()) {
+  const details = `The free live webinar "${WEBINAR.title}" with Dr. Nkem Ezeamama, live on
+ClickMeeting. Its page is "/linkedin-unlocked" (registration form at the bottom).
+What attendees learn: how to get their expertise in front of the right people,
+know exactly what to post, and make LinkedIn work around a demanding career
+without becoming a full-time creator. It is for people who think "I'm good at
+what I do but my LinkedIn doesn't show it", "I never know what to post", "I don't
+have time to be a content creator", or "I want the right people to find me".
+Registration bonus, free: Dr. Nkem's Personal Brand Playbook — Five Shifts That
+Quietly Change Your LinkedIn, the Five Post Rotation (transformation stories,
+behind-the-scenes, contrarian takes, frameworks, honest posts), the 90 Minute
+Daily Rhythm, and a hands-on workbook (rewrite your headline and About section,
+choose Featured pieces, plan your first five posts). Registrants receive the
+ClickMeeting link and the Playbook right after registering.`
+
+  return now < WEBINAR.endsAt
+    ? `FREE WEBINAR — ${WEBINAR.when}.
+${details}
+To register, send people to the "/linkedin-unlocked" page.`
+    : `The free webinar "${WEBINAR.title}" took place on ${WEBINAR.when.split(' — ')[0]}. Do not invite anyone to it. If asked about the next webinar, say a new date has not been announced yet and the team can follow up by email.`
+}
+
+/** Published articles, so the assistant can recommend and link them. */
+function describeArticles(articles) {
+  if (!articles?.length) return 'Articles: see "/blogs".'
+  return `Articles you may link (title — link — what it covers):
+${articles
+  .map((a) => `- "${a.title}" — /blogs/${a.slug} — ${String(a.excerpt ?? '').replace(/\s+/g, ' ').slice(0, 160)}`)
+  .join('\n')}`
+}
 
 /**
  * Describes the upcoming sessions, and — importantly — how to register.
@@ -129,7 +185,7 @@ it genuinely answers what was asked. Registration is free.`
 }
 
 /** Composes the full system prompt for one request. */
-export function buildSystemPrompt({ name, page, events, calendlyUrl }) {
+export function buildSystemPrompt({ name, page, events, calendlyUrl, articles }) {
   const visitor = name
     ? `The visitor's name is ${name}. Use it naturally, not in every message.`
     : ''
@@ -145,6 +201,8 @@ understand what Dr. Nkem Ezeamama offers and find the right next step.
 
 ${visitor}
 ${where}
+
+${describeWebinar()}
 
 ${describeEvents(events)}
 
@@ -165,5 +223,7 @@ ${calendly}
 
 ${LINK_DIRECTORY}
 
-${SITE_KNOWLEDGE}`
+${SITE_KNOWLEDGE}
+
+${describeArticles(articles)}`
 }

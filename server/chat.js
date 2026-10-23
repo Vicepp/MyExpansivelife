@@ -1,4 +1,5 @@
 import { buildSystemPrompt } from './knowledge.js'
+import { fetchPublishedPosts, NOINDEX_SLUGS } from '../scripts/lib/published-posts.mjs'
 
 /**
  * The chat brain, framework-free.
@@ -47,6 +48,31 @@ const GEMINI_ENDPOINT =
 const GEMINI_DEFAULTS = ['gemini-flash-latest', 'gemini-flash-lite-latest']
 /* A stalled upstream must not eat the whole function time budget. */
 const GEMINI_TIMEOUT_MS = 25_000
+
+/**
+ * Published articles for the assistant to recommend, cached so a chat turn
+ * rarely waits on Firestore, and capped at a few seconds when it does. Posts
+ * kept out of search (NOINDEX_SLUGS) are kept out of the chat too.
+ */
+const ARTICLE_TTL_MS = 15 * 60_000
+let articleCache = { at: 0, rows: [] }
+
+async function articles() {
+  if (Date.now() - articleCache.at < ARTICLE_TTL_MS) return articleCache.rows
+  const fresh = await Promise.race([
+    fetchPublishedPosts('chat'),
+    new Promise((resolve) => setTimeout(() => resolve(null), 3000)),
+  ]).catch(() => null)
+  if (fresh?.length) {
+    articleCache = {
+      at: Date.now(),
+      rows: fresh
+        .filter((p) => !NOINDEX_SLUGS.has(p.slug))
+        .map(({ title, slug, excerpt }) => ({ title, slug, excerpt })),
+    }
+  }
+  return articleCache.rows
+}
 
 /* Guard rails — this endpoint is public, so cap what one request can cost. */
 const MAX_MESSAGE_CHARS = 1200
@@ -192,9 +218,10 @@ export async function handleChat(input, rawEnv = process.env, referer = '') {
           name: String(input?.name ?? '').slice(0, 80),
           page: String(input?.page ?? '').slice(0, 120),
           events: Array.isArray(input?.events) ? input.events.slice(0, 4) : [],
-          // Optional: set it in Netlify once there is a booking page to send
-          // people to. Absent, the assistant offers an email follow-up instead.
+          // Optional booking page. Absent, the assistant offers an email
+          // follow-up instead.
           calendlyUrl: env.CHAT_BOOKING_URL?.trim() || '',
+          articles: await articles(),
         }),
       },
       ...history,
