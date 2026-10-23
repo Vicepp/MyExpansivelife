@@ -4,7 +4,6 @@ import TrustedBy from '../components/TrustedBy'
 import Problem from '../components/Problem'
 import StepsGrid from '../components/StepsGrid'
 import BulletSplit from '../components/BulletSplit'
-import GrowthBanner from '../components/GrowthBanner'
 import AffiliateForm from '../components/AffiliateForm'
 import Testimonials from '../components/Testimonials'
 import { Newsletter } from '../components/Footer'
@@ -39,11 +38,6 @@ export default function Affiliate() {
         eyebrow="What you receive"
         title="Everything you need to promote with confidence."
         items={RECEIVE}
-      />
-      <GrowthBanner
-        tone="sage"
-        title="You'll Leave With A Plan, Not Just More To Read."
-        ctaLabel="Get 14 Days Free"
       />
       <AffiliateForm />
       <Testimonials />
