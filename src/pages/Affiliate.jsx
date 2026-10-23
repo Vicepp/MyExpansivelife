@@ -32,7 +32,8 @@ export default function Affiliate() {
         body="This time, get paid for it. Share LinkedIn Unlocked with your audience and earn 20% on every enrolment that comes through your personal link."
       />
       <TrustedBy />
-      <Problem tone="gold" />
+      {/* No media: the stock thumbnail had a printed play button and no video. */}
+      <Problem tone="gold" media={false} />
       <StepsGrid />
       <BulletSplit
         eyebrow="What you receive"
