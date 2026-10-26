@@ -378,6 +378,19 @@ export async function updatePost(id, data) {
   await updateDoc(doc(db, POSTS, id), payload)
 }
 
+/**
+ * Changes only a post's status (publish / unpublish from the article list).
+ * Unlike updatePost it never touches the content-derived fields, so the
+ * slug, excerpt and reading time stay as they are.
+ */
+export async function setPostStatus(post, status) {
+  assertConfigured()
+  const payload = { status, updatedAt: serverTimestamp() }
+  if (status === 'published' && !post.publishedAt) payload.publishedAt = serverTimestamp()
+  if (status !== 'scheduled') payload.publishAt = null
+  await updateDoc(doc(db, POSTS, post.id), payload)
+}
+
 /** Formats a Date for a datetime-local input, in the browser's timezone. */
 export function toLocalInput(date) {
   const d = toDate(date)

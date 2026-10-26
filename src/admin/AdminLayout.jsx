@@ -25,7 +25,7 @@ import logo from '../assets/design/logo.svg'
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', Icon: IconGrid, end: true },
-  { to: '/admin/posts', label: 'My Articles', Icon: IconDoc },
+  { to: '/admin/posts', label: 'Blog', Icon: IconDoc },
   { to: '/admin/events', label: 'Events', Icon: IconCalendar },
   { to: '/admin/analytics', label: 'Analytics', Icon: IconChart },
   { to: '/admin/page-analytics', label: 'Page analytics', Icon: IconEye },
