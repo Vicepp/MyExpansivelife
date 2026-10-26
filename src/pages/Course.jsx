@@ -11,6 +11,7 @@ import GrowthBanner from '../components/GrowthBanner'
 import Testimonials from '../components/Testimonials'
 import Blog from '../components/Blog'
 import { WEBINAR_PATH } from '../lib/links'
+import { WebinarPlaybook } from '../components/Webinar'
 
 const CHANGES = [
   {
@@ -98,6 +99,9 @@ export default function Course() {
         ctaLabel="Join the Free Webinar"
         ctaTo={WEBINAR_PATH}
       />
+
+      {/* Free Playbook download — the same Playbook the webinar gives away. */}
+      <WebinarPlaybook variant="download" />
 
       <Process />
 

@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Button } from './primitives'
+import { Button, ArrowIcon } from './primitives'
 import Reveal, { TextReveal } from './Reveal'
 import logo from '../assets/design/logo.svg'
 import logoMark from '../assets/design/logo-mark.png'
 import logoLight from '../assets/design/logo-light.png'
 import familiarPhoto from '../assets/design/webinar-familiar.jpg'
 import VideoEmbed from './VideoEmbed'
+import { LeadFormModal } from './LeadForm'
 
 /**
  * The LinkedIn Unlocked course page: the free webinar funnel, adapted from the
@@ -487,14 +488,44 @@ const PLAYBOOK = [
   },
 ]
 
-export function WebinarPlaybook() {
+/**
+ * The Playbook as a free download (LinkedIn Unlocked course page): the button
+ * opens LeadConnector's "MXL website LinkedIn Playbook" form in a popup.
+ */
+const PLAYBOOK_FORM = {
+  formId: 'BGqd1RgtMoRXavWVOC86',
+  name: 'MXL website LinkedIn Playbook',
+  height: 768,
+}
+
+const PLAYBOOK_COPY = {
+  // Webinar landing page: the Playbook is the registration bonus.
+  bonus: {
+    note: 'Yours when you register',
+    eyebrow: 'Free registration bonus',
+    intro:
+      'Register for the webinar and I’ll send you my Personal Brand Playbook, the same system I teach inside LinkedIn Unlocked. Here’s what’s inside.',
+  },
+  // Course page: a standalone free download.
+  download: {
+    note: 'Free to download',
+    eyebrow: 'Free download',
+    intro:
+      'Get my Personal Brand Playbook, the same system I teach inside LinkedIn Unlocked, free. Here’s what’s inside.',
+  },
+}
+
+export function WebinarPlaybook({ variant = 'bonus' }) {
+  const copy = PLAYBOOK_COPY[variant]
+  const [open, setOpen] = useState(false)
+
   return (
     <section id="playbook" className="bg-cream py-6">
       <Wide>
         <div className="grid items-center gap-12 rounded-3xl bg-forest px-6 py-14 text-cream lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:px-14 lg:py-20">
           <Reveal y={0} className="relative mx-auto h-[460px] w-full max-w-[440px]">
             <span className="absolute -top-2 left-0 z-10 rotate-[-5deg] font-script text-[42px] leading-none text-gold">
-              Yours when you register
+              {copy.note}
             </span>
             <div className="absolute right-0 top-24 flex h-[230px] w-[170px] rotate-[8deg] flex-col gap-2.5 rounded-lg bg-cream-card p-5 text-forest shadow-xl">
               <span className="font-display text-[17px] leading-tight">
@@ -525,14 +556,13 @@ export function WebinarPlaybook() {
 
           <Reveal delay={120}>
             <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-gold">
-              Free registration bonus
+              {copy.eyebrow}
             </p>
             <h2 className="mt-4 font-display text-[32px] leading-[1.12] lg:text-[46px]">
               Your Personal Brand Playbook
             </h2>
             <p className="mt-4 text-[15.5px] leading-relaxed text-cream/80">
-              Register for the webinar and I’ll send you my Personal Brand Playbook,
-              the same system I teach inside LinkedIn Unlocked. Here’s what’s inside.
+              {copy.intro}
             </p>
             <ol className="mt-6 border-t border-white/15">
               {PLAYBOOK.map((p, i) => (
@@ -549,9 +579,30 @@ export function WebinarPlaybook() {
                 </li>
               ))}
             </ol>
+            {variant === 'download' && (
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="group mt-8 inline-flex items-center gap-3 rounded-full bg-gold px-8 py-4 text-[15px] font-semibold text-white transition-colors hover:bg-gold-text"
+              >
+                Download the Playbook
+                <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-white/25">
+                  <ArrowIcon className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-4" />
+                </span>
+              </button>
+            )}
           </Reveal>
         </div>
       </Wide>
+
+      {variant === 'download' && (
+        <LeadFormModal
+          open={open}
+          onClose={() => setOpen(false)}
+          title="Download your Personal Brand Playbook"
+          {...PLAYBOOK_FORM}
+        />
+      )}
     </section>
   )
 }
