@@ -11,10 +11,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Card, PageHead, Select, SetupNotice, Spinner, StatCard } from './ui'
+import { Card, PageHead, SetupNotice, Spinner, StatCard } from './ui'
 import { IconEye, IconPen, IconChart, IconMoney } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
 import { listEvents } from '../lib/events'
+import { useDateRange, DateRangePicker } from './DateRange'
 import {
   dayKey,
   fillDays,
@@ -30,12 +31,6 @@ const tooltipStyle = {
   border: '1px solid rgb(24 55 52 / 0.12)',
   fontSize: 13,
 }
-
-const RANGES = [
-  { value: '7', label: 'Last 7 days' },
-  { value: '30', label: 'Last 30 days' },
-  { value: '90', label: 'Last 90 days' },
-]
 
 function Panel({ title, hint, children }) {
   return (
@@ -81,16 +76,17 @@ export default function PageAnalytics() {
   const [rows, setRows] = useState([])
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [range, setRange] = useState('30')
+  const range = useDateRange()
   const [error, setError] = useState('')
+
+  // Day keys ("2026-10-26"): stable strings, so the fetch reruns only when
+  // the window actually changes.
+  const fromKey = dayKey(range.from)
+  const toKey = dayKey(range.to)
 
   useEffect(() => {
     setLoading(true)
-    const to = new Date()
-    const from = new Date()
-    from.setDate(to.getDate() - (Number(range) - 1))
-
-    Promise.all([listAnalytics(dayKey(from), dayKey(to)), listEvents()])
+    Promise.all([listAnalytics(fromKey, toKey), listEvents()])
       .then(([analytics, eventRows]) => {
         setRows(analytics)
         setEvents(eventRows)
@@ -98,14 +94,12 @@ export default function PageAnalytics() {
       })
       .catch((e) => setError(e.message ?? 'Could not load analytics.'))
       .finally(() => setLoading(false))
-  }, [range])
+  }, [fromKey, toKey])
 
-  const series = useMemo(() => {
-    const to = new Date()
-    const from = new Date()
-    from.setDate(to.getDate() - (Number(range) - 1))
-    return fillDays(rows, from, to)
-  }, [rows, range])
+  const series = useMemo(
+    () => fillDays(rows, range.from, range.to),
+    [rows, range.from, range.to],
+  )
 
   const totals = useMemo(
     () => ({
@@ -149,15 +143,7 @@ export default function PageAnalytics() {
         title="Page analytics"
         subtitle="Traffic, calls to action and event leads"
         action={
-          <div className="w-[170px]">
-            <Select value={range} onChange={(e) => setRange(e.target.value)}>
-              {RANGES.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <DateRangePicker range={range} />
         }
       />
 

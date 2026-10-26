@@ -13,9 +13,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Card, PageHead, SetupNotice, Spinner, StatCard, Select } from './ui'
+import { Card, PageHead, SetupNotice, Spinner, StatCard } from './ui'
 import { IconEye, IconHeart, IconDoc, IconChart } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
+import { useDateRange, DateRangePicker } from './DateRange'
 import { compact, listPosts, summarise } from '../lib/posts'
 
 const SERIES_COLOURS = ['#183734', '#b3803f', '#87492c', '#7d886e', '#40b487', '#712806']
@@ -32,7 +33,7 @@ const tooltipStyle = {
 export default function Analytics() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [range, setRange] = useState('30')
+  const range = useDateRange()
 
   useEffect(() => {
     listPosts()
@@ -45,11 +46,12 @@ export default function Analytics() {
 
   /** Views per day, spread across the selected window. */
   const trend = useMemo(() => {
-    const days = Number(range)
     const out = []
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date()
-      date.setDate(date.getDate() - i)
+    for (
+      let date = new Date(range.from);
+      date <= range.to;
+      date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+    ) {
       const inDay = posts.filter((p) => {
         const d = p.publishedAt ?? p.createdAt
         return d && d.toDateString() === date.toDateString()
@@ -64,7 +66,7 @@ export default function Analytics() {
       })
     }
     return out
-  }, [posts, range])
+  }, [posts, range.from, range.to])
 
   const byCategory = useMemo(() => {
     const map = new Map()
@@ -99,13 +101,7 @@ export default function Analytics() {
         title="Analytics"
         subtitle="How your writing is performing"
         action={
-          <div className="w-[170px]">
-            <Select value={range} onChange={(e) => setRange(e.target.value)}>
-              <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
-              <option value="90">Last 90 days</option>
-            </Select>
-          </div>
+          <DateRangePicker range={range} />
         }
       />
 
