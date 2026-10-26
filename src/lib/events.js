@@ -111,7 +111,8 @@ export const BLANK_EVENT = {
   // 'embed' opens the provider widget in a popup; 'link' follows registerUrl.
   registerMode: 'link',
   embedCode: '',
-  registerUrl: '/community',
+  // Monday Momentum (the default badge) always registers through this Zoom link.
+  registerUrl: 'https://us06web.zoom.us/meeting/register/rJnWMGfIQIu6lShHFhECww',
   hidden: false,
 }
 
