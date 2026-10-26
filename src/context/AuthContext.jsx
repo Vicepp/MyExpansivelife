@@ -9,6 +9,7 @@ import {
   signOut as fbSignOut,
   updateProfile,
 } from 'firebase/auth'
+import { adminEmails } from '../lib/admins'
 import { auth, isFirebaseConfigured } from '../lib/firebase'
 
 const AuthContext = createContext(null)
@@ -16,18 +17,12 @@ const AuthContext = createContext(null)
 const DEMO_KEY = 'mxl.demo-admin'
 
 /**
- * Optional allowlist. Set VITE_ADMIN_EMAILS to a comma-separated list and only
- * those addresses can hold an admin session — whichever method they sign in
- * with. Leave it unset and anyone who reaches /admin/login can create an
- * account, which is almost never what you want in production.
+ * Only these addresses can hold an admin session, whichever method they sign
+ * in with (see src/lib/admins.js — never empty, so access can't fall open).
  */
-const ALLOWED = (import.meta.env.VITE_ADMIN_EMAILS ?? '')
-  .split(',')
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean)
+const ALLOWED = adminEmails(import.meta.env.VITE_ADMIN_EMAILS)
 
 export function isAllowed(email) {
-  if (ALLOWED.length === 0) return true
   return ALLOWED.includes(String(email ?? '').toLowerCase())
 }
 

@@ -14,6 +14,8 @@
  * the hook directly.
  */
 
+import { adminEmails } from '../src/lib/admins.js'
+
 function env(name) {
   return (process.env[name] ?? '').trim().replace(/^(['"])(.*)\1$/s, '$2').trim()
 }
@@ -64,10 +66,7 @@ async function emailFromIdToken(idToken) {
 }
 
 export async function POST(request) {
-  const admins = env('VITE_ADMIN_EMAILS')
-    .split(',')
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean)
+  const admins = adminEmails(env('VITE_ADMIN_EMAILS'))
 
   const email = await emailFromIdToken(bearer(request))
   if (!email || !admins.includes(email)) {

@@ -32,7 +32,6 @@ export default function Login() {
     user,
     loading,
     signIn,
-    signUp,
     signInWithGoogle,
     resetPassword,
     startPreview,
@@ -41,8 +40,6 @@ export default function Login() {
   } = useAuth()
   const navigate = useNavigate()
 
-  const [mode, setMode] = useState('signin')
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -50,8 +47,6 @@ export default function Login() {
   const [busy, setBusy] = useState(false)
 
   if (!loading && user) return <Navigate to="/admin" replace />
-
-  const isSignUp = mode === 'signup'
 
   const run = async (fn) => {
     setError('')
@@ -69,9 +64,7 @@ export default function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    run(() =>
-      isSignUp ? signUp(name, email, password) : signIn(email, password),
-    )
+    run(() => signIn(email, password))
   }
 
   const onReset = async () => {
@@ -103,34 +96,16 @@ export default function Login() {
           </Link>
 
           <h1 className="text-[28px] font-bold text-forest-deep">
-            {isSignUp ? 'Create your account' : 'Sign in'}
+            Sign in
           </h1>
           <p className="mt-2 text-[14px] text-forest-deep/55">
             Admin access for writing and managing articles.
           </p>
 
-          <div className="mt-6 flex gap-1 rounded-xl bg-forest-deep/5 p-1">
-            {[
-              ['signin', 'Sign in'],
-              ['signup', 'Create account'],
-            ].map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => {
-                  setMode(key)
-                  setError('')
-                  setNotice('')
-                }}
-                className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${
-                  mode === key ? 'bg-white text-forest-deep shadow-sm' : 'text-forest-deep/55'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
+          {/*
+            No public sign-up: admin accounts are created in Firebase Console →
+            Authentication → Users, and must be on the list in src/lib/admins.js.
+          */}
           <button
             type="button"
             disabled={busy}
@@ -148,18 +123,6 @@ export default function Login() {
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
-            {isSignUp && (
-              <Field label="Full name">
-                <Input
-                  value={name}
-                  autoComplete="name"
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Dr. Nkem Ezeamama"
-                />
-              </Field>
-            )}
-
             <Field label="Email address">
               <Input
                 type="email"
@@ -171,14 +134,11 @@ export default function Login() {
               />
             </Field>
 
-            <Field
-              label="Password"
-              hint={isSignUp ? 'At least 6 characters.' : undefined}
-            >
+            <Field label="Password">
               <Input
                 type="password"
                 value={password}
-                autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                autoComplete="current-password"
                 required
                 minLength={6}
                 onChange={(e) => setPassword(e.target.value)}
@@ -198,29 +158,23 @@ export default function Login() {
             )}
 
             <Btn type="submit" disabled={busy} className="w-full py-3">
-              {busy
-                ? 'Please wait…'
-                : isSignUp
-                  ? 'Create account'
-                  : 'Sign in'}
+              {busy ? 'Please wait…' : 'Sign in'}
             </Btn>
 
-            {!isSignUp && (
-              <button
-                type="button"
-                onClick={onReset}
-                className="w-full text-center text-[13px] text-forest-deep/60 hover:text-forest-deep"
-              >
-                Forgot password?
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={onReset}
+              className="w-full text-center text-[13px] text-forest-deep/60 hover:text-forest-deep"
+            >
+              Forgot password?
+            </button>
           </form>
 
           {isFirebaseConfigured && !hasAllowlist && (
             <p className="mt-6 rounded-xl bg-amber-50 px-4 py-3 text-[12.5px] leading-relaxed text-amber-900">
-              <strong>Anyone who finds this page can create an admin account.</strong>{' '}
-              Set <code>VITE_ADMIN_EMAILS</code> to a comma-separated list of allowed
-              addresses to lock it down.
+              <strong>Admin access isn&rsquo;t set up on this deployment.</strong>{' '}
+              Add <code>VITE_ADMIN_EMAILS</code> (comma-separated admin emails) to the
+              host&rsquo;s environment variables and redeploy. Until then nobody can sign in.
             </p>
           )}
 
@@ -268,7 +222,7 @@ function friendly(error) {
     return 'That email and password combination is not recognised.'
   if (code.includes('user-not-found')) return 'No account exists for that email.'
   if (code.includes('email-already-in-use'))
-    return 'An account already exists for that email. Switch to “Sign in”.'
+    return 'An account already exists for that email.'
   if (code.includes('weak-password')) return 'Choose a password of at least 6 characters.'
   if (code.includes('popup-closed-by-user')) return 'Sign-in window closed before finishing.'
   if (code.includes('popup-blocked'))
