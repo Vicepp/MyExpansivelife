@@ -152,6 +152,7 @@ Re-running the seed skips slugs that already exist, so it is safe to repeat.
 | `scripts/seed-posts.mjs` | Writes to Firestore |
 | `scripts/generate-sitemap.mjs` | Runs inside `npm run build` |
 | `scripts/prerender-blog.mjs` | Crawler-readable page per post, inside the build |
+| `scripts/llms-txt.mjs` | /llms.txt + /llms-full.txt for AI search engines, inside the build |
 | `scripts/indexnow.mjs`, `scripts/google-sitemap.mjs` | Search-engine pings, production builds only |
 | `scripts/rebuild-site.mjs` | Redeploy via the Vercel Deploy Hook + verify posts are live |
 | `src/components/Seo.jsx` | Per-page title, meta, canonical, JSON-LD |

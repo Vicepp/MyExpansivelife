@@ -2,8 +2,27 @@
 
 User-agent: *
 Allow: /
-
 # The admin panel is unlinked from the public site; keep it out of the index.
+Disallow: /admin
+
+# AI search and answer engines are welcome to read and cite the site.
+# A guide for them, with every article, is at /llms.txt (full text: /llms-full.txt).
+# (A bot named in its own group ignores the * group, so /admin is repeated.)
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+User-agent: DuckAssistBot
+User-agent: meta-externalagent
+User-agent: CCBot
+Allow: /
 Disallow: /admin
 
 Sitemap: https://www.myexpansivelife.com/sitemap.xml
