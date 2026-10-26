@@ -1,33 +1,15 @@
-import { useEffect } from 'react'
 import { Container } from './primitives'
 import Reveal from './Reveal'
+import { LeadConnectorForm } from './LeadForm'
 
 /**
  * Affiliate applications go to the "LinkedIn Affiliate Support" form in
  * LeadConnector (GoHighLevel), so they land in the CRM with the rest of the
  * pipeline rather than in the site's own inbox.
  */
-const FORM_ID = 'aex5atZbDDaLMpNIfuDI'
-const EMBED_SCRIPT = 'https://link.msgsndr.com/js/form_embed.js'
-
-/**
- * LeadConnector's helper sizes the iframe to the form and handles its
- * cookie-consent and redirect behaviour. Added once per page load; React
- * re-mounts on navigation must not stack copies.
- */
-function useFormEmbedScript() {
-  useEffect(() => {
-    if (document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) return
-    const script = document.createElement('script')
-    script.src = EMBED_SCRIPT
-    script.async = true
-    document.body.appendChild(script)
-  }, [])
-}
+const AFFILIATE_FORM = { formId: 'aex5atZbDDaLMpNIfuDI', name: 'LinkedIn Affiliate Support', height: 490 }
 
 export default function AffiliateForm() {
-  useFormEmbedScript()
-
   return (
     <section className="bg-cream py-20 lg:py-24">
       <Container>
@@ -47,31 +29,8 @@ export default function AffiliateForm() {
           </Reveal>
         </div>
 
-        {/*
-          Attributes are LeadConnector's embed code verbatim; form_embed.js
-          reads them. The 490px starting height is the form's data-height, so
-          the page doesn't jump before the script resizes it.
-        */}
         <div className="mt-14">
-          <iframe
-            src={`https://api.leadconnectorhq.com/widget/form/${FORM_ID}`}
-            id={`inline-${FORM_ID}`}
-            title="LinkedIn Affiliate Support"
-            style={{ width: '100%', height: '490px', border: 'none', borderRadius: '20px' }}
-            data-layout="{'id':'INLINE'}"
-            data-trigger-type="alwaysShow"
-            data-trigger-value=""
-            data-activation-type="alwaysActivated"
-            data-activation-value=""
-            data-deactivation-type="neverDeactivate"
-            data-deactivation-value=""
-            data-form-name="LinkedIn Affiliate Support"
-            data-height="490"
-            data-layout-iframe-id={`inline-${FORM_ID}`}
-            data-form-id={FORM_ID}
-            data-cookie-consent="true"
-            data-cookie-consent-provider="auto"
-          />
+          <LeadConnectorForm {...AFFILIATE_FORM} />
         </div>
       </Container>
     </section>

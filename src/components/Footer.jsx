@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Button } from './primitives'
+import { Container, ArrowIcon } from './primitives'
+import { LeadFormModal } from './LeadForm'
 import Reveal from './Reveal'
-import { COMMUNITY_URL, SOCIALS } from '../lib/links'
+import { SOCIALS } from '../lib/links'
 import logo from '../assets/design/logo.svg'
 
 const LINK_COLUMNS = [
@@ -16,8 +18,19 @@ const LINK_COLUMNS = [
 ]
 
 
+/** The "Financial Investor" list in LeadConnector — the newsletter signup. */
+const NEWSLETTER_FORM = { formId: 'O5wCfFErBHBHRAZjgp2N', name: 'Financial Investor', height: 566 }
+
 /** Brown on the home and course pages, gold on the blog index. */
 export function Newsletter({ tone = 'brown' }) {
+  const [open, setOpen] = useState(false)
+  // Same look as <Button variant="solid|gold" icon>, but a real button: it
+  // opens the signup form in a popup rather than navigating.
+  const colours =
+    tone === 'gold'
+      ? 'bg-brown-deep px-7 py-3.5 hover:bg-brown'
+      : 'bg-gold px-8 py-4 hover:bg-gold-text'
+
   return (
     <section
       className={`py-20 text-center lg:py-24 ${tone === 'gold' ? 'bg-gold' : 'bg-brown'}`}
@@ -35,16 +48,25 @@ export function Newsletter({ tone = 'brown' }) {
           </p>
         </Reveal>
         <Reveal delay={220}>
-          <Button
-            variant={tone === 'gold' ? 'solid' : 'gold'}
-            to={COMMUNITY_URL}
-            icon
-            className="mt-8"
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className={`group mt-8 inline-flex items-center gap-3 rounded-full text-[15px] font-semibold text-white transition-colors duration-200 ${colours}`}
           >
             Keep me in the loop
-          </Button>
+            <span className="grid size-6 shrink-0 place-items-center overflow-hidden rounded-full bg-white/25">
+              <ArrowIcon className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-4" />
+            </span>
+          </button>
         </Reveal>
       </Container>
+
+      <LeadFormModal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Stay connected to what’s next"
+        {...NEWSLETTER_FORM}
+      />
     </section>
   )
 }
