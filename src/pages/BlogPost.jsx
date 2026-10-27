@@ -9,7 +9,6 @@ import { Newsletter } from '../components/Footer'
 import {
   getPostBySlug,
   listLive,
-  formatDate,
   recordView,
   toggleLike,
   compact,
@@ -129,7 +128,7 @@ export default function BlogPost() {
                 <span className="font-semibold text-forest-deep">
                   {post.author?.name ?? 'MXL Team'}
                 </span>
-                <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
+                {/* No visible publish date: evergreen articles (see PostCard). */}
                 <span>{post.readMinutes ?? 4} min read</span>
                 <span>{compact(post.views ?? 0)} views</span>
               </div>
@@ -206,7 +205,7 @@ export default function BlogPost() {
                     </Link>
                     <div className="flex grow flex-col p-6">
                       <p className="text-[11.5px] font-medium text-gold-text">
-                        {formatDate(item.publishedAt ?? item.createdAt)}
+                        {item.category}
                       </p>
                       <h3 className="mt-2 text-[17px] font-bold leading-snug text-forest-deep">
                         <Link to={`/blogs/${item.slug}`} className="hover:text-gold-text">

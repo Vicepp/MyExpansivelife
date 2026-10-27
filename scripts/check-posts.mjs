@@ -13,9 +13,10 @@
 import { existsSync } from 'node:fs'
 import { POSTS } from './content/index.mjs'
 
-// Seed articles were written to 900–1000 words; keyword-first guides carry a
-// table, a video and an FAQ section, so they run longer.
-const LIMITS = { seed: [900, 1000], guide: [800, 1600] }
+// Seed articles were written to 900–1000 words. Guides vary by format: a
+// checklist or myth list answers its question in ~550 words, a step-by-step
+// guide in ~1000+. Length follows the format; padding to a number hurts.
+const LIMITS = { seed: [900, 1000], guide: [1000, 1500] }
 const MAX_EXCERPT = 160
 const MAX_TITLE = 60
 
@@ -38,8 +39,6 @@ for (const post of POSTS) {
   if (post.kind === 'guide') {
     if (post.title.length > MAX_TITLE) problems.push(`title is ${post.title.length} chars, over ${MAX_TITLE}`)
     if (!/<h2>\s*Frequently asked questions\s*<\/h2>/i.test(post.content)) problems.push('no "Frequently asked questions" section')
-    if (!/<table>/.test(post.content)) problems.push('no table')
-    if (!/data-youtube-video/.test(post.content)) problems.push('no embedded video')
   }
   if (post.excerpt.length > MAX_EXCERPT)
     problems.push(`meta description is ${post.excerpt.length}, over ${MAX_EXCERPT}`)

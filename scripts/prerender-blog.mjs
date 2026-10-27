@@ -53,14 +53,6 @@ function absolute(url) {
   return url.startsWith('http') ? url : `${SITE_URL}${url}`
 }
 
-function formatDate(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
 
 const ENTITIES = {
   nbsp: ' ',
@@ -206,7 +198,7 @@ function articlePage(template, post, related) {
   const body = `<main><article>
 <p><a href="/">${SITE_NAME}</a> › <a href="/blogs">Blog</a>${post.category ? ` › ${esc(post.category)}` : ''}</p>
 <h1>${esc(post.title)}</h1>
-<p>By ${esc(author)}${post.publishedAt ? ` · <time datetime="${esc(post.publishedAt)}">${formatDate(post.publishedAt)}</time>` : ''}${post.readMinutes ? ` · ${post.readMinutes} min read` : ''}</p>
+<p>By ${esc(author)}${post.readMinutes ? ` · ${post.readMinutes} min read` : ''}</p>
 ${post.coverImage ? `<img src="${esc(post.coverImage)}" alt="${esc(post.title)}" />` : ''}
 ${post.content ?? ''}
 </article>
@@ -235,7 +227,6 @@ function indexPage(template, posts) {
     .map(
       (p) =>
         `<li><article><h2><a href="/blogs/${esc(p.slug)}">${esc(p.title)}</a></h2>` +
-        `${p.publishedAt ? `<time datetime="${esc(p.publishedAt)}">${formatDate(p.publishedAt)}</time>` : ''}` +
         `<p>${esc(excerptOf(p))}</p></article></li>`,
     )
     .join('\n')

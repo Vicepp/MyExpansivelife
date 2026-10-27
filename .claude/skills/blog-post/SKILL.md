@@ -43,6 +43,21 @@ Aim at a real search intent — "how to", "what is", "best", "vs", "for
 [audience]". One topic per post. If two topics fit in one title, they are two
 posts. Put the exact phrase in the slug, the excerpt and the first paragraph.
 
+**Vary the format.** A batch where every title reads "How to X: N steps"
+looks templated to readers and to Google. Mix formats across a batch — no two
+alike — and spread posts across the six categories:
+
+| Format | Title pattern | Shape of the post |
+| --- | --- | --- |
+| Definition | "What Is X? (And Who It's For)" | Meaning, examples table, pros/cons, fit |
+| Diagnosis | "X or Y? How to Tell the Difference" | Side-by-side table, deciding questions, what to do |
+| Review | "X: Is It Worth It for [audience]?" | Benefits, downsides, options table, red flags, verdict |
+| Checklist | "X Checklist: N Things to Fix Today" | Numbered items in groups, time table |
+| Myth-busting | "N X Myths [audience] Believe" | Myth → truth sections, summary table |
+| Comparison | "X vs Y: Which Is Better for Z?" | Criteria table, when each wins |
+| Step-by-step | "How to X: A Step-by-Step Guide" | Numbered steps, pipeline/time table |
+| Options | "X for [audience]: N Options Compared" | One section per option, comparison table |
+
 **Topic clusters.** Every post belongs to a cluster (today: *LinkedIn
 visibility* and *wealth*). Link to 3–5 closely related posts in the same
 cluster, on descriptive anchor text — not to whatever happens to exist.
@@ -54,11 +69,11 @@ cluster, on descriptive anchor text — not to whatever happens to exist.
 | Rule | Value |
 | --- | --- |
 | Title | **≤ 60 characters**, keyword first |
-| Word count | Guides **800–1600**; the original seed batch 900–1000 |
+| Word count | Guides **500–1600**, set by the format (checklists short, step-by-step guides long); the original seed batch 900–1000 |
 | `excerpt` | **Max 160 characters**, contains the keyword — it is the meta description |
 | FAQ | An `<h2>Frequently asked questions</h2>` with 3–5 `<h3>` question + `<p>` answer pairs |
-| Table | **At least one** `<table>` (comparison, checklist, steps, numbers) |
-| Video | **One** relevant My Expansive Life YouTube embed (see below) |
+| Table | **Optional** — use one when something is genuinely compared or measured; never a table that repeats the list above it |
+| Video | **Optional** — only when a channel video genuinely fits the topic (see below) |
 | Internal links | **3–5**, within the post's cluster, plus `/courses/linkedin-unlocked` or `/community` |
 | External links | **At least 1**, to an authoritative source |
 | Cover image | 1200×675 JPEG in `public/blog/<slug>.jpg` |
@@ -74,8 +89,8 @@ keywords. That is the whole schema.
 Opening — 2 short paragraphs, exact keyword phrase in the first sentence
 <h2> question-style subheads, 4–7 of them ("How do I…", "What is…", "Why…")
 Short paragraphs, one idea each. Numbered steps where the content is a process.
-A <table> where something can be compared or checked
-The video, introduced in one sentence
+A <table> only where something is genuinely compared or measured
+The video, if one fits, introduced in one sentence
 <h2>Frequently asked questions</h2> — 3–5 <h3> questions, 1–3 sentence answers
 Closing <h2> with the next step, then internal links and a CTA
 ```
@@ -87,11 +102,15 @@ automatically (on the live page and in the prerender) — write it as plain
 `<h3>`/`<p>` pairs and do not add schema by hand. Answer each FAQ question
 fully in its first sentence.
 
-**Rich media.** Tables and embedded video keep readers on the page longer,
-which is one of the strongest signals for both Google and readers.
+**Rich media, where it earns its place.** A good table or a relevant video
+keeps readers on the page longer — but neither is required. Leave them out
+rather than add a table that repeats a list or a video that is only loosely
+related.
 
 - Tables: plain `<table><thead><tr><th>…` — the site styles them (`.prose-mxl`).
-- Video: use the same markup the admin editor produces so it styles the same:
+- Video: optional. Add one only when a channel video is directly about the
+  topic — never as filler, and do not reuse a video another recent post
+  already carries. Use the same markup the admin editor produces:
   ```html
   <div data-youtube-video=""><iframe src="https://www.youtube-nocookie.com/embed/<ID>"
     title="<video title>" width="840" height="472" allowfullscreen="true"

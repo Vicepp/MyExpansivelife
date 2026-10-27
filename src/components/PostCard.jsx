@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { formatDate } from '../lib/posts'
 
 /*
  * The article card used by the home/course journal strip and the blog index.
@@ -97,7 +96,9 @@ export default function PostCard({ post, index = 0 }) {
         </p>
 
         <div className="mt-6 flex items-center justify-between border-t border-ink/10 pt-4 text-[12px] text-ink/60">
-          <span>{formatDate(post.publishedAt ?? post.createdAt)}</span>
+          {/* No publish date on purpose: the articles are evergreen, and a date
+              makes readers assume an older one is out of date. */}
+          <span>{post.category}</span>
           <span>{post.readMinutes ?? 4} min read</span>
         </div>
       </div>
@@ -134,7 +135,6 @@ export function FeaturedPostCard({ post }) {
         </p>
         <p className="mt-6 text-[12.5px] text-ink/60">
           {post.author?.name ? `${post.author.name} · ` : ''}
-          {formatDate(post.publishedAt ?? post.createdAt)} ·{' '}
           {post.readMinutes ?? 4} min read
         </p>
       </div>
