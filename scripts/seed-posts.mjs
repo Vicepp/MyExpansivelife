@@ -105,7 +105,8 @@ let updated = 0
 let skipped = 0
 
 for (const post of posts) {
-  const { words, coverAlt, ...fields } = post
+  // words, coverAlt and kind are build-time helpers, not post fields.
+  const { words, coverAlt, kind, ...fields } = post
 
   const existing = await getDocs(
     query(collection(db, 'posts'), where('slug', '==', post.slug), limit(1)),
