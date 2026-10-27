@@ -18,6 +18,8 @@ import { IconEye, IconHeart, IconDoc, IconChart } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
 import { useDateRange, DateRangePicker } from './DateRange'
 import { compact, listPosts, summarise } from '../lib/posts'
+import { dayKey, listAnalytics } from '../lib/track'
+import VisitorInsights from './VisitorInsights'
 
 const SERIES_COLOURS = ['#183734', '#b3803f', '#87492c', '#7d886e', '#40b487', '#712806']
 
@@ -34,6 +36,7 @@ export default function Analytics() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const range = useDateRange()
+  const [visitRows, setVisitRows] = useState([])
 
   useEffect(() => {
     listPosts()
@@ -41,6 +44,16 @@ export default function Analytics() {
       .catch(() => setPosts([]))
       .finally(() => setLoading(false))
   }, [])
+
+  // Daily visit records for the map and devices; refetched when the range
+  // changes (day keys are stable strings, so this runs only on a real change).
+  const fromKey = dayKey(range.from)
+  const toKey = dayKey(range.to)
+  useEffect(() => {
+    listAnalytics(fromKey, toKey)
+      .then(setVisitRows)
+      .catch(() => setVisitRows([]))
+  }, [fromKey, toKey])
 
   const stats = useMemo(() => summarise(posts), [posts])
 
@@ -209,6 +222,11 @@ export default function Analytics() {
             ))}
           </ul>
         </Card>
+      </div>
+
+      {/* Where visitors come from and which devices they use, same range. */}
+      <div className="mt-5">
+        <VisitorInsights rows={visitRows} />
       </div>
     </div>
   )
