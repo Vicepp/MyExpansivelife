@@ -16,6 +16,7 @@ import { IconEye, IconPen, IconChart, IconMoney } from './icons'
 import { isFirebaseConfigured } from '../lib/firebase'
 import { listEvents } from '../lib/events'
 import { useDateRange, DateRangePicker } from './DateRange'
+import VisitorInsights from './VisitorInsights'
 import {
   dayKey,
   fillDays,
@@ -233,6 +234,11 @@ export default function PageAnalytics() {
           </ResponsiveContainer>
         </div>
       </Card>
+
+      {/* Location map, countries, cities and devices for the same range. */}
+      <div className="mb-5">
+        <VisitorInsights rows={rows} />
+      </div>
 
       <div className="mb-5 grid gap-5 lg:grid-cols-2">
         <Panel title="Most visited pages" hint="Across the selected range.">
