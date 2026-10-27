@@ -177,7 +177,9 @@ export default function Inbox() {
   if (loading) return <Spinner label="Loading the inbox…" />
 
   return (
-    <div>
+    // On desktop the inbox fills the content area and its two panes scroll
+    // independently; on phones it stays a normal scrolling page.
+    <div className="lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
       <PageHead
         title="Inbox"
         subtitle={`${unread} unread · ${chatCount} chat${chatCount === 1 ? '' : 's'} · ${rows.length} total`}
@@ -191,8 +193,8 @@ export default function Inbox() {
           body="Chats with the website assistant and affiliate applications both arrive here."
         />
       ) : (
-        <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <Card className="!p-0">
+        <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[340px_minmax(0,1fr)]">
+          <Card className="!p-0 lg:flex lg:min-h-0 lg:flex-col">
             <div className="space-y-3 border-b border-forest-deep/10 p-4">
               <Input
                 type="search"
@@ -218,7 +220,7 @@ export default function Inbox() {
               </div>
             </div>
 
-            <ul className="max-h-[560px] overflow-y-auto">
+            <ul className="max-h-[560px] overflow-y-auto lg:max-h-none lg:min-h-0 lg:flex-1">
               {visible.length === 0 ? (
                 <li className="px-4 py-10 text-center text-[13.5px] text-forest-deep/50">
                   Nothing matches that filter.
@@ -268,7 +270,7 @@ export default function Inbox() {
           </Card>
 
           {active ? (
-            <Card>
+            <Card className="lg:flex lg:min-h-0 lg:flex-col">
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-forest-deep/10 pb-5">
                 <div>
                   <h2 className="text-[19px] font-bold text-forest-deep">{active.subject}</h2>
@@ -293,13 +295,16 @@ export default function Inbox() {
                 </div>
               </div>
 
-              {active.kind === 'chat' ? (
-                <Transcript chat={active.chat} />
-              ) : (
-                <p className="whitespace-pre-line py-6 text-[14.5px] leading-relaxed text-forest-deep/85">
-                  {active.body}
-                </p>
-              )}
+              {/* Only the messages scroll; the header and actions stay put. */}
+              <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+                {active.kind === 'chat' ? (
+                  <Transcript chat={active.chat} />
+                ) : (
+                  <p className="whitespace-pre-line py-6 text-[14.5px] leading-relaxed text-forest-deep/85">
+                    {active.body}
+                  </p>
+                )}
+              </div>
 
               <div className="flex flex-wrap gap-2 border-t border-forest-deep/10 pt-5">
                 <Btn

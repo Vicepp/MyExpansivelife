@@ -136,9 +136,11 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-dvh bg-gold/25 p-0 lg:p-5">
-      <div className="mx-auto flex min-h-dvh w-full max-w-[1500px] overflow-hidden bg-forest-deep lg:min-h-[calc(100dvh-2.5rem)] lg:rounded-[28px]">
-        <aside className="hidden w-[248px] shrink-0 lg:block">
+    // App shell: the frame is exactly the window's height, so the page itself
+    // never scrolls — only <main> does (and, on the Inbox, its own panes).
+    <div className="h-dvh overflow-hidden bg-gold/25 p-0 lg:p-5">
+      <div className="mx-auto flex h-full w-full max-w-[1500px] overflow-hidden bg-forest-deep lg:rounded-[28px]">
+        <aside className="hidden w-[248px] shrink-0 overflow-y-auto lg:block">
           <Sidebar />
         </aside>
 
@@ -156,8 +158,8 @@ export default function AdminLayout() {
           </div>
         )}
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex items-center gap-3 px-4 py-4 lg:px-6">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <header className="flex shrink-0 items-center gap-3 px-4 py-4 lg:px-6">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
@@ -234,7 +236,7 @@ export default function AdminLayout() {
             </div>
           </header>
 
-          <main className="min-w-0 flex-1 overflow-x-hidden bg-cream p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
+          <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden overscroll-contain bg-cream p-5 lg:m-2 lg:mt-0 lg:rounded-[22px] lg:p-7">
             {/* Names the person, not just the count — the point of the alert
                 is knowing who is waiting to hear back. */}
             {unread.chats > 0 && (
