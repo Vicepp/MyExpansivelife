@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Container, Button, TextLink } from '../components/primitives'
 import Reveal from '../components/Reveal'
 import Seo, { articleSchema } from '../components/Seo'
+import { faqSchema } from '../lib/faq'
 import Testimonials from '../components/Testimonials'
 import { Newsletter } from '../components/Footer'
 import {
@@ -101,7 +102,8 @@ export default function BlogPost() {
         type="article"
         publishedAt={post.publishedAt ?? post.createdAt}
         author={post.author?.name}
-        schema={articleSchema(post)}
+        // JSON-LD accepts an array: the article, plus its FAQ when it has one.
+        schema={[articleSchema(post), faqSchema(post.content)].filter(Boolean)}
       />
 
       <article className="bg-cream pb-16 pt-10 lg:pb-20">

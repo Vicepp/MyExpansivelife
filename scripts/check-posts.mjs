@@ -13,9 +13,11 @@
 import { existsSync } from 'node:fs'
 import { POSTS } from './content/index.mjs'
 
-const MIN_WORDS = 900
-const MAX_WORDS = 1000
+// Seed articles were written to 900–1000 words; keyword-first guides carry a
+// table, a video and an FAQ section, so they run longer.
+const LIMITS = { seed: [900, 1000], guide: [800, 1600] }
 const MAX_EXCERPT = 160
+const MAX_TITLE = 60
 
 const slugs = new Set(POSTS.map((p) => p.slug))
 let failures = 0
@@ -30,8 +32,15 @@ for (const post of POSTS) {
   const hasCover = existsSync(`public${post.coverImage}`)
 
   const problems = []
+  const [MIN_WORDS, MAX_WORDS] = LIMITS[post.kind ?? 'seed']
   if (post.words > MAX_WORDS) problems.push(`${post.words} words is over the ${MAX_WORDS} ceiling`)
   if (post.words < MIN_WORDS) problems.push(`${post.words} words is short of the ${MIN_WORDS} target`)
+  if (post.kind === 'guide') {
+    if (post.title.length > MAX_TITLE) problems.push(`title is ${post.title.length} chars, over ${MAX_TITLE}`)
+    if (!/<h2>\s*Frequently asked questions\s*<\/h2>/i.test(post.content)) problems.push('no "Frequently asked questions" section')
+    if (!/<table>/.test(post.content)) problems.push('no table')
+    if (!/data-youtube-video/.test(post.content)) problems.push('no embedded video')
+  }
   if (post.excerpt.length > MAX_EXCERPT)
     problems.push(`meta description is ${post.excerpt.length}, over ${MAX_EXCERPT}`)
   if (!hasCover) problems.push(`missing cover image public${post.coverImage}`)

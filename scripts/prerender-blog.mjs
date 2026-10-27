@@ -27,6 +27,7 @@ import {
   loadEnv,
   fetchPublishedPosts,
 } from './lib/published-posts.mjs'
+import { faqSchema } from '../src/lib/faq.js'
 
 await loadEnv()
 
@@ -191,6 +192,7 @@ function articlePage(template, post, related) {
       : '',
     jsonLd(schema),
     jsonLd(breadcrumbs),
+    faqSchema(post.content) ? jsonLd(faqSchema(post.content)) : '',
   ]
     .filter(Boolean)
     .join('\n    ')

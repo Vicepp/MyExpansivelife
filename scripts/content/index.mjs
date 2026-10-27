@@ -1,5 +1,6 @@
 import { LINKEDIN_POSTS } from './posts-linkedin.mjs'
 import { MXL_POSTS } from './posts-mxl.mjs'
+import { GUIDE_POSTS } from './posts-guides.mjs'
 
 /**
  * The twelve seed articles, interleaved and dated.
@@ -33,7 +34,7 @@ export function wordCount(html) {
 }
 
 export function buildPosts({ from = new Date(), status = 'published' } = {}) {
-  return interleave(MXL_POSTS, LINKEDIN_POSTS).map((post, i) => {
+  const seeded = interleave(MXL_POSTS, LINKEDIN_POSTS).map((post, i) => {
     const publishedAt = new Date(from)
     publishedAt.setDate(publishedAt.getDate() - i * CADENCE_DAYS)
     publishedAt.setHours(9, 0, 0, 0)
@@ -51,6 +52,26 @@ export function buildPosts({ from = new Date(), status = 'published' } = {}) {
       words: wordCount(post.content),
     }
   })
+
+  // Keyword-first guides carry their own publish dates (posts-guides.mjs).
+  const guides = GUIDE_POSTS.map((post) => {
+    const publishedAt = new Date(post.publishedAt)
+    return {
+      ...post,
+      kind: 'guide',
+      status,
+      coverImage: `/blog/${post.slug}.jpg`,
+      publishedAt,
+      createdAt: publishedAt,
+      updatedAt: publishedAt,
+      publishAt: null,
+      views: 0,
+      likes: 0,
+      words: wordCount(post.content),
+    }
+  })
+
+  return [...seeded, ...guides]
 }
 
 export const POSTS = buildPosts()

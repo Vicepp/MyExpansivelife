@@ -45,3 +45,6 @@ mXL document for blog/
 
 # Google service account key for Search Console (scripts/google-sitemap.mjs)
 google-service-account.json
+
+# Local post review page (scripts/preview-posts.mjs)
+preview-posts.html
