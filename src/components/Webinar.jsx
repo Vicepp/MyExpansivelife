@@ -5,6 +5,7 @@ import logo from '../assets/design/logo.svg'
 import logoMark from '../assets/design/logo-mark.png'
 import logoLight from '../assets/design/logo-light.png'
 import familiarPhoto from '../assets/design/webinar-familiar.jpg'
+import playbookPreview from '../assets/design/playbook-preview.jpg'
 import VideoEmbed from './VideoEmbed'
 import { LeadFormModal } from './LeadForm'
 
@@ -523,35 +524,18 @@ export function WebinarPlaybook({ variant = 'bonus' }) {
     <section id="playbook" className="bg-cream py-6">
       <Wide>
         <div className="grid items-center gap-12 rounded-3xl bg-forest px-6 py-14 text-cream lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:px-14 lg:py-20">
-          <Reveal y={0} className="relative mx-auto h-[460px] w-full max-w-[440px]">
-            <span className="absolute -top-2 left-0 z-10 rotate-[-5deg] font-script text-[42px] leading-none text-gold">
+          <Reveal y={0} className="mx-auto w-full max-w-[620px]">
+            <span className="block rotate-[-4deg] font-script text-[42px] leading-none text-gold">
               {copy.note}
             </span>
-            <div className="absolute right-0 top-24 flex h-[230px] w-[170px] rotate-[8deg] flex-col gap-2.5 rounded-lg bg-cream-card p-5 text-forest shadow-xl">
-              <span className="font-display text-[17px] leading-tight">
-                Five Shifts That Quietly Change Your LinkedIn
-              </span>
-              <span className="h-1.5 rounded bg-gold/20" />
-              <span className="h-1.5 w-4/5 rounded bg-gold/20" />
-              <span className="h-1.5 w-3/4 rounded bg-gold/20" />
-            </div>
-            <div className="absolute right-[72px] top-16 flex h-[230px] w-[170px] rotate-[2deg] flex-col gap-2.5 rounded-lg bg-cream-card p-5 text-forest shadow-xl">
-              <span className="font-display text-[17px] leading-tight">
-                Your Workbook: Stop Reading, Start Building
-              </span>
-              <span className="h-1.5 rounded bg-gold/20" />
-              <span className="h-1.5 w-5/6 rounded bg-gold/20" />
-              <span className="h-1.5 w-2/3 rounded bg-gold/20" />
-            </div>
-            <div className="absolute bottom-0 left-0 flex h-[290px] w-[200px] rotate-[-4deg] flex-col justify-between rounded-l-md rounded-r-2xl border-l-[10px] border-brown-deep bg-brown p-6 shadow-2xl">
-              <img src={logoLight} alt="My Expansive Life" className="w-24" />
-              <span className="font-display text-[30px] leading-[1.05]">
-                Your Personal Brand Playbook
-              </span>
-              <span className="text-[11px] uppercase tracking-[0.14em] text-cream/80">
-                By Dr. Nkem Ezeamama
-              </span>
-            </div>
+            <img
+              src={playbookPreview}
+              alt="LinkedIn Unlocked: Your Personal Brand Playbook by Dr. Nkem Ezeamama, shown on a tablet"
+              width="1400"
+              height="777"
+              loading="lazy"
+              className="mt-5 w-full rounded-3xl shadow-2xl"
+            />
           </Reveal>
 
           <Reveal delay={120}>
