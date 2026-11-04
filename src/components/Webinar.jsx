@@ -595,12 +595,12 @@ export function WebinarPlaybook({ variant = 'bonus' }) {
 
 /**
  * ClickMeeting's registration page for this webinar. Their embed snippet
- * (embed_conference.html?r=18245298510263239) only injects this iframe at a
+ * (embed_conference.html?r=18245298510366387) only injects this iframe at a
  * fixed 1024x768 and forces overflow-x on <body>, so the iframe is rendered
  * directly instead, sized to the card.
  */
 const CLICKMEETING_URL =
-  'https://pheenyxcapital.clickmeeting.com/836413449?popup=off&lang=en&xlang=en'
+  'https://pheenyxcapital.clickmeeting.com/671341686?popup=off&lang=en&xlang=en'
 
 export function WebinarRegister() {
   return (
