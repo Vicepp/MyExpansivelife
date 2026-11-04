@@ -49,9 +49,9 @@ function Portrait({ className = '', alt = 'Dr. Nkem Ezeamama' }) {
 const WEBINAR = {
   video: 'https://www.youtube.com/watch?v=zc9V3jmUxBY',
   videoTitle: 'How to Turn LinkedIn Posts Into Business Opportunities',
-  title: 'How a Single LinkedIn Post Turned Into a Six Figure Partnership',
-  date: 'Thursday, October 29, 2026',
-  times: '6:00 PM CST | 7:00 PM EST | 4:00 PM PST',
+  title: 'You’re the Best-Kept Secret in Your Field. That’s the Problem.',
+  date: 'Tuesday, November 24, 2026',
+  times: '6 PM CT | 7 PM ET | 4 PM PT',
 }
 
 /* --- icons ---------------------------------------------------------------- */
@@ -93,7 +93,7 @@ function WebinarMeta({ dark = false }) {
   const sub = dark ? 'text-cream/80' : 'text-ink/65'
   const items = [
     { icon: CALENDAR, title: WEBINAR.date, sub: WEBINAR.times },
-    { icon: CAMERA, title: 'Live on ClickMeeting', sub: 'Free to attend' },
+    { icon: CAMERA, title: 'Virtual and free', sub: 'Join live from anywhere' },
   ]
   return (
     <div className="flex flex-wrap gap-x-8 gap-y-4">
@@ -131,18 +131,18 @@ export function WebinarHero() {
               delay={90}
               className="mt-6 font-display text-[38px] leading-display text-forest sm:text-[48px] lg:text-[60px]"
               segments={[
-                { text: 'How a Single LinkedIn Post Turned Into a' },
-                { text: 'Six Figure Partnership', className: 'text-brown' },
+                { text: 'You’re the Best-Kept Secret in Your Field.' },
+                { text: 'That’s the Problem.', className: 'text-brown' },
               ]}
             />
             <Reveal delay={180}>
               <p className="mt-6 max-w-[540px] text-[18px] font-semibold leading-snug text-forest">
-                What if your next LinkedIn post could do more than collect likes?
+                Great work should never stay hidden.
               </p>
               <p className="mt-3 max-w-[520px] text-[15px] leading-relaxed text-ink/75">
-                In this live webinar, I’ll show you exactly what I shared, why it
-                started a conversation, and how you can apply the same thinking to
-                your own LinkedIn presence.
+                You’ve spent years getting very good at what you do. Now let’s make
+                sure the right people know it. Join me live and learn how to turn what
+                you know into opportunities that find you.
               </p>
             </Reveal>
             <Reveal delay={270}>
@@ -232,8 +232,8 @@ export function WebinarStats() {
 
 const LESSONS = [
   {
-    title: 'Get your expertise in front of the right people',
-    body: 'Your experience can only open doors when the people who need it can actually see it.',
+    title: 'Stop being the best person nobody knows about',
+    body: 'See why skill alone stays invisible, and the simple shift that puts your work in front of the people who can hire, refer, or partner with you.',
     icon: (
       <>
         <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
@@ -242,8 +242,8 @@ const LESSONS = [
     ),
   },
   {
-    title: 'Know exactly what to post',
-    body: 'Turn what you already know into content that gives people a reason to pay attention and start a conversation.',
+    title: 'Turn what you know into posts people remember',
+    body: 'Get a simple system for sharing your stories, lessons, and point of view, so you always know what to say and never stare at a blank screen again.',
     icon: (
       <>
         <path d="M4 20h4L19 9l-4-4L4 16v4z" />
@@ -252,8 +252,8 @@ const LESSONS = [
     ),
   },
   {
-    title: 'Make LinkedIn work around your career',
-    body: 'Build a strong presence without spending hours on content or becoming a full time creator.',
+    title: 'Let opportunities come looking for you',
+    body: 'Shape your profile so it works while you’re busy doing your real job, bringing clients, partners, and invitations to your inbox without you chasing anyone.',
     icon: <path d="M4 20V14M10 20V9M16 20V4M2 20h20" />,
   },
 ]
@@ -614,7 +614,7 @@ export function WebinarRegister() {
               <span className="text-gold-tint">A conversation can change what comes next.</span>
             </h2>
             <p className="mt-5 max-w-[520px] text-[16px] leading-relaxed text-cream/85">
-              Join me for {WEBINAR.title}.
+              Join me for {WEBINAR.title}
             </p>
             <div className="mt-7 border-t border-[#a8694a] pt-6">
               <WebinarMeta dark />

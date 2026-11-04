@@ -122,18 +122,20 @@ visitor's name and email are already captured, so the team can follow up.
  * no entry for it. Update this when the next webinar is scheduled.
  */
 const WEBINAR = {
-  title: 'How a Single LinkedIn Post Turned Into a Six Figure Partnership',
-  when: 'Thursday, October 29, 2026 — 6:00 PM CST / 7:00 PM EST / 4:00 PM PST',
-  // End of the session in UTC (6 PM CST = 23:00 UTC; allow 90 minutes).
-  endsAt: Date.parse('2026-10-30T00:30:00Z'),
+  title: 'You’re the Best-Kept Secret in Your Field. That’s the Problem.',
+  when: 'Tuesday, November 24, 2026 — 6 PM CT / 7 PM ET / 4 PM PT',
+  // End of the session in UTC (6 PM CST = 00:00 UTC next day; allow 90 minutes).
+  endsAt: Date.parse('2026-11-25T01:30:00Z'),
 }
 
 function describeWebinar(now = Date.now()) {
   const details = `The free live webinar "${WEBINAR.title}" with Dr. Nkem Ezeamama, live on
 ClickMeeting. Its page is "/linkedin-unlocked" (registration form at the bottom).
-What attendees learn: how to get their expertise in front of the right people,
-know exactly what to post, and make LinkedIn work around a demanding career
-without becoming a full-time creator. It is for people who think "I'm good at
+What attendees learn: how to stop being the best person nobody knows about
+(the shift that puts their work in front of people who can hire, refer or partner
+with them), how to turn what they know into posts people remember, and how to
+shape their profile so opportunities come looking for them while they do their
+real job. Virtual and free; join live from anywhere. It is for people who think "I'm good at
 what I do but my LinkedIn doesn't show it", "I never know what to post", "I don't
 have time to be a content creator", or "I want the right people to find me".
 Registration bonus, free: Dr. Nkem's Personal Brand Playbook — Five Shifts That

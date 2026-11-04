@@ -16,8 +16,8 @@ import { trackPageView } from '../lib/track'
 import logo from '../assets/design/logo.svg'
 
 /*
- * Standalone landing page for the free webinar, "How a Single LinkedIn Post
- * Turned Into a Six Figure Partnership". Routed outside the site Layout so it
+ * Standalone landing page for the free webinar, "You’re the Best-Kept Secret
+ * in Your Field. That’s the Problem." Routed outside the site Layout so it
  * carries no site navigation, event bar or chat — one page, one ask: every
  * button leads to #register.
  */
@@ -38,7 +38,7 @@ export default function WebinarLanding() {
     <>
       <Seo
         title="LinkedIn Unlocked — Free Live Webinar"
-        description="Free live webinar with Dr. Nkem Ezeamama: how one LinkedIn post turned into a six figure partnership, and how to apply the same thinking to your own profile."
+        description="Free live webinar with Dr. Nkem Ezeamama, Tuesday, November 24: turn what you know into LinkedIn posts and a profile that bring opportunities to you."
         path="/linkedin-unlocked"
       />
 
