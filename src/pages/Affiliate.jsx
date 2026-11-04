@@ -31,8 +31,11 @@ export default function Affiliate() {
         body="This time, get paid for it. Share LinkedIn Unlocked with your audience and earn 20% on every enrolment that comes through your personal link."
       />
       <TrustedBy />
-      {/* No media: the stock thumbnail had a printed play button and no video. */}
-      <Problem tone="gold" media={false} />
+      <Problem
+        tone="gold"
+        videoUrl="https://youtu.be/4WWnu8k3V7Y"
+        videoTitle="How to Join the My Expansive Life Affiliate Program"
+      />
       <StepsGrid />
       <BulletSplit
         eyebrow="What you receive"
