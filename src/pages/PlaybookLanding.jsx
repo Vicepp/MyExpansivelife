@@ -249,7 +249,7 @@ function Author() {
               width="900"
               height="1124"
               loading="lazy"
-              className="aspect-[4/5] w-full rounded-t-full rounded-b-3xl object-cover shadow-[0_30px_60px_-20px_rgb(24_55_52/0.35)]"
+              className="aspect-[4/5] w-full rounded-t-[220px] rounded-b-3xl object-cover shadow-[0_30px_60px_-20px_rgb(24_55_52/0.35)]"
             />
           </Reveal>
           <Reveal delay={120}>
