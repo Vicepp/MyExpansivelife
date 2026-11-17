@@ -28,6 +28,7 @@ const STATIC_ROUTES = [
   ['/community', 'weekly', '0.9'],
   ['/courses/linkedin-unlocked', 'weekly', '0.9'],
   ['/linkedin-unlocked', 'weekly', '0.9'],
+  ['/linkedin-playbook', 'monthly', '0.8'],
   ['/affiliate', 'monthly', '0.6'],
 ]
 

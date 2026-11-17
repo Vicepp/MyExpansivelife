@@ -6,6 +6,7 @@ import Blogs from './pages/Blogs'
 import BlogPost from './pages/BlogPost'
 import Course from './pages/Course'
 import WebinarLanding from './pages/WebinarLanding'
+import PlaybookLanding from './pages/PlaybookLanding'
 import Community from './pages/Community'
 import Affiliate from './pages/Affiliate'
 import ComingSoon from './pages/ComingSoon'
@@ -65,6 +66,9 @@ function App() {
 
       {/* Webinar landing page — standalone, without the site navigation. */}
       <Route path="/linkedin-unlocked" element={<WebinarLanding />} />
+
+      {/* LinkedIn ebook (Personal Brand Playbook) landing page — standalone too. */}
+      <Route path="/linkedin-playbook" element={<PlaybookLanding />} />
 
       {/* Admin panel — deliberately unlinked from the public navigation. */}
       <Route

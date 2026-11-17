@@ -72,6 +72,7 @@ const header = `# My Expansive Life
 - [Home](${SITE_URL}/): what My Expansive Life is and the six areas it covers (career and identity, brand and visibility, entrepreneurship, wealth and ownership, sustainable growth, community).
 - [LinkedIn Unlocked course](${SITE_URL}/courses/linkedin-unlocked): a step-by-step system for turning a LinkedIn presence into visibility, leads and revenue — six modules plus an AI toolkit; cohort or done-with-you.
 - [Free LinkedIn webinar](${SITE_URL}/linkedin-unlocked): "You're the Best-Kept Secret in Your Field. That's the Problem.", live with Dr. Nkem on Tuesday, November 24, 2026; registration includes the free Personal Brand Playbook.
+- [Free LinkedIn Personal Brand Playbook](${SITE_URL}/linkedin-playbook): Dr. Nkem's free ebook — Five Shifts That Quietly Change Your LinkedIn, the Five Post Rotation, the 90 Minute Daily Rhythm and a hands-on workbook; instant download after a short form.
 - [The Circle community](${SITE_URL}/community): the private membership for learning, connection and weekly accountability, including the live Monday Momentum sessions.
 - [Affiliate programme](${SITE_URL}/affiliate): earn 20% on every LinkedIn Unlocked enrolment you refer.
 - [The Expansive Journal](${SITE_URL}/blogs): practical articles on LinkedIn strategy, personal branding, entrepreneurship and investing.

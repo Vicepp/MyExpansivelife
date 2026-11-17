@@ -284,7 +284,13 @@ const STATIC_PAGES = [
     path: '/linkedin-unlocked',
     title: 'LinkedIn Unlocked — Free Live Webinar',
     description:
-      'Free live webinar with Dr. Nkem Ezeamama: how one LinkedIn post turned into a six figure partnership, and how to apply the same thinking to your own profile.',
+      'Free live webinar with Dr. Nkem Ezeamama, Tuesday, November 24: turn what you know into LinkedIn posts and a profile that bring opportunities to you.',
+  },
+  {
+    path: '/linkedin-playbook',
+    title: 'Free LinkedIn Personal Brand Playbook',
+    description:
+      "Dr. Nkem Ezeamama's free Personal Brand Playbook: the profile shifts, five post types and 90 minute daily rhythm that get your work found on LinkedIn.",
   },
   {
     path: '/affiliate',
@@ -299,6 +305,7 @@ const SITE_LINKS = [
   ['/community', 'The Circle Community'],
   ['/courses/linkedin-unlocked', 'LinkedIn Unlocked course'],
   ['/linkedin-unlocked', 'Free LinkedIn webinar'],
+  ['/linkedin-playbook', 'Free LinkedIn Personal Brand Playbook'],
   ['/blogs', 'The Expansive Journal'],
   ['/affiliate', 'Affiliate Program'],
 ]

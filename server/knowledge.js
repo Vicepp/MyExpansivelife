@@ -19,6 +19,7 @@ Site pages (relative paths — link them exactly as written):
 - "/" — Home
 - "/linkedin-unlocked" — the free LinkedIn webinar page, with the registration form
 - "/courses/linkedin-unlocked" — the LinkedIn Unlocked course page (details, enrolment, strategy call)
+- "/linkedin-playbook" — the free LinkedIn ebook, Dr. Nkem's Personal Brand Playbook (instant download after a short form)
 - "/community" — about The Circle community
 - "/affiliate" — the affiliate programme, including the application form
 - "/blogs" — The Expansive Journal (all articles)
