@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Seo from '../components/Seo'
 import { Button } from '../components/primitives'
 import Reveal from '../components/Reveal'
-import { WEBINAR, CLICKMEETING_URL } from '../components/Webinar'
+import { LeadConnectorForm } from '../components/LeadForm'
 import { trackPageView } from '../lib/track'
 import logo from '../assets/design/logo.svg'
 import logoMark from '../assets/design/logo-mark.png'
@@ -16,9 +16,14 @@ import authorPhoto from '../assets/design/playbook-author.jpg'
  * Standalone landing page for the free Personal Brand Playbook (the LinkedIn
  * ebook). Like the webinar page it sits outside the site Layout: no site
  * navigation, event bar or chat, and every button leads to #download, where
- * the free webinar's ClickMeeting registration form sits: registrants are sent
- * the Playbook right after they register.
+ * LeadConnector's "MXL website LinkedIn Playbook" form delivers the download.
  */
+
+const PLAYBOOK_FORM = {
+  formId: 'BGqd1RgtMoRXavWVOC86',
+  name: 'MXL website LinkedIn Playbook',
+  height: 768,
+}
 
 function Wide({ children, className = '' }) {
   return (
@@ -58,7 +63,7 @@ function Hero() {
               Send me the playbook
             </Button>
             <p className="mt-4 text-[13.5px] text-ink/60">
-              Free. Sent to you as soon as you register.
+              Free. Instant download after a short form.
             </p>
           </Reveal>
 
@@ -283,20 +288,14 @@ function Download() {
   return (
     <section id="download" className="scroll-mt-4 bg-forest py-20 text-cream lg:py-24">
       <Wide>
-        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-          <Reveal className="lg:sticky lg:top-10">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+          <Reveal>
             <Eyebrow className="text-gold">Free download</Eyebrow>
             <h2 className="mt-5 font-display text-[36px] leading-[1.1] lg:text-[50px]">
               Get the Personal Brand Playbook
             </h2>
             <p className="mt-5 max-w-[500px] text-[16.5px] leading-relaxed text-cream/85">
-              Register for my free live webinar and I’ll send you the Playbook right
-              after. No card, no catch.
-            </p>
-            <p className="mt-4 max-w-[500px] text-[15px] leading-relaxed text-cream/75">
-              <strong className="font-semibold text-cream">{WEBINAR.title}</strong>
-              <br />
-              {WEBINAR.date} · {WEBINAR.times}
+              Add your details and the download opens straight away. No card, no catch.
             </p>
             <img
               src={playbookBanner}
@@ -312,17 +311,9 @@ function Download() {
               <h3 className="px-2 pt-2 font-display text-[26px] leading-tight">
                 Where should we send it?
               </h3>
-              <p className="mt-2 px-2 text-[14px] leading-relaxed text-ink/70">
-                You’ll receive the ClickMeeting link and the Personal Brand Playbook
-                right after you register.
-              </p>
-              <iframe
-                src={CLICKMEETING_URL}
-                title={`Register for ${WEBINAR.title}`}
-                allow="microphone; camera; fullscreen; autoplay"
-                allowFullScreen
-                className="mt-4 block h-[1480px] w-full rounded-2xl border-0"
-              />
+              <div className="mt-4">
+                <LeadConnectorForm {...PLAYBOOK_FORM} radius={16} />
+              </div>
             </div>
           </Reveal>
         </div>

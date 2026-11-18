@@ -46,7 +46,7 @@ function Portrait({ className = '', alt = 'Dr. Nkem Ezeamama' }) {
     />
   )
 }
-export const WEBINAR = {
+const WEBINAR = {
   video: 'https://www.youtube.com/watch?v=zc9V3jmUxBY',
   videoTitle: 'How to Turn LinkedIn Posts Into Business Opportunities',
   title: 'You’re the Best-Kept Secret in Your Field. That’s the Problem.',
@@ -599,7 +599,7 @@ export function WebinarPlaybook({ variant = 'bonus' }) {
  * fixed 1024x768 and forces overflow-x on <body>, so the iframe is rendered
  * directly instead, sized to the card.
  */
-export const CLICKMEETING_URL =
+const CLICKMEETING_URL =
   'https://pheenyxcapital.clickmeeting.com/671341686?popup=off&lang=en&xlang=en'
 
 export function WebinarRegister() {
