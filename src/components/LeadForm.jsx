@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { trackPixelLead } from '../lib/pixel'
 
 /**
  * LeadConnector (GoHighLevel) forms, embedded as the CRM provides them, so
@@ -23,15 +24,47 @@ function useFormEmbedScript() {
 }
 
 /**
+ * Calls `onSubmitted` once each time the form inside `iframeRef` is submitted
+ * successfully. The form posts "set-sticky-contacts" to the parent page only
+ * after LeadConnector has accepted the submission (validation passed, contact
+ * saved), just before it shows its thank-you or starts its redirect. It posts
+ * that message twice per submission, hence the short de-duplication window.
+ */
+function useFormSubmitted(iframeRef, onSubmitted) {
+  const callback = useRef(onSubmitted)
+  callback.current = onSubmitted
+
+  const enabled = Boolean(onSubmitted)
+  useEffect(() => {
+    if (!enabled) return
+    let last = 0
+    const onMessage = (e) => {
+      if (!Array.isArray(e.data) || e.data[0] !== 'set-sticky-contacts') return
+      if (e.source !== iframeRef.current?.contentWindow) return
+      const now = Date.now()
+      if (now - last < 5000) return
+      last = now
+      callback.current?.()
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [iframeRef, enabled])
+}
+
+/**
  * One inline LeadConnector form. Attributes mirror LeadConnector's embed code;
  * form_embed.js reads them. `height` is the form's data-height, used as the
  * starting height so the layout doesn't jump before the script resizes it.
+ * `pixelLead` names the Meta Pixel Lead event sent on each successful submit.
  */
-export function LeadConnectorForm({ formId, name, height, radius = 20 }) {
+export function LeadConnectorForm({ formId, name, height, radius = 20, pixelLead }) {
   useFormEmbedScript()
+  const iframe = useRef(null)
+  useFormSubmitted(iframe, pixelLead ? () => trackPixelLead(pixelLead) : null)
 
   return (
     <iframe
+      ref={iframe}
       src={`https://api.leadconnectorhq.com/widget/form/${formId}`}
       id={`inline-${formId}`}
       title={name}

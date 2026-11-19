@@ -1,5 +1,6 @@
-import { Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Suspense, lazy, useEffect, useRef } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { trackPixelPageView } from './lib/pixel'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Blogs from './pages/Blogs'
@@ -42,65 +43,86 @@ function AdminFallback() {
   )
 }
 
+/**
+ * Meta Pixel PageView on every client-side route change. The first page's
+ * PageView comes from the base code in index.html, so the initial render is
+ * skipped; the admin panel is not tracked.
+ */
+function PixelPageViews() {
+  const { pathname } = useLocation()
+  const first = useRef(true)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (!pathname.startsWith('/admin')) trackPixelPageView()
+  }, [pathname])
+  return null
+}
+
 function App() {
   return (
-    <Routes>
-      {/* Public site */}
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/blogs" element={<Blogs />} />
-        <Route path="/blogs/:slug" element={<BlogPost />} />
-        <Route path="/courses/linkedin-unlocked" element={<Course />} />
-        <Route
-          path="/courses/investment-101"
-          element={<ComingSoon title="Investment 101" />}
-        />
-        <Route
-          path="/courses/personal-branding"
-          element={<ComingSoon title="Personal Branding" />}
-        />
-        <Route path="/community" element={<Community />} />
-        <Route path="/affiliate" element={<Affiliate />} />
-        <Route path="*" element={<ComingSoon title="Page not found" />} />
-      </Route>
+    <>
+      <PixelPageViews />
+      <Routes>
+        {/* Public site */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:slug" element={<BlogPost />} />
+          <Route path="/courses/linkedin-unlocked" element={<Course />} />
+          <Route
+            path="/courses/investment-101"
+            element={<ComingSoon title="Investment 101" />}
+          />
+          <Route
+            path="/courses/personal-branding"
+            element={<ComingSoon title="Personal Branding" />}
+          />
+          <Route path="/community" element={<Community />} />
+          <Route path="/affiliate" element={<Affiliate />} />
+          <Route path="*" element={<ComingSoon title="Page not found" />} />
+        </Route>
 
-      {/* Webinar landing page — standalone, without the site navigation. */}
-      <Route path="/linkedin-unlocked" element={<WebinarLanding />} />
+        {/* Webinar landing page — standalone, without the site navigation. */}
+        <Route path="/linkedin-unlocked" element={<WebinarLanding />} />
 
-      {/* LinkedIn ebook (Personal Brand Playbook) landing page — standalone too. */}
-      <Route path="/linkedin-playbook" element={<PlaybookLanding />} />
+        {/* LinkedIn ebook (Personal Brand Playbook) landing page — standalone too. */}
+        <Route path="/linkedin-playbook" element={<PlaybookLanding />} />
 
-      {/* Admin panel — deliberately unlinked from the public navigation. */}
-      <Route
-        element={
-          <Suspense fallback={<AdminFallback />}>
-            <AdminRoot />
-          </Suspense>
-        }
-      >
-        <Route path="/admin/login" element={<Login />} />
+        {/* Admin panel — deliberately unlinked from the public navigation. */}
         <Route
-          path="/admin"
           element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
+            <Suspense fallback={<AdminFallback />}>
+              <AdminRoot />
+            </Suspense>
           }
         >
-          <Route index element={<Dashboard />} />
-          <Route path="posts" element={<Posts />} />
-          <Route path="posts/new" element={<PostEditor />} />
-          <Route path="posts/:id/edit" element={<PostEditor />} />
-          <Route path="events" element={<Events />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="page-analytics" element={<PageAnalytics />} />
-          <Route path="inbox" element={<Inbox />} />
-          <Route path="post-plan" element={<PostPlan />} />
-          <Route path="earning" element={<Earning />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="/admin/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="posts" element={<Posts />} />
+            <Route path="posts/new" element={<PostEditor />} />
+            <Route path="posts/:id/edit" element={<PostEditor />} />
+            <Route path="events" element={<Events />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="page-analytics" element={<PageAnalytics />} />
+            <Route path="inbox" element={<Inbox />} />
+            <Route path="post-plan" element={<PostPlan />} />
+            <Route path="earning" element={<Earning />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   )
 }
 

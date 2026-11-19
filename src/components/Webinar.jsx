@@ -497,6 +497,7 @@ const PLAYBOOK_FORM = {
   formId: 'BGqd1RgtMoRXavWVOC86',
   name: 'MXL website LinkedIn Playbook',
   height: 768,
+  pixelLead: 'Personal Brand Playbook',
 }
 
 const PLAYBOOK_COPY = {
